@@ -1,0 +1,264 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Models\UserModel;
+use App\Libraries\JWTAuth;
+
+class Auth extends BaseController
+{
+    public function login()
+    {
+        // If already authenticated, redirect by role
+        if (session()->get('isLoggedIn')) {
+            return session()->get('role_id') == 1
+                ? redirect()->to('/dashboard/overview')
+                : redirect()->to('/');
+        }
+        
+        return view('auth/login');
+    }
+
+    public function loginAction()
+    {
+        $rules = [
+            'username' => 'required|min_length[3]|max_length[100]',
+            'password' => 'required|min_length[4]|max_length[255]',
+        ];
+
+        if (!$this->validate($rules)) {
+            if ($this->request->isAJAX() || strpos($this->request->getHeaderLine('HX-Request'), 'true') !== false) {
+                return view('auth/login', [
+                    'validation' => $this->validator,
+                    'error' => 'Por favor, revise los datos ingresados.'
+                ]);
+            }
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $userModel = new UserModel();
+        $user = $userModel->where('username', $this->request->getPost('username'))
+                          ->orWhere('email', $this->request->getPost('username'))
+                          ->first();
+
+        if (is_null($user) || !password_verify($this->request->getPost('password'), $user['password_hash'])) {
+            if ($this->request->isAJAX() || strpos($this->request->getHeaderLine('HX-Request'), 'true') !== false) {
+                return view('auth/login', ['error' => 'Credenciales inválidas.']);
+            }
+            return redirect()->back()->withInput()->with('error', 'Credenciales inválidas.');
+        }
+
+        if (!$user['is_active']) {
+            if ($this->request->isAJAX() || strpos($this->request->getHeaderLine('HX-Request'), 'true') !== false) {
+                return view('auth/login', ['error' => 'Cuenta inactiva.']);
+            }
+            return redirect()->back()->withInput()->with('error', 'Su cuenta está inactiva.');
+        }
+
+        if (!empty($user['locked_until']) && strtotime($user['locked_until']) > time()) {
+            $message = 'Cuenta bloqueada hasta ' . date('d/m/Y H:i', strtotime($user['locked_until'])) . '.';
+            if ($this->request->isAJAX() || strpos($this->request->getHeaderLine('HX-Request'), 'true') !== false) {
+                return view('auth/login', ['error' => $message]);
+            }
+            return redirect()->back()->withInput()->with('error', $message);
+        }
+
+        // Generate JWT Token
+        $token = JWTAuth::generateToken($user);
+
+        // Hybrid Auth: Set both JWT cookie and traditional session
+        
+        // 1. Set JWT Cookie (HTTP Only)
+        $this->response->setCookie(
+            'access_token',
+            $token,
+            8 * 3600,
+            '',
+            '',
+            '',
+            false, // Secure (set to true only in HTTPS production)
+            true // HttpOnly
+        );
+
+        // 2. Set Session Data
+        $sessionData = [
+            'user_id'    => $user['id'],
+            'username'   => $user['username'],
+            'role_id'    => $user['role_id'],
+            'isLoggedIn' => true,
+            'login_at'   => time(),
+        ];
+        session()->set($sessionData);
+
+        if ($this->request->isAJAX() || strpos($this->request->getHeaderLine('HX-Request'), 'true') !== false) {
+            // HTMX specific redirect
+            $this->response->setHeader('HX-Redirect', ((int) $user['role_id'] === 1) ? '/dashboard/overview' : '/');
+            return '';
+        }
+
+        return ((int) $user['role_id'] === 1)
+            ? redirect()->to('/dashboard/overview')
+            : redirect()->to('/');
+    }
+
+    public function register()
+    {
+        // If already authenticated, redirect by role
+        if (session()->get('isLoggedIn')) {
+            return session()->get('role_id') == 1
+                ? redirect()->to('/dashboard/overview')
+                : redirect()->to('/');
+        }
+        
+        return view('auth/register');
+    }
+
+    public function registerAction()
+    {
+        $rules = [
+            'username'         => 'required|alpha_numeric_space|min_length[3]|max_length[100]|is_unique[users.username]',
+            'email'            => 'required|valid_email|is_unique[users.email]',
+            'phone_country'    => 'required|numeric|min_length[1]|max_length[4]',
+            'phone_area'       => 'required|numeric|min_length[1]|max_length[5]',
+            'phone_number'     => 'required|numeric|min_length[5]|max_length[12]',
+            'country'          => 'required|exact_length[2]',
+            'document_number'  => 'required|numeric|min_length[7]|max_length[11]',
+            'birthdate'        => 'required|valid_date[Y-m-d]',
+            'password'         => 'required|min_length[8]',
+            'password_confirm' => 'required|matches[password]',
+            'privacy_policy'   => 'required'
+        ];
+
+        $errors = [
+            'username' => [
+                'required' => 'El nombre de usuario es obligatorio.',
+                'alpha_numeric_space' => 'El usuario solo puede contener letras, números y espacios.',
+                'min_length' => 'El usuario debe tener al menos 3 caracteres.',
+                'max_length' => 'El usuario no puede superar los 100 caracteres.',
+                'is_unique' => 'Este nombre de usuario ya está registrado.',
+            ],
+            'email' => [
+                'required' => 'El correo electrónico es obligatorio.',
+                'valid_email' => 'El formato del correo electrónico no es válido.',
+                'is_unique' => 'Este correo electrónico ya está registrado.',
+            ],
+            'phone_country' => [
+                'required' => 'El código de país del teléfono es obligatorio.',
+                'numeric'  => 'El código de país del teléfono debe ser numérico.',
+                'min_length' => 'El código de país debe tener al menos 1 dígito.',
+                'max_length' => 'El código de país no puede superar los 4 dígitos.',
+            ],
+            'phone_area' => [
+                'required' => 'El código de área del teléfono es obligatorio.',
+                'numeric'  => 'El código de área del teléfono debe ser numérico.',
+                'min_length' => 'El código de área debe tener al menos 1 dígito.',
+                'max_length' => 'El código de área no puede superar los 5 dígitos.',
+            ],
+            'phone_number' => [
+                'required' => 'El número de teléfono es obligatorio.',
+                'numeric'  => 'El número de teléfono debe ser numérico.',
+                'min_length' => 'El número de teléfono debe tener al menos 5 dígitos.',
+                'max_length' => 'El número de teléfono no puede superar los 12 dígitos.',
+            ],
+            'country' => [
+                'required' => 'La nacionalidad es obligatoria.',
+                'exact_length' => 'La nacionalidad seleccionada es inválida.',
+            ],
+            'document_number' => [
+                'required' => 'El número de documento DNI/CUIT es obligatorio.',
+                'numeric'  => 'El número de documento debe contener solo números.',
+                'min_length' => 'El documento debe tener al menos 7 dígitos.',
+                'max_length' => 'El documento no puede superar los 11 dígitos.',
+            ],
+            'birthdate' => [
+                'required' => 'La fecha de nacimiento es obligatoria.',
+                'valid_date' => 'La fecha de nacimiento no es una fecha válida.',
+            ],
+            'password' => [
+                'required' => 'La contraseña es obligatoria.',
+                'min_length' => 'La contraseña debe tener al menos 8 caracteres.',
+            ],
+            'password_confirm' => [
+                'required' => 'Debe confirmar su contraseña.',
+                'matches' => 'Las contraseñas no coinciden.',
+            ],
+            'privacy_policy' => [
+                'required' => 'Debe aceptar las políticas de privacidad y seguridad.',
+            ],
+        ];
+
+        // Run general validation
+        $isValid = $this->validate($rules, $errors);
+
+        // Run age verification
+        $ageValid = true;
+        $birthdateStr = $this->request->getPost('birthdate');
+        if (!empty($birthdateStr)) {
+            try {
+                $dob = new \DateTime($birthdateStr);
+                $today = new \DateTime();
+                $age = $dob->diff($today)->y;
+                if ($age < 18) {
+                    $ageValid = false;
+                }
+            } catch (\Throwable $t) {
+                $ageValid = false;
+            }
+        }
+
+        if (!$isValid || !$ageValid) {
+            $validation = $this->validator ?? \Config\Services::validation();
+            if (!$ageValid) {
+                $validation->setError('birthdate', 'Debe tener al menos 18 años de edad para poder registrarse y apostar.');
+            }
+
+            if ($this->request->isAJAX() || strpos($this->request->getHeaderLine('HX-Request'), 'true') !== false) {
+                return view('auth/register', [
+                    'validation' => $validation,
+                    'error' => 'Por favor, revise los datos ingresados.'
+                ]);
+            }
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+
+        $phoneCountry = $this->request->getPost('phone_country');
+        $phoneArea = $this->request->getPost('phone_area');
+        $phoneNumber = $this->request->getPost('phone_number');
+        $combinedPhone = '+' . trim($phoneCountry) . ' ' . trim($phoneArea) . ' ' . trim($phoneNumber);
+        $combinedPhone = substr($combinedPhone, 0, 20);
+
+        $docNum = trim((string)$this->request->getPost('document_number'));
+        $docType = strlen($docNum) === 11 ? 'CUIT' : 'DNI';
+
+        $userModel = new UserModel();
+        $data = [
+            'username'         => $this->request->getPost('username'),
+            'email'            => $this->request->getPost('email'),
+            'password_hash'    => $this->request->getPost('password'),
+            'phone'            => $combinedPhone,
+            'country'          => $this->request->getPost('country'),
+            'birthdate'        => $this->request->getPost('birthdate'),
+            'document_type'    => $docType,
+            'document_number'  => $docNum,
+            'kyc_status'       => 'approved',
+            'role_id'          => 2, // Standard user role
+            'is_active'        => 1,
+        ];
+
+        $userModel->insert($data);
+
+        if ($this->request->isAJAX() || strpos($this->request->getHeaderLine('HX-Request'), 'true') !== false) {
+            $this->response->setHeader('HX-Redirect', '/auth/login');
+            return '';
+        }
+
+        return redirect()->to('/auth/login')->with('message', 'Registro exitoso. Por favor, inicie sesión.');
+    }
+
+    public function logout()
+    {
+        session()->destroy();
+        $this->response->deleteCookie('access_token');
+        return redirect()->to('/');
+    }
+}
