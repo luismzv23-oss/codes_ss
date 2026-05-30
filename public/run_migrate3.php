@@ -1,0 +1,22 @@
+<?php
+if (function_exists('opcache_reset')) {
+    opcache_reset();
+}
+
+define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR);
+require FCPATH . '../app/Config/Paths.php';
+$paths = new Config\Paths();
+require rtrim($paths->systemDirectory, '\\/ ') . DIRECTORY_SEPARATOR . 'bootstrap.php';
+
+require_once SYSTEMPATH . 'Config/DotEnv.php';
+(new CodeIgniter\Config\DotEnv(ROOTPATH))->load();
+
+if (! defined('ENVIRONMENT')) {
+    define('ENVIRONMENT', env('CI_ENVIRONMENT', 'production'));
+}
+
+$app = Config\Services::codeigniter();
+$app->initialize();
+
+echo "Running migrate command after opcache reset...\n";
+echo command('migrate');
