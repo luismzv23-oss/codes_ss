@@ -779,7 +779,6 @@ class Dashboard extends BaseController
         $leagues = $db->table('leagues l')
                       ->select('l.*, s.icon as sport_icon, s.name as sport_name, (SELECT COUNT(id) FROM events WHERE league_id = l.id) as event_count')
                       ->join('sports s', 's.id = l.sport_id')
-                      ->where('l.active', 1)
                       ->orderBy('event_count', 'DESC')
                       ->get()->getResultArray();
 
@@ -1623,6 +1622,32 @@ class Dashboard extends BaseController
         $cache->forget('sports_feed_full');
 
         return $this->response->setJSON(['status' => 'success', 'new_status' => $newStatus]);
+    }
+
+    public function toggleLeagueStatus($id)
+    {
+        // Require admin role
+        if (session()->get('role_id') != 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        $leagueModel = new \App\Models\LeagueModel();
+        $league = $leagueModel->find($id);
+
+        if (!$league) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Torneo no encontrado']);
+        }
+
+        $newStatus = ($league['active'] == 1) ? 0 : 1;
+        $leagueModel->update($id, ['active' => $newStatus]);
+
+        \App\Controllers\CacheManager::getInstance()->forget('sports_feed_full');
+
+        return $this->response->setJSON([
+            'status' => 'success', 
+            'new_status' => $newStatus == 1 ? 'Activo' : 'Inactivo',
+            'active' => $newStatus
+        ]);
     }
 
     /**

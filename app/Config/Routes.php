@@ -24,6 +24,8 @@ $routes->get('sportsbook/ticket/(:num)', 'Sportsbook::ticket/$1');
 $routes->get('sportsbook/ticket/(:num)/pdf', 'Sportsbook::ticketPdf/$1');
 $routes->get('sportsbook/responsible-limits', 'Sportsbook::responsibleLimits');
 $routes->post('sportsbook/responsible-limits', 'Sportsbook::saveResponsibleLimits');
+$routes->get('sportsbook/profile', 'Sportsbook::profile');
+$routes->post('sportsbook/profile/update', 'Sportsbook::updateProfile');
 $routes->post('sportsbook/self-exclusion', 'Sportsbook::selfExclusion');
 $routes->post('sportsbook/cashout/(:num)', 'Sportsbook::cashOut/$1');
 $routes->post('sportsbook/deposit', 'Sportsbook::deposit');
@@ -79,6 +81,7 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->post('events/league/(:num)/generate-markets', 'Dashboard::generateLeagueMarkets/$1');
     $routes->post('events/update/(:num)', 'Dashboard::updateEvent/$1');
     $routes->post('events/toggle/(:num)', 'Dashboard::toggleEventStatus/$1');
+    $routes->post('leagues/toggle/(:num)', 'Dashboard::toggleLeagueStatus/$1');
     $routes->post('events/finish/(:num)', 'Dashboard::finishEvent/$1');
     $routes->post('events/generate-markets/(:num)', 'Dashboard::generateEventMarkets/$1');
     $routes->post('events/markets/create/(:num)', 'Dashboard::createEventMarket/$1');

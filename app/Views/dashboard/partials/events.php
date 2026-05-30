@@ -313,12 +313,20 @@
     
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
         <?php foreach ($leagues as $l): ?>
-        <div class="glass-card" style="cursor: pointer; position: relative;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'" @click="openLeague(<?= $l['id'] ?>, '<?= esc($l['name'], 'js') ?>')">
+        <?php $isActive = $l['active'] == 1; ?>
+        <?php $statusColor = $isActive ? 'var(--success)' : 'var(--danger)'; ?>
+        <?php $statusText = $isActive ? 'Activo' : 'Inactivo'; ?>
+        <div class="glass-card" style="cursor: pointer; position: relative;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'" @click="if(!event.target.closest('button')) openLeague(<?= $l['id'] ?>, '<?= esc($l['name'], 'js') ?>')">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
                 <span style="font-size:1.5rem;"><?= esc($l['sport_icon']) ?></span>
-                <span style="font-size:0.65rem;font-weight:600;color:var(--text-main);background:rgba(255,255,255,0.1);padding:0.2rem 0.5rem;border-radius:9999px;">
-                    <?= $l['event_count'] ?> partidos
-                </span>
+                <div style="display:flex;gap:0.5rem;align-items:center;">
+                    <span style="font-size:0.65rem;font-weight:600;color:var(--text-main);background:rgba(255,255,255,0.1);padding:0.2rem 0.5rem;border-radius:9999px;">
+                        <?= $l['event_count'] ?> partidos
+                    </span>
+                    <button onclick="toggleLeague(<?= $l['id'] ?>, this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:<?= $statusColor ?>; background:<?= $statusColor ?>18; padding:0.2rem 0.5rem; border-radius:9999px; border:none;">
+                        <?= $statusText ?>
+                    </button>
+                </div>
             </div>
             <h4 style="font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;"><?= esc($l['name']) ?></h4>
             <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.5rem;"><?= esc($l['country'] ?? 'Internacional') ?></p>
@@ -487,6 +495,32 @@
         }
     }
     
+    async function toggleLeague(id, btn) {
+        try {
+            btn.innerText = '...';
+            const response = await fetch('/leagues/toggle/' + id, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                }
+            });
+            const result = await response.json();
+            if (result.status === 'success') {
+                const isActive = (result.active == 1);
+                const color = isActive ? 'var(--success)' : 'var(--danger)';
+                btn.style.color = color;
+                btn.style.backgroundColor = color + '18';
+                btn.innerText = result.new_status;
+            } else {
+                alert(result.message || 'Error desconocido');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Error al actualizar torneo');
+        }
+    }
+
     async function toggleEvent(id, btn) {
         try {
             btn.innerText = '...';

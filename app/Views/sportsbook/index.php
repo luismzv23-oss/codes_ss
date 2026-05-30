@@ -1295,10 +1295,10 @@
                     <i data-lucide="shield-check" style="width:16px;height:16px;"></i>
                     Limites
                 </a>
-                <span class="user-badge">
+                <a href="/sportsbook/profile" class="user-badge" style="text-decoration:none;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
                     <i data-lucide="user" style="width:16px;height:16px;"></i>
                     <?= esc(session()->get('username')) ?>
-                </span>
+                </a>
                 <?php if ((int) session()->get('role_id') === 1): ?>
                     <a href="/dashboard/overview" class="btn-register">Dashboard</a>
                 <?php endif; ?>

@@ -1189,6 +1189,70 @@ class Sportsbook extends BaseController
         return redirect()->to('/auth/logout');
     }
 
+    public function profile()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/auth/login');
+        }
+
+        $userId = session()->get('user_id');
+        $userModel = new UserModel();
+        $user = $userModel->find($userId);
+
+        return view('sportsbook/profile', [
+            'title' => 'Mi Perfil - Codex SS',
+            'user' => $user,
+        ]);
+    }
+
+    public function updateProfile()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/auth/login');
+        }
+
+        $userId = session()->get('user_id');
+        $userModel = new UserModel();
+        $user = $userModel->find($userId);
+
+        $rules = [
+            'phone' => 'permit_empty|min_length[5]',
+            'country' => 'permit_empty|alpha_numeric_space',
+            'birthdate' => 'permit_empty|valid_date'
+        ];
+
+        // Only allow password update if current password matches
+        $newPassword = $this->request->getPost('new_password');
+        $currentPassword = $this->request->getPost('current_password');
+
+        if (!empty($newPassword)) {
+            if (empty($currentPassword) || !password_verify($currentPassword, $user['password_hash'])) {
+                return redirect()->back()->with('error', 'La contraseña actual no es correcta.');
+            }
+            if (strlen($newPassword) < 6) {
+                return redirect()->back()->with('error', 'La nueva contraseña debe tener al menos 6 caracteres.');
+            }
+        }
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('error', implode(' ', $this->validator->getErrors()));
+        }
+
+        $updateData = [
+            'phone' => trim((string)$this->request->getPost('phone')),
+            'country' => trim((string)$this->request->getPost('country')),
+            'birthdate' => trim((string)$this->request->getPost('birthdate')) ?: null,
+        ];
+
+        if (!empty($newPassword)) {
+            $updateData['password_hash'] = password_hash($newPassword, PASSWORD_DEFAULT);
+        }
+
+        $userModel->update($userId, $updateData);
+
+        return redirect()->to('/sportsbook/profile')->with('success', 'Perfil actualizado correctamente.');
+    }
+
     public function submitKyc()
     {
         if (!session()->get('isLoggedIn')) {
