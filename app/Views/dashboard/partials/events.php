@@ -498,7 +498,7 @@
     async function toggleLeague(id, btn) {
         try {
             btn.innerText = '...';
-            const response = await fetch('/leagues/toggle/' + id, {
+            const response = await fetch('/dashboard/leagues/toggle/' + id, {
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',

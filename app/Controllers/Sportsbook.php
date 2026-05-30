@@ -384,11 +384,14 @@ class Sportsbook extends BaseController
             ->join('leagues l', 'l.id = e.league_id')
             ->join('sports s', 's.id = l.sport_id')
             ->where('e.id', $id)
+            ->where('l.active', 1)
+            ->where('s.active', 1)
+            ->whereIn('e.status', ['pending', 'live'])
             ->get()
             ->getRowArray();
 
         if (!$event) {
-            return redirect()->to('/')->with('error', 'Evento no encontrado.');
+            return redirect()->to('/')->with('error', 'Evento no encontrado o no disponible.');
         }
 
         $markets = [];
