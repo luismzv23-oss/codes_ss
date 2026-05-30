@@ -8,14 +8,15 @@ class AddApiSportKeyToLeagues extends Migration
 {
     public function up()
     {
-        $this->forge->addColumn('leagues', [
-            'api_sport_key' => [
-                'type' => 'VARCHAR',
-                'constraint' => 100,
-                'null' => true,
-                'after' => 'icon',
-            ],
-        ]);
+        if (!$this->db->fieldExists('api_sport_key', 'leagues')) {
+            $this->forge->addColumn('leagues', [
+                'api_sport_key' => [
+                    'type' => 'VARCHAR',
+                    'constraint' => 100,
+                    'null' => true,
+                ],
+            ]);
+        }
     }
 
     public function down()
