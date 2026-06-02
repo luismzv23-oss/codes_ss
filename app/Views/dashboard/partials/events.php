@@ -1,9 +1,6 @@
+
 <style>
     .events-modal-shell {
-        background: var(--bg-panel);
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        width: min(1120px, calc(100vw - 2rem));
         max-height: 88vh;
         display: flex;
         flex-direction: column;
@@ -172,157 +169,92 @@
     }
 </style>
 
-<div style="animation: fadeSlide 0.4s ease-out;" x-data="{
-    showModal: false,
-    leagueId: null,
-    leagueName: '',
-    eventsHtml: '<div style=\'padding:2rem;text-align:center;\'>Cargando eventos...</div>',
-    async openLeague(id, name) {
-        this.leagueId = id;
-        this.leagueName = name;
-        this.showModal = true;
-        this.eventsHtml = '<div style=\'padding:2rem;text-align:center;\'>Cargando eventos...</div>';
-        try {
-            const res = await fetch('/dashboard/events/league/' + id, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
-            this.eventsHtml = await res.text();
-        } catch (e) {
-            this.eventsHtml = '<div style=\'padding:2rem;text-align:center;color:var(--danger);\'>Error al cargar.</div>';
-        }
-    },
-    async generateLeagueMarkets() {
-        if (!this.leagueId) return;
-        try {
-            const res = await fetch('/dashboard/events/league/' + this.leagueId + '/generate-markets', {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
-                }
-            });
-            const result = await res.json();
-            alert(result.message || 'Mercados generados.');
-            const reload = await fetch('/dashboard/events/league/' + this.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
-            this.eventsHtml = await reload.text();
-        } catch (e) {
-            alert('Error al generar mercados del torneo.');
-        }
-    },
-    async fetchScoresManual(btn) {
-        const original = btn.innerText;
-        btn.disabled = true;
-        btn.innerText = '⏳ Consultando API...';
-        try {
-            const res = await fetch('/dashboard/events/fetch-scores', {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
-                }
-            });
-            const result = await res.json();
-            if (result.status === 'success') {
-                let msg = result.message;
-                if (result.results && result.results.length > 0) {
-                    msg += '\n\n' + result.results.join('\n');
-                }
-                alert(msg);
-                // Recargar los eventos de la liga actual
-                if (this.leagueId) {
-                    const reload = await fetch('/dashboard/events/league/' + this.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
-                    this.eventsHtml = await reload.text();
-                }
-            } else {
-                alert(result.message || 'Error al obtener marcadores.');
-            }
-        } catch (e) {
-            alert('Error de conexión al obtener marcadores.');
-        } finally {
-            btn.disabled = false;
-            btn.innerText = original;
-        }
-    },
-    async createEvent(btn) {
-        if (!this.leagueId) return;
-        const field = (name) => document.getElementById('new-event-' + name)?.value || '';
-        const homeTeam = field('home-team').trim();
-        const awayTeam = field('away-team').trim();
-        const startTime = field('start-time');
-        const venue = field('venue').trim();
+<div style="animation: fadeSlide 0.4s ease-out;" x-data="eventsManager()">
+    <div style="margin-bottom: 2.5rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border: 1px dashed var(--border); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;">
+        <div>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 800; margin-bottom: 0.25rem;">Importación de Partidos</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0;">Busca y descarga partidos para colocarlos en la tabla de revisión antes de aprobarlos.</p>
+        </div>
+        
+        <div style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
+            
+            <div x-show="showSerpApiInput" x-transition x-cloak style="display: flex; align-items: center; gap: 0.4rem;">
+                <input type="text" id="serpapi-query" x-model="serpApiQuery" @keydown.enter="fetchSerpApi(document.getElementById('btn-serpapi'))" placeholder="Ej: partidos de futbol hoy" style="background: var(--bg-primary); border: 1px solid var(--border); color: #fff; padding: 0.6rem 1rem; border-radius: 6px; width: 220px;">
+            </div>
 
-        if (!homeTeam || !awayTeam || !startTime || !venue) {
-            alert('Equipo local, visitante, fecha y estadio son obligatorios.');
-            return;
-        }
+            <button id="btn-serpapi" @click="fetchSerpApi($event.currentTarget)" style="cursor:pointer; font-weight:800; background: #ffffff; color: #111; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                🔍 Desde Google (SerpApi)
+            </button>
+            <button @click="fetchFootballData($event.target)" style="cursor:pointer; font-weight:800; background: #00d26a; color: #000; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                ⚽ Desde Football-Data
+            </button>
+            <button @click="fetchESPN($event.target)" style="cursor:pointer; font-weight:800; background: #CC0000; color: #fff; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                🔴 Desde Scoreboard ESPN
+            </button>
+        </div>
+    </div>
 
-        const original = btn.innerText;
-        btn.disabled = true;
-        btn.innerText = 'Creando...';
+    <!-- Resultados Importados (Staging) -->
+    <div x-show="stagedEvents.length > 0" style="margin-bottom: 2.5rem;" x-transition x-cloak x-init="loadStagedEvents()">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.25rem;">Resultados Importados</h2>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Partidos encontrados listos para ser aprobados e ingresados al sistema.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button @click="clearStagedEvents()" style="cursor:pointer; font-weight:800; background: var(--danger); color: #fff; border: none; border-radius: 6px; padding: 0.6rem 1.2rem;">
+                    Limpiar Importación
+                </button>
+                <button @click="approveAllStaged()" style="cursor:pointer; font-weight:800; background: var(--primary); color: #fff; border: none; border-radius: 6px; padding: 0.6rem 1.2rem;">
+                    Aprobar Todos
+                </button>
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem;">
+            <template x-for="ev in stagedEvents" :key="ev.id">
+                <div class="glass-card" style="padding: 1rem; position: relative;">
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                        <span x-text="ev.league_name"></span>
+                        <span x-text="new Date(ev.start_time).toLocaleString()"></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 1rem;">
+                        <span x-text="ev.home_team"></span>
+                        <span style="color: var(--text-muted); font-size: 0.8rem;">vs</span>
+                        <span x-text="ev.away_team"></span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button @click="approveStaged(ev.id)" style="flex: 1; cursor:pointer; background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 4px; padding: 0.4rem; font-weight: 700;">Aprobar</button>
+                        <button @click="rejectStaged(ev.id)" style="flex: 1; cursor:pointer; background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 4px; padding: 0.4rem; font-weight: 700;">Descartar</button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
 
-        try {
-            const body = new FormData();
-            body.append('home_team', homeTeam);
-            body.append('away_team', awayTeam);
-            body.append('home_flag', field('home-flag').trim());
-            body.append('away_flag', field('away-flag').trim());
-            body.append('stage', field('stage').trim());
-            body.append('group_name', field('group').trim());
-            body.append('venue', venue);
-            body.append('start_time', startTime);
-            body.append('match_number', field('match-number'));
-
-            const result = typeof postDashboardAction === 'function'
-                ? await postDashboardAction('/dashboard/events/league/' + this.leagueId + '/create', body)
-                : await (await fetch('/dashboard/events/league/' + this.leagueId + '/create', {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
-                    },
-                    body
-                })).json();
-
-            if (result.status !== 'success') {
-                alert(result.message || 'No se pudo crear el partido.');
-                btn.disabled = false;
-                btn.innerText = original;
-                return;
-            }
-
-            ['home-team', 'away-team', 'home-flag', 'away-flag', 'stage', 'group', 'venue', 'start-time', 'match-number'].forEach((name) => {
-                const input = document.getElementById('new-event-' + name);
-                if (input) input.value = '';
-            });
-            const reload = await fetch('/dashboard/events/league/' + this.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
-            this.eventsHtml = await reload.text();
-            btn.innerText = 'Creado';
-            setTimeout(() => {
-                btn.disabled = false;
-                btn.innerText = original;
-            }, 900);
-        } catch (e) {
-            alert(e.message || 'Error al crear el partido.');
-            btn.disabled = false;
-            btn.innerText = original;
-        }
-    }
-}">
     <div style="margin-bottom: 1.75rem;">
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 800;">Gestión de Torneos</h1>
         <p style="color: var(--text-muted); font-size: 0.9rem;">Seleccione una liga o torneo para administrar sus partidos.</p>
     </div>
     
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+    <div id="leagues-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
         <?php foreach ($leagues as $l): ?>
         <?php $isActive = $l['active'] == 1; ?>
         <?php $statusColor = $isActive ? 'var(--success)' : 'var(--danger)'; ?>
         <?php $statusText = $isActive ? 'Activo' : 'Inactivo'; ?>
-        <div class="glass-card" style="cursor: pointer; position: relative;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'" @click="if(!event.target.closest('button')) openLeague(<?= $l['id'] ?>, '<?= esc($l['name'], 'js') ?>')">
+        <div class="glass-card league-card" data-id="<?= $l['id'] ?>" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" style="cursor: move; position: relative;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'" @click="if(!event.target.closest('button')) openLeague(<?= $l['id'] ?>, '<?= esc($l['name'], 'js') ?>')">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
                 <span style="font-size:1.5rem;"><?= esc($l['sport_icon']) ?></span>
                 <div style="display:flex;gap:0.5rem;align-items:center;">
                     <span style="font-size:0.65rem;font-weight:600;color:var(--text-main);background:rgba(255,255,255,0.1);padding:0.2rem 0.5rem;border-radius:9999px;">
                         <?= $l['event_count'] ?> partidos
                     </span>
+                    <button onclick="editLeagueAction(<?= $l['id'] ?>, '<?= esc($l['name'], 'js') ?>', this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:#60a5fa; background:rgba(96,165,250,0.18); padding:0.2rem 0.5rem; border-radius:9999px; border:none;">
+                        ✏️ Editar
+                    </button>
+                    <button onclick="deleteLeagueAction(<?= $l['id'] ?>, this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:#ef4444; background:rgba(239,68,68,0.18); padding:0.2rem 0.5rem; border-radius:9999px; border:none;">
+                        🗑️ Eliminar
+                    </button>
                     <button onclick="toggleLeague(<?= $l['id'] ?>, this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:<?= $statusColor ?>; background:<?= $statusColor ?>18; padding:0.2rem 0.5rem; border-radius:9999px; border:none;">
                         <?= $statusText ?>
                     </button>
@@ -516,8 +448,7 @@
                 alert(result.message || 'Error desconocido');
             }
         } catch (e) {
-            console.error(e);
-            alert('Error al actualizar torneo');
+            alert('Error general al suspender el partido.');
         }
     }
 
@@ -747,6 +678,98 @@
         } catch (e) {
             console.error(e);
             alert('Error al ejecutar el bracket.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function editLeagueAction(id, currentName, btn) {
+        const newName = prompt('Ingrese el nuevo nombre para este Torneo/Liga:', currentName);
+        if (!newName || newName.trim() === '' || newName.trim() === currentName) {
+            return;
+        }
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = '⏳';
+        try {
+            const body = new FormData();
+            body.append('name', newName.trim());
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/leagues/update/' + id, body)
+                : await (await fetch('/dashboard/leagues/update/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' },
+                    body
+                })).json();
+            
+            if (result.status === 'success') {
+                if (typeof loadView === 'function') { loadView('/dashboard/events', 'events'); }
+                else { window.location.reload(); }
+            } else {
+                alert(result.message || 'Error al actualizar torneo.');
+                btn.disabled = false;
+                btn.innerText = original;
+            }
+        } catch(e) {
+            alert('Error al actualizar torneo.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function deleteLeagueAction(id, btn) {
+        if (!confirm('¿Está seguro de eliminar esta Liga/Torneo? (Solo será posible si no hay apuestas asociadas)')) return;
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = '⏳';
+        try {
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/leagues/delete/' + id)
+                : await (await fetch('/dashboard/leagues/delete/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' }
+                })).json();
+            
+            if (result.status === 'success') {
+                if (typeof loadView === 'function') { loadView('/dashboard/events', 'events'); }
+                else { window.location.reload(); }
+            } else {
+                alert(result.message || 'Error al eliminar torneo.');
+                btn.disabled = false;
+                btn.innerText = original;
+            }
+        } catch(e) {
+            alert(e.message || 'Error de conexión al eliminar torneo.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function deleteEventAction(id, btn) {
+        if (!confirm('¿Está seguro de eliminar este Evento/Partido? (Solo será posible si no hay apuestas asociadas)')) return;
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = '⏳';
+        try {
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/events/delete/' + id)
+                : await (await fetch('/dashboard/events/delete/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' }
+                })).json();
+            
+            if (result.status === 'success') {
+                const card = document.getElementById('event-card-' + id);
+                if (card) { card.remove(); }
+                else if (typeof loadView === 'function') { loadView('/dashboard/events', 'events'); }
+                else { window.location.reload(); }
+            } else {
+                alert(result.message || 'Error al eliminar partido.');
+                btn.disabled = false;
+                btn.innerText = original;
+            }
+        } catch(e) {
+            alert(e.message || 'Error de conexión al eliminar partido.');
             btn.disabled = false;
             btn.innerText = original;
         }

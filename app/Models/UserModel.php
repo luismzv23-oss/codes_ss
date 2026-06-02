@@ -16,7 +16,9 @@ class UserModel extends Model
         'role_id', 'username', 'email', 'password_hash', 'is_active',
         'phone', 'country', 'birthdate', 'document_type', 'document_number',
         'kyc_status', 'is_2fa_enabled', 'last_login_at', 'last_login_ip',
-        'failed_login_attempts', 'locked_until'
+        'failed_login_attempts', 'locked_until',
+        // Email verification fields
+        'email_verified_at', 'email_verification_token', 'email_verification_sent_at'
     ];
 
     // Dates

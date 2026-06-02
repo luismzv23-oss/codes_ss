@@ -172,7 +172,7 @@ class Sportsbook extends BaseController
 
         // Obtener deportes y ligas
         $sports  = $sportModel->where('active', 1)->findAll();
-        $leagues = $leagueModel->where('active', 1)->findAll();
+        $leagues = $leagueModel->where('active', 1)->orderBy('sort_order', 'ASC')->findAll();
 
         // Obtener billetera si está logueado
         $walletBalance = 0.00;
@@ -330,6 +330,7 @@ class Sportsbook extends BaseController
             ->join('sports s', 's.id = l.sport_id')
             ->where('l.active', 1)
             ->where('s.active', 1)
+            ->orderBy('l.sort_order', 'ASC')
             ->get()
             ->getResultArray();
 
@@ -363,7 +364,7 @@ class Sportsbook extends BaseController
         $oddModel    = new OddModel();
 
         $sports  = $sportModel->where('active', 1)->findAll();
-        $leagues = $leagueModel->where('active', 1)->findAll();
+        $leagues = $leagueModel->where('active', 1)->orderBy('sort_order', 'ASC')->findAll();
 
         $walletBalance = 0.00;
         if (session()->get('isLoggedIn')) {

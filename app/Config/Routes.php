@@ -59,6 +59,8 @@ $routes->get('auth/login', 'Auth::login');
 $routes->post('auth/loginAction', 'Auth::loginAction');
 $routes->get('auth/register', 'Auth::register');
 $routes->post('auth/registerAction', 'Auth::registerAction');
+$routes->get('auth/verify/(:any)', 'Auth::verify/$1');
+$routes->post('auth/resendVerification', 'Auth::resendVerification');
 $routes->get('auth/logout', 'Auth::logout');
 
 // Dashboard Routes (Protected)
@@ -81,11 +83,33 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->post('events/league/(:num)/generate-markets', 'Dashboard::generateLeagueMarkets/$1');
     $routes->post('events/update/(:num)', 'Dashboard::updateEvent/$1');
     $routes->post('events/toggle/(:num)', 'Dashboard::toggleEventStatus/$1');
+    $routes->post('events/delete/(:num)', 'Dashboard::deleteEvent/$1');
+    $routes->post('leagues/update/(:num)', 'Dashboard::updateLeague/$1');
+    $routes->post('leagues/delete/(:num)', 'Dashboard::deleteLeague/$1');
     $routes->post('leagues/toggle/(:num)', 'Dashboard::toggleLeagueStatus/$1');
+    $routes->post('leagues/update-order', 'Dashboard::updateLeagueOrder');
     $routes->post('events/finish/(:num)', 'Dashboard::finishEvent/$1');
     $routes->post('events/generate-markets/(:num)', 'Dashboard::generateEventMarkets/$1');
     $routes->post('events/markets/create/(:num)', 'Dashboard::createEventMarket/$1');
     $routes->post('events/suspend-markets/(:num)', 'Dashboard::suspendEventMarkets/$1');
+    
+    // New soccer import & staging routes
+    $routes->get('events/soccer-sports', 'Dashboard::loadSoccerSports');
+    $routes->post('events/fetch-soccer', 'Dashboard::fetchSoccerEvents');
+    $routes->get('events/football-data-competitions', 'Dashboard::loadFootballDataCompetitions');
+    $routes->post('events/fetch-football-data', 'Dashboard::fetchFootballDataEvents');
+    $routes->post('events/fetch-serpapi', 'Dashboard::fetchSerpApiEvents');
+    $routes->post('events/fetch-espn', 'Dashboard::fetchESPNEvents');
+    $routes->get('events/staged', 'Dashboard::stagedEvents');
+    $routes->post('events/staged/clear', 'Dashboard::clearStagedEvents');
+    $routes->post('events/staged/approve/(:num)', 'Dashboard::approveStagedEvent/$1');
+    $routes->post('events/staged/reject/(:num)', 'Dashboard::rejectStagedEvent/$1');
+    $routes->post('events/staged/bulk-approve/(:any)', 'Dashboard::bulkApproveBatch/$1');
+    
+    // Football-Data.org Integration (Real fixtures & results)
+    $routes->get('events/football/competitions', 'Dashboard::getFootballCompetitions');
+    $routes->post('events/football/search-team', 'Dashboard::searchFootballTeam');
+    $routes->post('events/football/import-fixtures', 'Dashboard::importFootballFixtures');
     $routes->post('markets/toggle/(:num)', 'Dashboard::toggleMarketStatus/$1');
     $routes->post('odds/toggle/(:num)', 'Dashboard::toggleOddStatus/$1');
     $routes->post('odds/update/(:num)', 'Dashboard::updateOdd/$1');
@@ -104,4 +128,5 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->get('rankings', 'Dashboard::rankings');
     $routes->get('settings', 'Dashboard::settings');
     $routes->post('settings/update', 'Dashboard::updateSettings');
+    $routes->post('settings/clear-cache', 'Dashboard::clearCache');
 });

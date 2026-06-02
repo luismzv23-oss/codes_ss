@@ -1,4 +1,7 @@
 <?php
+    $db = \Config\Database::connect();
+    $realEventCount = (int) $db->table('events')->countAllResults();
+
     $adminNotifications = $adminNotifications ?? [];
     if (empty($adminNotifications) && (int) (session()->get('role_id') ?? 0) === 1) {
         try {
@@ -129,9 +132,328 @@
                 event.detail.headers['X-CSRF-TOKEN'] = csrfToken;
             }
         });
+        document.addEventListener('htmx:send', () => {
+            const loader = document.getElementById('module-loader');
+            if (loader) loader.style.display = 'flex';
+        });
+        document.addEventListener('htmx:afterOnLoad', () => {
+            const loader = document.getElementById('module-loader');
+            if (loader) loader.style.display = 'none';
+        });
     </script>
+    <div id="module-loader" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,10,12,0.85); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-left-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 1rem; color: #fff; font-family: 'Outfit', sans-serif; font-weight: 600;">Cargando módulo...</p>
+        <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+    </div>
     <!-- Alpine.js global store -->
     <script>
+        window.eventsManager = function() {
+            return {
+                showModal: false,
+                showSerpApiInput: false,
+                serpApiQuery: 'partidos de futbol hoy',
+                leagueId: null,
+                leagueName: '',
+                eventsHtml: '<div style="padding:2rem;text-align:center;">Cargando eventos...</div>',
+                stagedEvents: [],
+                async loadStagedEvents() {
+                    try {
+                        const res = await fetch('/dashboard/events/staged');
+                        this.stagedEvents = await res.json();
+                    } catch(e) { console.error('Error cargando staging:', e); }
+                },
+                async approveStaged(id) {
+                    try {
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+                        
+                        const res = await fetch('/dashboard/events/staged/approve/' + id, { method: 'POST', headers });
+                        const result = await res.json();
+                        if (result.status === 'success') {
+                            this.loadStagedEvents();
+                            setTimeout(() => window.location.reload(), 1000);
+                        } else {
+                            alert(result.message);
+                        }
+                    } catch(e) { alert('Error aprobando partido.'); }
+                },
+                async rejectStaged(id) {
+                    if(!confirm('¿Descartar este partido importado?')) return;
+                    try {
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+                        
+                        const res = await fetch('/dashboard/events/staged/reject/' + id, { method: 'POST', headers });
+                        const result = await res.json();
+                        if (result.status === 'success') this.loadStagedEvents();
+                    } catch(e) {}
+                },
+                async approveAllStaged() {
+                    if(this.stagedEvents.length === 0 || !confirm('¿Aprobar TODOS los partidos en revisión?')) return;
+                    const batchId = this.stagedEvents[0].batch_id || 'all';
+                    try {
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+                        
+                        const res = await fetch('/dashboard/events/staged/bulk-approve/' + batchId, { method: 'POST', headers });
+                        const result = await res.json();
+                        if (result.status === 'success') {
+                            alert(result.message);
+                            this.loadStagedEvents();
+                            setTimeout(() => window.location.reload(), 1000);
+                        } else { alert(result.message); }
+                    } catch(e) { alert('Error en bulk approve'); }
+                },
+                async clearStagedEvents() {
+                    if(!confirm('¿Estás seguro de limpiar la tabla de importación? Se borrarán todos los partidos no aprobados.')) return;
+                    try {
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+                        
+                        const res = await fetch('/dashboard/events/staged/clear', { method: 'POST', headers });
+                        const result = await res.json();
+                        if (result.status === 'success') {
+                            this.stagedEvents = [];
+                            this.serpApiQuery = '';
+                        } else {
+                            alert(result.message);
+                        }
+                    } catch(e) { alert('Error al limpiar importación'); }
+                },
+                async openLeague(id, name) {
+                    this.leagueId = id;
+                    this.leagueName = name;
+                    this.showModal = true;
+                    this.eventsHtml = '<div style="padding:2rem;text-align:center;">Cargando eventos...</div>';
+                    try {
+                        const res = await fetch('/dashboard/events/league/' + id, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
+                        this.eventsHtml = await res.text();
+                    } catch (e) {
+                        this.eventsHtml = '<div style="padding:2rem;text-align:center;color:var(--danger);">Error al cargar.</div>';
+                    }
+                },
+                async generateLeagueMarkets() {
+                    if (!this.leagueId) return;
+                    try {
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+                        
+                        const res = await fetch('/dashboard/events/league/' + this.leagueId + '/generate-markets', {
+                            method: 'POST',
+                            headers
+                        });
+                        const result = await res.json();
+                        alert(result.message || 'Mercados generados.');
+                        const reload = await fetch('/dashboard/events/league/' + this.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
+                        this.eventsHtml = await reload.text();
+                    } catch (e) {
+                        alert('Error al generar mercados del torneo.');
+                    }
+                },
+                async fetchScoresManual(btn) {
+                    const original = btn.innerText;
+                    btn.disabled = true;
+                    btn.innerText = '⏳ Consultando API...';
+                    try {
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+                        
+                        const res = await fetch('/dashboard/events/fetch-scores', {
+                            method: 'POST',
+                            headers
+                        });
+                        const result = await res.json();
+                        if (result.status === 'success') {
+                            let msg = result.message;
+                            if (result.results && result.results.length > 0) {
+                                msg += '\n\n' + result.results.join('\n');
+                            }
+                            alert(msg);
+                            if (this.leagueId) {
+                                const reload = await fetch('/dashboard/events/league/' + this.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
+                                this.eventsHtml = await reload.text();
+                            }
+                        } else {
+                            alert(result.message || 'Error al obtener marcadores.');
+                        }
+                    } catch (e) {
+                        alert('Error de conexión al obtener marcadores.');
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerText = original;
+                    }
+                },
+                async createEvent(btn) {
+                    if (!this.leagueId) return;
+                    const field = (name) => document.getElementById('new-event-' + name)?.value || '';
+                    const homeTeam = field('home-team').trim();
+                    const awayTeam = field('away-team').trim();
+                    const startTime = field('start-time');
+                    const venue = field('venue').trim();
+
+                    if (!homeTeam || !awayTeam || !startTime || !venue) {
+                        alert('Equipo local, visitante, fecha y estadio son obligatorios.');
+                        return;
+                    }
+
+                    const original = btn.innerText;
+                    btn.disabled = true;
+                    btn.innerText = 'Creando...';
+
+                    try {
+                        const body = new FormData();
+                        body.append('home_team', homeTeam);
+                        body.append('away_team', awayTeam);
+                        body.append('home_flag', field('home-flag').trim());
+                        body.append('away_flag', field('away-flag').trim());
+                        body.append('stage', field('stage').trim());
+                        body.append('group_name', field('group').trim());
+                        body.append('venue', venue);
+                        body.append('start_time', startTime);
+                        body.append('match_number', field('match-number'));
+
+                        let result;
+                        if (typeof postDashboardAction === 'function') {
+                            result = await postDashboardAction('/dashboard/events/league/' + this.leagueId + '/create', body);
+                        } else {
+                            const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                            const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                            const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                            if (csrfToken) headers[csrfHeader] = csrfToken;
+                            const res = await fetch('/dashboard/events/league/' + this.leagueId + '/create', {
+                                method: 'POST',
+                                headers,
+                                body
+                            });
+                            result = await res.json();
+                        }
+
+                        if (result.status !== 'success') {
+                            alert(result.message || 'No se pudo crear el partido.');
+                            btn.disabled = false;
+                            btn.innerText = original;
+                            return;
+                        }
+
+                        ['home-team', 'away-team', 'home-flag', 'away-flag', 'stage', 'group', 'venue', 'start-time', 'match-number'].forEach((name) => {
+                            const input = document.getElementById('new-event-' + name);
+                            if (input) input.value = '';
+                        });
+                        const reload = await fetch('/dashboard/events/league/' + this.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
+                        this.eventsHtml = await reload.text();
+                        btn.innerText = 'Creado';
+                        setTimeout(() => {
+                            btn.disabled = false;
+                            btn.innerText = original;
+                        }, 900);
+                    } catch (e) {
+                        alert(e.message || 'Error al crear el partido.');
+                        btn.disabled = false;
+                        btn.innerText = original;
+                    }
+                },
+                async fetchSerpApi(btn) {
+                    if (!this.showSerpApiInput) {
+                        this.showSerpApiInput = true;
+                        if (btn) btn.innerText = '🔍 Buscar en Google';
+                        setTimeout(() => document.getElementById('serpapi-query')?.focus(), 100);
+                        return;
+                    }
+
+                    const query = this.serpApiQuery.trim();
+                    if (!query) {
+                        alert('Por favor, ingresa qué eventos quieres buscar (ej: "partidos de boca juniors").');
+                        return;
+                    }
+                    
+                    const original = btn ? btn.innerText : '🔍 Buscar en Google';
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerText = '⏳ Buscando en SerpApi...';
+                    }
+                    try {
+                        const body = new URLSearchParams();
+                        body.append('query', query);
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+
+                        const res = await fetch('/dashboard/events/fetch-serpapi', {
+                            method: 'POST',
+                            headers,
+                            body
+                        });
+                        const result = await res.json();
+                        alert(result.status === 'success' ? result.message : (result.message || 'Error desconocido'));
+                        if (result.status === 'success') this.loadStagedEvents();
+                    } catch(e) { alert('Error conectando a SerpApi'); }
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerText = original;
+                    }
+                },
+                async fetchFootballData(btn) {
+                    const original = btn.innerText;
+                    btn.disabled = true;
+                    btn.innerText = '⏳ Buscando en Football-Data...';
+                    try {
+                        const body = new URLSearchParams();
+                        body.append('competition', '');
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+
+                        const res = await fetch('/dashboard/events/fetch-football-data', {
+                            method: 'POST',
+                            headers,
+                            body
+                        });
+                        const result = await res.json();
+                        alert(result.status === 'success' ? result.message : (result.message || 'Error desconocido'));
+                        if (result.status === 'success') this.loadStagedEvents();
+                    } catch(e) { alert('Error conectando a Football-Data'); }
+                    btn.disabled = false;
+                    btn.innerText = original;
+                },
+                async fetchESPN(btn) {
+                    const original = btn.innerText;
+                    btn.disabled = true;
+                    btn.innerText = '⏳ Cargando desde ESPN...';
+                    try {
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+
+                        const res = await fetch('/dashboard/events/fetch-espn', {
+                            method: 'POST',
+                            headers
+                        });
+                        const result = await res.json();
+                        alert(result.status === 'success' ? result.message : (result.message || 'Error desconocido'));
+                        if (result.status === 'success') this.loadStagedEvents();
+                    } catch(e) { alert('Error conectando a ESPN'); }
+                    btn.disabled = false;
+                    btn.innerText = original;
+                }
+            };
+        };
+
         document.addEventListener('alpine:init', () => {
             Alpine.store('app', {
                 sidebar: true,
@@ -142,6 +464,483 @@
             });
         });
     </script>
+    
+<script>
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    async function saveEventDetails(id, btn) {
+        const field = (name) => document.getElementById('event-' + id + '-' + name)?.value || '';
+        const homeTeam = field('home-team').trim();
+        const awayTeam = field('away-team').trim();
+        const startTime = field('start-time');
+        const venue = field('venue').trim();
+
+        if (!homeTeam || !awayTeam || !startTime || !venue) {
+            alert('Equipo local, visitante, fecha y estadio son obligatorios.');
+            return;
+        }
+
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = 'Guardando...';
+
+        try {
+            const body = new FormData();
+            body.append('home_team', homeTeam);
+            body.append('away_team', awayTeam);
+            body.append('home_flag', field('home-flag').trim());
+            body.append('away_flag', field('away-flag').trim());
+            body.append('stage', field('stage').trim());
+            body.append('group_name', field('group').trim());
+            body.append('venue', venue);
+            body.append('start_time', startTime);
+            body.append('match_number', field('match-number'));
+
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/events/update/' + id, body)
+                : await (await fetch('/dashboard/events/update/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                    },
+                    body
+                })).json();
+
+            if (result.status !== 'success') {
+                alert(result.message || 'No se pudo actualizar el partido.');
+                btn.disabled = false;
+                btn.innerText = original;
+                return;
+            }
+
+            btn.innerText = 'Guardado';
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = original;
+            }, 900);
+        } catch (e) {
+            console.error(e);
+            alert(e.message || 'Error al actualizar el partido.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function createEventMarket(id, btn) {
+        const field = (name) => document.getElementById('market-' + id + '-' + name)?.value || '';
+        const name = field('name').trim();
+        const selections = field('selections').trim();
+        const odds = field('odds').trim();
+
+        if (!name || !selections || !odds) {
+            alert('Nombre, selecciones y cuotas son obligatorios.');
+            return;
+        }
+
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = 'Creando...';
+
+        try {
+            const body = new FormData();
+            body.append('name', name);
+            body.append('type', field('type').trim());
+            body.append('selections', selections);
+            body.append('odds', odds);
+
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/events/markets/create/' + id, body)
+                : await (await fetch('/dashboard/events/markets/create/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                    },
+                    body
+                })).json();
+
+            if (result.status !== 'success') {
+                alert(result.message || 'No se pudo crear el mercado.');
+                btn.disabled = false;
+                btn.innerText = original;
+                return;
+            }
+
+            ['name', 'type', 'selections', 'odds'].forEach((item) => {
+                const input = document.getElementById('market-' + id + '-' + item);
+                if (input) input.value = '';
+            });
+
+            const counter = document.getElementById('market-count-' + id);
+            if (counter) {
+                const current = Number.parseInt(counter.innerText, 10) || 0;
+                counter.innerText = (current + 1) + ' mercados';
+            }
+
+            btn.innerText = 'Creado';
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = original;
+            }, 900);
+        } catch (e) {
+            console.error(e);
+            alert(e.message || 'Error al crear el mercado.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+    
+    async function toggleLeague(id, btn) {
+        try {
+            btn.innerText = '...';
+            const response = await fetch('/dashboard/leagues/toggle/' + id, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                }
+            });
+            const result = await response.json();
+            if (result.status === 'success') {
+                const isActive = (result.active == 1);
+                const color = isActive ? 'var(--success)' : 'var(--danger)';
+                btn.style.color = color;
+                btn.style.backgroundColor = color + '18';
+                btn.innerText = result.new_status;
+            } else {
+                alert(result.message || 'Error desconocido');
+            }
+        } catch (e) {
+            alert('Error general al suspender el partido.');
+        }
+    }
+
+    async function toggleEvent(id, btn) {
+        try {
+            btn.innerText = '...';
+            const response = await fetch('/dashboard/events/toggle/' + id, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                }
+            });
+            const result = await response.json();
+            if (result.status === 'success') {
+                const isActive = (result.new_status === 'pending' || result.new_status === 'live');
+                const color = isActive ? 'var(--success)' : 'var(--danger)';
+                btn.style.color = color;
+                btn.style.backgroundColor = color + '18';
+                btn.innerText = isActive ? 'Activo' : 'Inactivo';
+            } else {
+                alert(result.message);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Error toggling status');
+        }
+    }
+
+    window.doFinishEvent = async function(e, id, btn) {
+        e.preventDefault();
+        try {
+            const homeEl = document.getElementById('score-home-' + id);
+            const awayEl = document.getElementById('score-away-' + id);
+
+            if (!homeEl || !awayEl) {
+                alert('CRITICAL ERROR: no se encontraron los campos input score-home-' + id + ' o score-away-' + id);
+                return;
+            }
+
+            const home = homeEl.value;
+            const away = awayEl.value;
+
+            if (home === '' || away === '') {
+                alert('Debes ingresar ambos valores del marcador antes de presionar Fijar Marcador.');
+                return;
+            }
+
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Guardando...';
+
+            const body = new URLSearchParams();
+            body.append('score_home', home);
+            body.append('score_away', away);
+
+            const response = await fetch('/dashboard/events/finish/' + id, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                },
+                body
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                alert('ERROR DEL SERVIDOR (' + response.status + '): ' + text.substring(0, 100));
+                btn.disabled = false;
+                btn.innerText = originalText;
+                return;
+            }
+
+            const result = await response.json();
+
+            if (result.status !== 'success') {
+                alert('ERROR DE LOGICA: ' + (result.message || 'Error desconocido'));
+                btn.disabled = false;
+                btn.innerText = originalText;
+                return;
+            }
+
+            // Éxito:
+            const container = btn.closest('.event-admin-score')?.parentElement || btn.closest('div');
+            container.innerHTML = `<div style="font-size:0.82rem;font-weight:900;color:var(--success);background:rgba(34,197,94,0.12);border-radius:8px;padding:0.48rem 0.65rem;">Marcador guardado: ${home}-${away}</div>`;
+
+            if (result.bracket_completed) {
+                alert('INFO: Fase completada automaticamente.');
+            }
+        } catch (err) {
+            alert('ERROR FATAL JAVASCRIPT: ' + err.message);
+            btn.disabled = false;
+            btn.innerText = 'Fijar Marcador';
+        }
+    };
+
+    async function generateMarkets(id, btn) {
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = '...';
+
+        try {
+            const response = await fetch('/dashboard/events/generate-markets/' + id, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                }
+            });
+            const result = await response.json();
+
+            if (result.status !== 'success') {
+                alert(result.message || 'No se pudieron generar mercados.');
+                btn.disabled = false;
+                btn.innerText = original;
+                return;
+            }
+
+            const count = document.getElementById('market-count-' + id);
+            if (count) {
+                count.innerText = result.market_count + ' mercados';
+            }
+            btn.innerText = result.created > 0 ? 'Generados' : 'Ya existen';
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = original;
+            }, 1600);
+        } catch (e) {
+            console.error(e);
+            alert('Error al generar mercados.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function toggleMarket(id, btn) {
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = '...';
+
+        try {
+            const response = await fetch('/dashboard/markets/toggle/' + id, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                }
+            });
+            const result = await response.json();
+            if (result.status !== 'success') {
+                alert(result.message || 'No se pudo actualizar el mercado.');
+                btn.disabled = false;
+                btn.innerText = original;
+                return;
+            }
+
+            const status = document.getElementById('market-status-' + id);
+            if (status) status.innerText = result.new_status;
+            const isOpen = result.new_status === 'open';
+            btn.innerText = isOpen ? 'Suspender' : 'Reabrir';
+            btn.style.background = isOpen ? 'rgba(239,68,68,0.16)' : 'rgba(34,197,94,0.16)';
+            btn.style.color = isOpen ? '#fca5a5' : '#86efac';
+            btn.disabled = false;
+        } catch (e) {
+            console.error(e);
+            alert('Error al actualizar el mercado.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function toggleOdd(id, btn) {
+        btn.disabled = true;
+        try {
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/odds/toggle/' + id)
+                : await (await fetch('/dashboard/odds/toggle/' + id, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                    }
+                })).json();
+            if (result.status !== 'success') {
+                alert(result.message || 'No se pudo actualizar la cuota.');
+                btn.disabled = false;
+                return;
+            }
+
+            const active = Number(result.active) === 1;
+            const control = document.getElementById('odd-control-' + id) || btn;
+            control.style.opacity = active ? '1' : '0.45';
+            control.style.borderColor = active ? 'var(--border)' : 'rgba(239,68,68,0.35)';
+            btn.disabled = false;
+        } catch (e) {
+            console.error(e);
+            alert('Error al actualizar la cuota.');
+            btn.disabled = false;
+        }
+    }
+
+    async function runWorldCupBracket(stage, btn) {
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = 'Procesando...';
+
+        try {
+            const response = await fetch('/dashboard/events/worldcup-bracket/' + stage, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                }
+            });
+            const result = await response.json();
+
+            if (result.status !== 'success') {
+                alert(result.message || 'No se pudo completar la etapa.');
+                btn.disabled = false;
+                btn.innerText = original;
+                return;
+            }
+
+            alert(result.message);
+            btn.innerText = 'Completado';
+        } catch (e) {
+            console.error(e);
+            alert('Error al ejecutar el bracket.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function editLeagueAction(id, currentName, btn) {
+        const newName = prompt('Ingrese el nuevo nombre para este Torneo/Liga:', currentName);
+        if (!newName || newName.trim() === '' || newName.trim() === currentName) {
+            return;
+        }
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = '⏳';
+        try {
+            const body = new FormData();
+            body.append('name', newName.trim());
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/leagues/update/' + id, body)
+                : await (await fetch('/dashboard/leagues/update/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' },
+                    body
+                })).json();
+            
+            if (result.status === 'success') {
+                if (typeof loadView === 'function') { loadView('/dashboard/events', 'events'); }
+                else { window.location.reload(); }
+            } else {
+                alert(result.message || 'Error al actualizar torneo.');
+                btn.disabled = false;
+                btn.innerText = original;
+            }
+        } catch(e) {
+            alert('Error al actualizar torneo.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function deleteLeagueAction(id, btn) {
+        if (!confirm('¿Está seguro de eliminar esta Liga/Torneo? (Solo será posible si no hay apuestas asociadas)')) return;
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = '⏳';
+        try {
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/leagues/delete/' + id)
+                : await (await fetch('/dashboard/leagues/delete/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' }
+                })).json();
+            
+            if (result.status === 'success') {
+                if (typeof loadView === 'function') { loadView('/dashboard/events', 'events'); }
+                else { window.location.reload(); }
+            } else {
+                alert(result.message || 'Error al eliminar torneo.');
+                btn.disabled = false;
+                btn.innerText = original;
+            }
+        } catch(e) {
+            alert(e.message || 'Error de conexión al eliminar torneo.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function deleteEventAction(id, btn) {
+        if (!confirm('¿Está seguro de eliminar este Evento/Partido? (Solo será posible si no hay apuestas asociadas)')) return;
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = '⏳';
+        try {
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/events/delete/' + id)
+                : await (await fetch('/dashboard/events/delete/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' }
+                })).json();
+            
+            if (result.status === 'success') {
+                const card = document.getElementById('event-card-' + id);
+                if (card) { card.remove(); }
+                else if (typeof loadView === 'function') { loadView('/dashboard/events', 'events'); }
+                else { window.location.reload(); }
+            } else {
+                alert(result.message || 'Error al eliminar partido.');
+                btn.disabled = false;
+                btn.innerText = original;
+            }
+        } catch(e) {
+            alert(e.message || 'Error de conexión al eliminar partido.');
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+</script>
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <!-- Google Fonts -->
@@ -521,7 +1320,7 @@
             <button class="nav-item" :class="{ 'active': $store.app.currentPage === 'events' }"
                onclick="loadView('/dashboard/events', 'events')">
                 <i data-lucide="trophy"></i> Eventos
-                <span class="nav-badge">12</span>
+                <span class="nav-badge"><?= $realEventCount ?></span>
             </button>
             <button class="nav-item" :class="{ 'active': $store.app.currentPage === 'bets' }"
                onclick="loadView('/dashboard/bets', 'bets')">
@@ -624,10 +1423,11 @@
         </header>
 
         <!-- HTMX Loading -->
+        <!--
         <div class="htmx-indicator view-loading" id="view-loader">
             <div class="spinner"></div> Cargando módulo...
         </div>
-
+        
         <!-- CONTENT AREA (NO Alpine scope here — HTMX owns this) -->
         <section class="content-area">
             <div id="main-view">
@@ -868,6 +1668,85 @@
                 alert('ERROR: ' + err.message);
                 btn.disabled = false;
                 btn.innerText = 'Fijar Marcador';
+            }
+        };
+
+        // --- Drag and Drop Logic for League Cards ---
+        let dragSrcEl = null;
+
+        window.handleDragStart = function(e) {
+            dragSrcEl = e.currentTarget;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+            e.currentTarget.style.opacity = '0.4';
+        };
+
+        window.handleDragOver = function(e) {
+            if (e.preventDefault) {
+                e.preventDefault(); // Necessary. Allows us to drop.
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        };
+
+        window.handleDragEnter = function(e) {
+            e.currentTarget.style.borderColor = 'var(--primary)';
+        };
+
+        window.handleDragLeave = function(e) {
+            e.currentTarget.style.borderColor = 'var(--border)';
+        };
+
+        window.handleDrop = function(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation(); // stops the browser from redirecting.
+            }
+
+            const targetEl = e.currentTarget;
+            if (dragSrcEl !== targetEl) {
+                // Swap the inner HTML to swap the visual items
+                const tempHtml = dragSrcEl.innerHTML;
+                dragSrcEl.innerHTML = targetEl.innerHTML;
+                targetEl.innerHTML = tempHtml;
+
+                // Also swap the data-id attributes so the update request sends the correct order
+                const tempId = dragSrcEl.getAttribute('data-id');
+                dragSrcEl.setAttribute('data-id', targetEl.getAttribute('data-id'));
+                targetEl.setAttribute('data-id', tempId);
+
+                updateLeagueOrderAction();
+            }
+            return false;
+        };
+
+        window.addEventListener('dragend', function(e) {
+            const cards = document.querySelectorAll('.league-card');
+            cards.forEach(card => {
+                card.style.opacity = '1';
+                card.style.borderColor = 'var(--border)';
+            });
+        });
+
+        window.updateLeagueOrderAction = async function() {
+            const container = document.getElementById('leagues-container');
+            if (!container) return;
+
+            const cards = container.querySelectorAll('.league-card');
+            const orderedIds = [];
+            cards.forEach(card => {
+                orderedIds.push(card.getAttribute('data-id'));
+            });
+
+            try {
+                const body = new URLSearchParams();
+                orderedIds.forEach(id => {
+                    body.append('order[]', id);
+                });
+
+                const data = await postDashboardAction('/dashboard/leagues/update-order', body);
+                console.log('Order updated:', data);
+            } catch (err) {
+                console.error('Failed to update order', err);
             }
         };
 

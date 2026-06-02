@@ -12,7 +12,7 @@ class LeagueModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['sport_id', 'name', 'country', 'active'];
+    protected $allowedFields    = ['sport_id', 'name', 'country', 'active', 'sort_order'];
 
     protected $useTimestamps = true;
     protected $createdField  = 'created_at';

@@ -245,14 +245,51 @@ class Auth extends BaseController
             'is_active'        => 1,
         ];
 
+        // Generate email verification token (64 chars) and set sent timestamp
+        $verificationToken = bin2hex(random_bytes(32));
+        $data['email_verification_token'] = $verificationToken;
+        $data['email_verification_sent_at'] = date('Y-m-d H:i:s');
+
+        // Insert user
         $userModel->insert($data);
 
-        if ($this->request->isAJAX() || strpos($this->request->getHeaderLine('HX-Request'), 'true') !== false) {
-            $this->response->setHeader('HX-Redirect', '/auth/login');
-            return '';
-        }
+        // Enqueue verification email via existing 'emails' queue
+        $queue = \Config\Services::queue();
+        $queue->push('emails', \App\Jobs\SendVerificationEmailJob::class, [
+            'to'   => $data['email'],
+            'name' => $data['username'],
+            'token'=> $verificationToken,
+        ]);
 
-        return redirect()->to('/auth/login')->with('message', 'Registro exitoso. Por favor, inicie sesión.');
+        // Optionally, could send synchronously if needed
+        // $this->response->setHeader('Location', '/auth/login');
+        return redirect()->to('/');
+    }
+
+    public function verify(string $token)
+    {
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->where('email_verification_token', $token)->first();
+        if (!$user) {
+            return view('auth/verify_error', ['message' => 'Enlace de verificación inválido o expirado.']);
+        }
+        // Check token age (24h)
+        $sentAt = $user['email_verification_sent_at'];
+        if ($sentAt) {
+            $sent = new \DateTime($sentAt);
+            $now = new \DateTime();
+            $diff = $now->getTimestamp() - $sent->getTimestamp();
+            if ($diff > 24 * 3600) {
+                return view('auth/verify_error', ['message' => 'El enlace de verificación ha expirado.']);
+            }
+        }
+        // Mark as verified
+        $userModel->update($user['id'], [
+            'email_verified_at'       => date('Y-m-d H:i:s'),
+            'email_verification_token'=> null,
+            'email_verification_sent_at'=> null,
+        ]);
+        return view('auth/verify_success');
     }
 
     public function logout()

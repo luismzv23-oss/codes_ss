@@ -21,6 +21,13 @@ class Dashboard extends BaseController
     public function __construct()
     {
         $this->cache = CacheManager::getInstance();
+        $db = \Config\Database::connect();
+        if (!$db->fieldExists('sort_order', 'leagues')) {
+            $forge = \Config\Database::forge();
+            $forge->addColumn('leagues', [
+                'sort_order' => ['type' => 'INT', 'unsigned' => true, 'default' => 0, 'after' => 'active']
+            ]);
+        }
     }
 
     /**
@@ -779,6 +786,7 @@ class Dashboard extends BaseController
         $leagues = $db->table('leagues l')
                       ->select('l.*, s.icon as sport_icon, s.name as sport_name, (SELECT COUNT(id) FROM events WHERE league_id = l.id) as event_count')
                       ->join('sports s', 's.id = l.sport_id')
+                      ->orderBy('l.sort_order', 'ASC')
                       ->orderBy('event_count', 'DESC')
                       ->get()->getResultArray();
 
@@ -1368,7 +1376,7 @@ class Dashboard extends BaseController
             }
 
             $html .= "
-            <div class='event-admin-card'>
+            <div class='event-admin-card' id='event-card-{$eventId}'>
                 <div class='event-admin-head'>
                     <div style='min-width:0;'>
                         <div style='font-size:0.72rem; color:var(--text-muted); font-weight:800; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.45rem;'>{$matchNumber}{$stage}{$group}</div>
@@ -1389,6 +1397,9 @@ class Dashboard extends BaseController
                         {$finishControls}
                         <button onclick='toggleEvent({$eventId}, this)' style='cursor:pointer; font-size:0.75rem; font-weight:850; color:{$statusColor}; background:{$statusColor}18; padding:0.46rem 0.7rem; border-radius:7px; border:none;'>
                             {$statusText}
+                        </button>
+                        <button onclick='deleteEventAction({$eventId}, this)' style='cursor:pointer; font-size:0.75rem; font-weight:850; color:#ef4444; background:rgba(239,68,68,0.18); padding:0.46rem 0.7rem; border-radius:7px; border:none;'>
+                            🗑️ Eliminar
                         </button>
                     </div>
                 </div>
@@ -1491,7 +1502,7 @@ class Dashboard extends BaseController
 
         $before = array_intersect_key($event, $payload);
         $eventModel->update($id, $payload);
-        CacheManager::getInstance()->forget('sports_feed_full');
+        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
 
         AuditLogger::log(
             (int) session()->get('user_id'),
@@ -1570,7 +1581,7 @@ class Dashboard extends BaseController
 
         $eventModel = new \App\Models\EventModel();
         $eventId = $eventModel->insert($payload, true);
-        CacheManager::getInstance()->forget('sports_feed_full');
+        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
 
         AuditLogger::log(
             (int) session()->get('user_id'),
@@ -1618,7 +1629,7 @@ class Dashboard extends BaseController
         );
 
         // Notify cache if needed
-        $cache = CacheManager::getInstance();
+        $cache = \App\Libraries\CacheManager::getInstance();
         $cache->forget('sports_feed_full');
 
         return $this->response->setJSON(['status' => 'success', 'new_status' => $newStatus]);
@@ -1641,13 +1652,121 @@ class Dashboard extends BaseController
         $newStatus = ($league['active'] == 1) ? 0 : 1;
         $leagueModel->update($id, ['active' => $newStatus]);
 
-        \App\Controllers\CacheManager::getInstance()->forget('sports_feed_full');
+        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
 
         return $this->response->setJSON([
             'status' => 'success', 
             'new_status' => $newStatus == 1 ? 'Activo' : 'Inactivo',
             'active' => $newStatus
         ]);
+    }
+
+    public function updateLeague($id)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado'])->setStatusCode(403);
+        }
+
+        $name = trim((string) $this->request->getPost('name'));
+        if ($name === '') {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'El nombre no puede estar vacío'])->setStatusCode(422);
+        }
+
+        $leagueModel = new \App\Models\LeagueModel();
+        $league = $leagueModel->find($id);
+
+        if (!$league) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Torneo no encontrado'])->setStatusCode(404);
+        }
+
+        $leagueModel->update($id, ['name' => $name]);
+        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'Torneo actualizado.',
+            'name' => $name
+        ]);
+    }
+
+    public function deleteLeague($id)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado'])->setStatusCode(403);
+        }
+
+        $db = \Config\Database::connect();
+        
+        // Verificar si hay apuestas en esta liga
+        $betsCount = $db->table('bet_selections')
+            ->join('odds', 'odds.id = bet_selections.odd_id')
+            ->join('markets', 'markets.id = odds.market_id')
+            ->join('events', 'events.id = markets.event_id')
+            ->where('events.league_id', $id)
+            ->countAllResults();
+
+        if ($betsCount > 0) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No se puede eliminar la liga porque tiene apuestas asociadas.'])->setStatusCode(422);
+        }
+
+        $db->transStart();
+        // Eliminar odds, markets y events
+        $events = $db->table('events')->where('league_id', $id)->get()->getResultArray();
+        foreach ($events as $ev) {
+            $markets = $db->table('markets')->where('event_id', $ev['id'])->get()->getResultArray();
+            foreach ($markets as $m) {
+                $db->table('odds')->where('market_id', $m['id'])->delete();
+            }
+            $db->table('markets')->where('event_id', $ev['id'])->delete();
+        }
+        $db->table('events')->where('league_id', $id)->delete();
+        $db->table('leagues')->where('id', $id)->delete();
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Error al eliminar la liga.'])->setStatusCode(500);
+        }
+
+        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
+
+        return $this->response->setJSON(['status' => 'success', 'message' => 'Liga eliminada exitosamente.']);
+    }
+
+    public function deleteEvent($id)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado'])->setStatusCode(403);
+        }
+
+        $db = \Config\Database::connect();
+        
+        // Verificar si hay apuestas para este evento
+        $betsCount = $db->table('bet_selections')
+            ->join('odds', 'odds.id = bet_selections.odd_id')
+            ->join('markets', 'markets.id = odds.market_id')
+            ->where('markets.event_id', $id)
+            ->countAllResults();
+
+        if ($betsCount > 0) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No se puede eliminar el evento porque tiene apuestas asociadas.'])->setStatusCode(422);
+        }
+
+        $db->transStart();
+        $markets = $db->table('markets')->where('event_id', $id)->get()->getResultArray();
+        foreach ($markets as $m) {
+            $db->table('odds')->where('market_id', $m['id'])->delete();
+        }
+        $db->table('markets')->where('event_id', $id)->delete();
+        $db->table('events')->where('id', $id)->delete();
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Error al eliminar el evento.'])->setStatusCode(500);
+        }
+
+        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
+
+        return $this->response->setJSON(['status' => 'success', 'message' => 'Evento eliminado exitosamente.']);
     }
 
     /**
@@ -3013,5 +3132,421 @@ class Dashboard extends BaseController
             'layout' => 'layouts/main',
             'activePage' => 'rankings'
         ]));
+    }
+
+    public function loadSoccerSports()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+        $loader = new \App\Services\EventLoaderService();
+        try {
+            $sports = $loader->getAvailableSoccerSports();
+            return $this->response->setJSON($sports);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchSoccerEvents()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+        
+        $sportKeys = $this->request->getPost('sport_keys');
+        if (empty($sportKeys) || !is_array($sportKeys)) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Debe seleccionar al menos una liga de fútbol.'
+            ]);
+        }
+
+        $loader = new \App\Services\EventLoaderService();
+        try {
+            $result = $loader->fetchAndStage($sportKeys);
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => "Se importaron {$result['total_staged']} partidos nuevos en staging. Se omitieron {$result['duplicates_skipped']} duplicados.",
+                'batch_id' => $result['batch_id'],
+                'total_staged' => $result['total_staged'],
+                'duplicates_skipped' => $result['duplicates_skipped']
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+    public function loadFootballDataCompetitions()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+        $loader = new \App\Services\EventLoaderService();
+        try {
+            $comps = $loader->getFootballDataCompetitions();
+            return $this->response->setJSON($comps);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchFootballDataEvents()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+        
+        $sportKeys = $this->request->getPost('sport_keys');
+        if (empty($sportKeys) || !is_array($sportKeys)) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Debe seleccionar al menos una liga de football-data.org.'
+            ]);
+        }
+
+        $loader = new \App\Services\EventLoaderService();
+        try {
+            $result = $loader->fetchAndStageFootballData($sportKeys);
+            
+            if (isset($result['success']) && !$result['success']) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $result['error'] ?? 'Error desconocido al procesar Football-Data.'
+                ]);
+            }
+            
+            $refreshedExisting = (int) ($result['refreshed_existing'] ?? 0);
+            $message = "Se importaron {$result['total_staged']} partidos nuevos en staging.";
+            if ($refreshedExisting > 0) {
+                $message .= " Se actualizaron {$refreshedExisting} partidos existentes y quedaron listos para revision.";
+            }
+            if (($result['duplicates_skipped'] ?? 0) > 0) {
+                $message .= " Se omitieron {$result['duplicates_skipped']} duplicados.";
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => $message,
+                'batch_id' => $result['batch_id'] ?? null,
+                'total_staged' => $result['total_staged'] ?? 0,
+                'duplicates_skipped' => $result['duplicates_skipped'] ?? 0,
+                'refreshed_existing' => $refreshedExisting
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchSerpApiEvents()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+        
+        $query = $this->request->getPost('query');
+        if (empty($query)) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Debe ingresar una búsqueda para SerpApi.'
+            ]);
+        }
+
+        $loader = new \App\Services\EventLoaderService();
+        try {
+            $result = $loader->fetchAndStageSerpApi($query);
+            
+            if (isset($result['success']) && !$result['success']) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $result['error'] ?? 'Error desconocido al procesar SerpApi.'
+                ]);
+            }
+            
+            $refreshedExisting = (int) ($result['refreshed_existing'] ?? 0);
+            $message = "Se importaron {$result['total_staged']} partidos nuevos en staging.";
+            if ($refreshedExisting > 0) {
+                $message .= " Se actualizaron {$refreshedExisting} partidos existentes y quedaron listos para revision.";
+            }
+            if (($result['duplicates_skipped'] ?? 0) > 0) {
+                $message .= " Se omitieron {$result['duplicates_skipped']} duplicados.";
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => $message,
+                'batch_id' => $result['batch_id'] ?? null,
+                'total_staged' => $result['total_staged'] ?? 0,
+                'duplicates_skipped' => $result['duplicates_skipped'] ?? 0,
+                'refreshed_existing' => $refreshedExisting
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchESPNEvents()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        $loader = new \App\Services\EventLoaderService();
+        try {
+            $result = $loader->fetchAndStageESPN();
+            if (isset($result['success']) && !$result['success']) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => $result['error'] ?? 'Error desconocido al procesar ESPN.'
+                ]);
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => "Se importaron {$result['total_staged']} partidos nuevos de ESPN en staging. Se omitieron {$result['duplicates_skipped']} duplicados.",
+                'batch_id' => $result['batch_id'],
+                'total_staged' => $result['total_staged'],
+                'duplicates_skipped' => $result['duplicates_skipped']
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function stagedEvents()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        $model = new \App\Models\StagedEventModel();
+        $staged = $model->where('status', 'pending_review')->orderBy('created_at', 'DESC')->findAll();
+
+        foreach ($staged as &$e) {
+            $e['odds_data'] = json_decode($e['odds_data'], true);
+        }
+
+        return $this->response->setJSON($staged);
+    }
+
+    public function clearStagedEvents()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        $model = new \App\Models\StagedEventModel();
+        // Delete all pending_review staged events
+        $model->where('status', 'pending_review')->delete();
+
+        return $this->response->setJSON(['status' => 'success', 'message' => 'Importación limpiada correctamente']);
+    }
+
+    public function approveStagedEvent($id)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        $loader = new \App\Services\EventLoaderService();
+        $eventId = $loader->approveEvent($id, (int)session()->get('user_id'));
+
+        if ($eventId) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Partido aprobado y registrado con éxito.',
+                'event_id' => $eventId
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'No se pudo aprobar el partido. Es posible que ya haya sido aprobado o rechazado.'
+        ]);
+    }
+
+    public function rejectStagedEvent($id)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        $loader = new \App\Services\EventLoaderService();
+        $success = $loader->rejectEvent($id, (int)session()->get('user_id'));
+
+        if ($success) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Partido rechazado con éxito.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'No se pudo rechazar el partido.'
+        ]);
+    }
+
+    public function bulkApproveBatch($batchId)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        $loader = new \App\Services\EventLoaderService();
+        $result = $loader->bulkApprove($batchId, (int)session()->get('user_id'));
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => "Se aprobaron {$result['approved_count']} partidos. Fallaron {$result['failed_count']}.",
+            'approved_count' => $result['approved_count'],
+            'failed_count' => $result['failed_count']
+        ]);
+    }
+
+    /**
+     * ─────────────────────────────────────────────────────────────────
+     * Football-Data.org Integration Endpoints
+     * ─────────────────────────────────────────────────────────────────
+     */
+
+    public function getFootballCompetitions()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        try {
+            $service = new \App\Services\FootballDataService();
+            $competitions = $service->getAvailableCompetitions();
+            return $this->response->setJSON($competitions);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()])->setStatusCode(500);
+        }
+    }
+
+    public function getFootballMatches()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        try {
+            $competitionId = (int)$this->request->getPost('competition_id');
+            $status = $this->request->getPost('status');
+            
+            if (empty($competitionId)) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Competition ID required']);
+            }
+
+            $service = new \App\Services\FootballDataService();
+            $matches = $service->getMatches($competitionId, $status, 50);
+            
+            return $this->response->setJSON([
+                'status' => 'success',
+                'matches' => $matches,
+                'total' => count($matches)
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()])->setStatusCode(500);
+        }
+    }
+
+    public function getTodayMatches()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        try {
+            $service = new \App\Services\FootballDataService();
+            $matches = $service->getTodayMatches();
+            
+            return $this->response->setJSON([
+                'status' => 'success',
+                'matches' => $matches,
+                'total' => count($matches)
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()])->setStatusCode(500);
+        }
+    }
+
+    public function searchFootballTeam()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        try {
+            $teamName = trim($this->request->getPost('team_name'));
+            
+            if (empty($teamName) || strlen($teamName) < 2) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Team name must be at least 2 characters']);
+            }
+
+            $service = new \App\Services\FootballDataService();
+            $matches = $service->searchMatchesByTeam($teamName, 20);
+            
+            return $this->response->setJSON([
+                'status' => 'success',
+                'matches' => $matches,
+                'total' => count($matches),
+                'search_term' => $teamName
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()])->setStatusCode(500);
+        }
+    }
+
+    public function importFootballFixtures()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        try {
+            $competitionId = (int)$this->request->getPost('competition_id');
+            
+            if (empty($competitionId)) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Competition ID required']);
+            }
+
+            $service = new \App\Services\FootballDataService();
+            $result = $service->importFixturesToStaging($competitionId, (int)session()->get('user_id'));
+            
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => "Importados {$result['imported']} partidos. Omitidos {$result['skipped']} duplicados.",
+                'imported' => $result['imported'],
+                'skipped' => $result['skipped'],
+                'batch_id' => $result['batch_id'] ?? null
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()])->setStatusCode(500);
+        }
+    }
+    public function updateLeagueOrder()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        try {
+            $order = $this->request->getPost('order');
+            if (!is_array($order)) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid order data']);
+            }
+
+            $db = \Config\Database::connect();
+            $builder = $db->table('leagues');
+
+            foreach ($order as $index => $id) {
+                $builder->where('id', (int)$id)->update(['sort_order' => (int)$index]);
+            }
+
+            return $this->response->setJSON(['status' => 'success']);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()])->setStatusCode(500);
+        }
     }
 }
