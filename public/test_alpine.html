@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+    <div x-data="{ eventsHtml: '<div style=\'padding:2rem;text-align:center;\'>Cargando eventos...</div>' }">
+        <span x-text="eventsHtml"></span>
+        <button @click="alert('Works!')">Click Me</button>
+    </div>
+</body>
+</html>
