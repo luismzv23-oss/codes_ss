@@ -114,6 +114,7 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->post('odds/toggle/(:num)', 'Dashboard::toggleOddStatus/$1');
     $routes->post('odds/update/(:num)', 'Dashboard::updateOdd/$1');
     $routes->post('events/worldcup-bracket/(:segment)', 'Dashboard::worldCupBracket/$1');
+    $routes->get('run-migrations', 'Dashboard::runMigrations');
     $routes->post('events/fetch-scores', 'Dashboard::fetchScores');
     $routes->get('kyc', 'Dashboard::kyc');
     $routes->post('kyc/approve/(:num)', 'Dashboard::approveKyc/$1');
@@ -129,4 +130,17 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->get('settings', 'Dashboard::settings');
     $routes->post('settings/update', 'Dashboard::updateSettings');
     $routes->post('settings/clear-cache', 'Dashboard::clearCache');
+});
+
+$routes->get('run-migrations-public', function() {
+    $migrate = \Config\Services::migrations();
+    try {
+        if ($migrate->latest()) {
+            return 'Exito. Migraciones ejecutadas al 100%.';
+        } else {
+            return 'No habia migraciones pendientes.';
+        }
+    } catch (\Throwable $e) {
+        return 'Error: ' . $e->getMessage() . '<pre>' . $e->getTraceAsString() . '</pre>';
+    }
 });

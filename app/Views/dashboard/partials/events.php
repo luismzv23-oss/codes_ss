@@ -180,10 +180,11 @@
             
             <div x-show="showSerpApiInput" x-transition x-cloak style="display: flex; align-items: center; gap: 0.4rem;">
                 <input type="text" id="serpapi-query" x-model="serpApiQuery" @keydown.enter="fetchSerpApi(document.getElementById('btn-serpapi'))" placeholder="Ej: partidos de futbol hoy" style="background: var(--bg-primary); border: 1px solid var(--border); color: #fff; padding: 0.6rem 1rem; border-radius: 6px; width: 220px;">
+                <button @click="serpApiQuery = ''; showSerpApiInput = false; stagedEvents = [];" title="Limpiar búsqueda" style="cursor:pointer; background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; display: flex; align-items: center;">&times;</button>
             </div>
 
-            <button id="btn-serpapi" @click="fetchSerpApi($event.currentTarget)" style="cursor:pointer; font-weight:800; background: #ffffff; color: #111; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                🔍 Desde Google (SerpApi)
+            <button id="btn-serpapi" @click="if(!showSerpApiInput) { showSerpApiInput = true; setTimeout(() => document.getElementById('serpapi-query').focus(), 100); } else { fetchSerpApi($event.currentTarget); }" style="cursor:pointer; font-weight:800; background: #ffffff; color: #111; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                🔍 Buscar Google (SerpApi)
             </button>
             <button @click="fetchFootballData($event.target)" style="cursor:pointer; font-weight:800; background: #00d26a; color: #000; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 ⚽ Desde Football-Data
@@ -772,6 +773,97 @@
             alert(e.message || 'Error de conexión al eliminar partido.');
             btn.disabled = false;
             btn.innerText = original;
+        }
+    }
+
+    let draggedElement = null;
+
+    function handleDragStart(e) {
+        draggedElement = e.currentTarget;
+        e.dataTransfer.effectAllowed = 'move';
+        e.currentTarget.style.opacity = '0.4';
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        e.preventDefault();
+        const target = e.currentTarget;
+        if (target !== draggedElement) {
+            target.style.transform = 'scale(1.02)';
+            target.style.boxShadow = '0 0 10px var(--primary)';
+        }
+    }
+
+    function handleDragLeave(e) {
+        const target = e.currentTarget;
+        if (target !== draggedElement) {
+            target.style.transform = 'scale(1)';
+            target.style.boxShadow = 'none';
+        }
+    }
+
+    function handleDrop(e) {
+        e.stopPropagation();
+        const target = e.currentTarget;
+        if (target !== draggedElement) {
+            target.style.transform = 'scale(1)';
+            target.style.boxShadow = 'none';
+            
+            const container = target.parentNode;
+            const allCards = Array.from(container.children);
+            const draggedIndex = allCards.indexOf(draggedElement);
+            const targetIndex = allCards.indexOf(target);
+            
+            if (draggedIndex < targetIndex) {
+                container.insertBefore(draggedElement, target.nextSibling);
+            } else {
+                container.insertBefore(draggedElement, target);
+            }
+            
+            saveLeagueOrder();
+        }
+        return false;
+    }
+
+    document.addEventListener('dragend', function(e) {
+        if (draggedElement) {
+            draggedElement.style.opacity = '1';
+            draggedElement = null;
+        }
+    });
+
+    async function saveLeagueOrder() {
+        const container = document.getElementById('leagues-container');
+        if (!container) return;
+        const cards = Array.from(container.children);
+        
+        try {
+            const body = new FormData();
+            cards.forEach(c => {
+                const id = c.getAttribute('data-id');
+                if(id) body.append('order[]', id);
+            });
+            
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/leagues/update-order', body)
+                : await (await fetch('/dashboard/leagues/update-order', {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' },
+                    body
+                })).json();
+                
+            if (result.status === 'success') {
+                console.log('Orden guardado correctamente');
+            } else {
+                alert('Error al guardar el nuevo orden: ' + result.message);
+            }
+        } catch(e) {
+            console.error('Error al guardar el orden:', e);
         }
     }
 </script>

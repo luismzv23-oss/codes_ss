@@ -1492,6 +1492,26 @@
             Alpine.store('app').setActive(page);
             // Show loading
             target.style.opacity = '0.5';
+            
+            // Mostrar spinner de carga
+            let spinner = document.getElementById('main-view-spinner');
+            if (!spinner) {
+                spinner = document.createElement('div');
+                spinner.id = 'main-view-spinner';
+                spinner.innerHTML = '<div style="width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 1s linear infinite;"></div>';
+                spinner.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;';
+                
+                // Add spin animation to document if not exists
+                if (!document.getElementById('spin-keyframes')) {
+                    const style = document.createElement('style');
+                    style.id = 'spin-keyframes';
+                    style.innerHTML = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+                    document.head.appendChild(style);
+                }
+            }
+            target.parentNode.style.position = 'relative';
+            target.parentNode.appendChild(spinner);
+
             try {
                 const headers = { 'HX-Request': 'true', 'X-Requested-With': 'XMLHttpRequest' };
                 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
@@ -1501,6 +1521,15 @@
                 if (res.redirected) { window.location.href = res.url; return; }
                 const html = await res.text();
                 target.innerHTML = html;
+                
+                // Ejecutar scripts inyectados
+                target.querySelectorAll('script').forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.textContent = oldScript.textContent;
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+
                 target.style.opacity = '1';
                 target.style.animation = 'none';
                 target.offsetHeight; // trigger reflow
@@ -1514,6 +1543,9 @@
             } catch (err) {
                 console.error('Navigation error:', err);
                 target.style.opacity = '1';
+            } finally {
+                const spinner = document.getElementById('main-view-spinner');
+                if (spinner) spinner.remove();
             }
         }
 

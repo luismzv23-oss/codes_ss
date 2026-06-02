@@ -21,13 +21,6 @@ class Dashboard extends BaseController
     public function __construct()
     {
         $this->cache = CacheManager::getInstance();
-        $db = \Config\Database::connect();
-        if (!$db->fieldExists('sort_order', 'leagues')) {
-            $forge = \Config\Database::forge();
-            $forge->addColumn('leagues', [
-                'sort_order' => ['type' => 'INT', 'unsigned' => true, 'default' => 0, 'after' => 'active']
-            ]);
-        }
     }
 
     /**
@@ -3339,6 +3332,20 @@ class Dashboard extends BaseController
         $model->where('status', 'pending_review')->delete();
 
         return $this->response->setJSON(['status' => 'success', 'message' => 'Importación limpiada correctamente']);
+    }
+
+    public function runMigrations()
+    {
+        $migrate = \Config\Services::migrations();
+        try {
+            if ($migrate->latest()) {
+                return $this->response->setJSON(['status' => 'success', 'message' => 'Migraciones ejecutadas al 100%.']);
+            } else {
+                return $this->response->setJSON(['status' => 'success', 'message' => 'No habia migraciones pendientes.']);
+            }
+        } catch (\Throwable $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
 
     public function approveStagedEvent($id)
