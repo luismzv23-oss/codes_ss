@@ -297,6 +297,36 @@
                         btn.innerText = original;
                     }
                 },
+                async syncLeagueLiveScores(btn) {
+                    if (!this.leagueId) return;
+                    const original = btn.innerText;
+                    btn.disabled = true;
+                    btn.innerText = 'Sincronizando...';
+                    try {
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+
+                        const res = await fetch('/dashboard/events/sync-live/league/' + this.leagueId, {
+                            method: 'POST',
+                            headers
+                        });
+                        const result = await res.json();
+                        let msg = result.message || 'Sincronizacion finalizada.';
+                        if (result.results && result.results.length > 0) {
+                            msg += '\n\n' + result.results.slice(0, 12).join('\n');
+                        }
+                        alert(msg);
+                        const reload = await fetch('/dashboard/events/league/' + this.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
+                        this.eventsHtml = await reload.text();
+                    } catch (e) {
+                        alert('Error al sincronizar marcadores live.');
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerText = original;
+                    }
+                },
                 async createEvent(btn) {
                     if (!this.leagueId) return;
                     const field = (name) => document.getElementById('new-event-' + name)?.value || '';
@@ -712,6 +742,66 @@
             btn.innerText = 'Fijar Marcador';
         }
     };
+
+    async function syncLiveScoreEvent(id, btn) {
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = 'Sync...';
+        try {
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/events/sync-live/' + id)
+                : await (await fetch('/dashboard/events/sync-live/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' }
+                })).json();
+
+            alert(result.message || 'Sincronizacion finalizada.');
+            const root = document.querySelector('[x-data="eventsManager()"]');
+            const data = (typeof Alpine !== 'undefined' && root) ? Alpine.$data(root) : null;
+            if (data && data.leagueId) {
+                const reload = await fetch('/dashboard/events/league/' + data.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
+                data.eventsHtml = await reload.text();
+            }
+        } catch (e) {
+            alert(e.message || 'Error al sincronizar el partido.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function linkApiFixture(id, btn) {
+        const fixtureId = prompt('Ingrese el ID externo del proveedor live gratuito para este partido:');
+        if (!fixtureId || !fixtureId.trim()) return;
+
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = 'Vinculando...';
+        try {
+            const body = new FormData();
+            body.append('fixture_id', fixtureId.trim());
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/events/link-api-fixture/' + id, body)
+                : await (await fetch('/dashboard/events/link-api-fixture/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' },
+                    body
+                })).json();
+
+            alert(result.message || 'Fixture vinculado.');
+            const root = document.querySelector('[x-data="eventsManager()"]');
+            const data = (typeof Alpine !== 'undefined' && root) ? Alpine.$data(root) : null;
+            if (data && data.leagueId) {
+                const reload = await fetch('/dashboard/events/league/' + data.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
+                data.eventsHtml = await reload.text();
+            }
+        } catch (e) {
+            alert(e.message || 'Error al vincular fixture.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
 
     async function generateMarkets(id, btn) {
         const original = btn.innerText;

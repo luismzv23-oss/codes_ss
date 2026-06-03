@@ -85,6 +85,9 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->post('events/league/(:num)/create', 'Dashboard::createEvent/$1');
     $routes->post('events/league/(:num)/generate-markets', 'Dashboard::generateLeagueMarkets/$1');
     $routes->post('events/update/(:num)', 'Dashboard::updateEvent/$1');
+    $routes->post('events/sync-live/league/(:num)', 'Dashboard::syncLiveScoresLeague/$1');
+    $routes->post('events/sync-live/(:num)', 'Dashboard::syncLiveScoreEvent/$1');
+    $routes->post('events/link-api-fixture/(:num)', 'Dashboard::linkApiFixture/$1');
     $routes->post('events/toggle/(:num)', 'Dashboard::toggleEventStatus/$1');
     $routes->post('events/delete/(:num)', 'Dashboard::deleteEvent/$1');
     $routes->post('leagues/update/(:num)', 'Dashboard::updateLeague/$1');

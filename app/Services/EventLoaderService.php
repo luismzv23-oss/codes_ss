@@ -702,7 +702,8 @@ class EventLoaderService
                 ];
             }
 
-            $leagueName = $data['sports_results']['league'] ?? $data['sports_results']['title'] ?? $this->guessSerpApiLeagueName($query);
+            $leagueName = $this->serpApiText($data['sports_results']['league'] ?? $data['sports_results']['title'] ?? null, $this->guessSerpApiLeagueName($query));
+            $leagueName = mb_substr($leagueName, 0, 200);
             $country = 'Internacional';
 
             foreach ($data['sports_results']['games'] as $match) {
@@ -710,16 +711,19 @@ class EventLoaderService
                     continue;
                 }
 
-                $home = $match['teams'][0]['name'] ?? null;
-                $away = $match['teams'][1]['name'] ?? null;
-                $dateStr = $match['date'] ?? null; // e.g. "Sat, May 25"
-                $timeStr = $match['time'] ?? '00:00'; // if available
+                $home = $this->serpApiText($match['teams'][0]['name'] ?? null);
+                $away = $this->serpApiText($match['teams'][1]['name'] ?? null);
+                $dateStr = $this->serpApiText($match['date'] ?? null, ''); // e.g. "Sat, May 25"
+                $timeStr = $this->serpApiText($match['time'] ?? null, '00:00'); // if available
 
                 if (!$home || !$away) {
                     continue;
                 }
+
+                $home = mb_substr($home, 0, 200);
+                $away = mb_substr($away, 0, 200);
                 
-                $startTimeStr = $dateStr ? ($dateStr . ' ' . $timeStr) : $timeStr;
+                $startTimeStr = $dateStr !== '' ? ($dateStr . ' ' . $timeStr) : $timeStr;
                 
                 // Translate Spanish dates & terms to English for strtotime()
                 $spanishMonths = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sep.', 'oct.', 'nov.', 'dic.', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic', ' de '];
@@ -852,6 +856,42 @@ class EventLoaderService
         $query = trim(preg_replace('/\s+/', ' ', $query) ?? $query);
 
         return $query !== '' ? mb_convert_case($query, MB_CASE_TITLE, 'UTF-8') : 'Google Sports';
+    }
+
+    private function serpApiText($value, string $fallback = ''): string
+    {
+        if ($value === null) {
+            return $fallback;
+        }
+
+        if (is_scalar($value)) {
+            $text = trim((string) $value);
+            return $text !== '' ? $text : $fallback;
+        }
+
+        if (is_array($value)) {
+            foreach (['name', 'title', 'league', 'text', 'label', 'displayName'] as $key) {
+                if (array_key_exists($key, $value)) {
+                    $text = $this->serpApiText($value[$key], '');
+                    if ($text !== '') {
+                        return $text;
+                    }
+                }
+            }
+
+            $parts = [];
+            foreach ($value as $item) {
+                $text = $this->serpApiText($item, '');
+                if ($text !== '') {
+                    $parts[] = $text;
+                }
+            }
+
+            $text = trim(implode(' ', array_unique($parts)));
+            return $text !== '' ? $text : $fallback;
+        }
+
+        return $fallback;
     }
 
     private function findDuplicateEvent(string $homeTeam, string $awayTeam, string $startTime): ?array

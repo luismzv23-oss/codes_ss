@@ -1300,6 +1300,12 @@ class Dashboard extends BaseController
             $eventStatus = esc($e['status']);
             $scoreHome = $e['score_home'] !== null ? (int) $e['score_home'] : '';
             $scoreAway = $e['score_away'] !== null ? (int) $e['score_away'] : '';
+            $apiProvider = esc((string) ($e['api_provider'] ?? ''));
+            $apiFixtureId = esc((string) ($e['api_fixture_id'] ?? ''));
+            $apiStatus = esc((string) ($e['api_status'] ?? ''));
+            $apiElapsed = $e['api_elapsed'] !== null && $e['api_elapsed'] !== '' ? (int) $e['api_elapsed'] : null;
+            $apiLastSync = !empty($e['api_last_score_sync_at']) ? date('d/m H:i', strtotime($e['api_last_score_sync_at'])) : 'sin sync';
+            $apiStatusLabel = $apiStatus !== '' ? $apiStatus . ($apiElapsed ? " {$apiElapsed}'" : '') : 'sin estado API';
             $marketCount = (int) $db->table('markets')->where('event_id', $eventId)->countAllResults();
             $openMarketCount = (int) $db->table('markets')->where('event_id', $eventId)->where('status', 'open')->countAllResults();
             $suspendedMarketCount = max(0, $marketCount - $openMarketCount);
@@ -1411,9 +1417,26 @@ class Dashboard extends BaseController
                     <span class='event-admin-pill' style='color:#86efac;background:rgba(34,197,94,0.12);'>{$openMarketCount} abiertos</span>
                     <span class='event-admin-pill' style='color:#fca5a5;background:rgba(239,68,68,0.12);'>{$suspendedMarketCount} suspendidos</span>
                     <span class='event-admin-pill' style='color:#fbbf24;background:rgba(251,191,36,0.12);'>Expo. $" . number_format($pendingExposure, 2) . "</span>
+                    <span id='api-status-{$eventId}' class='event-admin-pill' style='color:#93c5fd;background:rgba(59,130,246,0.12);'>API {$apiStatusLabel}</span>
+                    <span class='event-admin-pill' style='color:var(--text-muted);background:rgba(148,163,184,0.10);'>Fixture " . ($apiFixtureId !== '' ? $apiFixtureId : 'sin vincular') . "</span>
                     <button onclick='generateMarkets({$eventId}, this)' style='cursor:pointer;font-size:0.72rem;font-weight:900;color:#0f172a;background:linear-gradient(135deg,#34d399,#22c55e);padding:0.32rem 0.58rem;border-radius:6px;border:none;'>Generar mercados</button>
+                    <button onclick='syncLiveScoreEvent({$eventId}, this)' style='cursor:pointer;font-size:0.72rem;font-weight:900;color:#0f172a;background:linear-gradient(135deg,#93c5fd,#38bdf8);padding:0.32rem 0.58rem;border-radius:6px;border:none;'>Sync API</button>
+                    <button onclick='linkApiFixture({$eventId}, this)' style='cursor:pointer;font-size:0.72rem;font-weight:900;color:#dbeafe;background:rgba(59,130,246,0.18);padding:0.32rem 0.58rem;border-radius:6px;border:1px solid rgba(147,197,253,0.35);'>Vincular ID</button>
                 </div>
                 <div class='event-admin-details'>
+                    <details>
+                        <summary>Proveedor live gratuito y marcadores</summary>
+                        <div style='display:grid;gap:0.45rem;color:var(--text-secondary);font-size:0.78rem;padding:0.65rem 0;'>
+                            <div><strong style='color:var(--text-primary);'>Proveedor:</strong> " . ($apiProvider !== '' ? $apiProvider : 'sin proveedor') . "</div>
+                            <div><strong style='color:var(--text-primary);'>Fixture ID:</strong> " . ($apiFixtureId !== '' ? $apiFixtureId : 'sin vincular') . "</div>
+                            <div><strong style='color:var(--text-primary);'>Estado API:</strong> {$apiStatusLabel}</div>
+                            <div><strong style='color:var(--text-primary);'>Ultima sync:</strong> {$apiLastSync}</div>
+                            <div style='display:flex;gap:0.45rem;flex-wrap:wrap;margin-top:0.35rem;'>
+                                <button onclick='syncLiveScoreEvent({$eventId}, this)' style='cursor:pointer;border:none;border-radius:6px;background:linear-gradient(135deg,#93c5fd,#38bdf8);color:#0f172a;font-size:0.74rem;font-weight:900;padding:0.45rem 0.65rem;'>Sincronizar partido</button>
+                                <button onclick='linkApiFixture({$eventId}, this)' style='cursor:pointer;border:1px solid rgba(147,197,253,0.35);border-radius:6px;background:rgba(59,130,246,0.18);color:#dbeafe;font-size:0.74rem;font-weight:900;padding:0.45rem 0.65rem;'>Vincular ID externo</button>
+                            </div>
+                        </div>
+                    </details>
                     <details>
                         <summary>Control de mercados y cuotas</summary>
                         <div class='event-admin-form' style='grid-template-columns:repeat(2,minmax(0,1fr));'>
@@ -1521,6 +1544,89 @@ class Dashboard extends BaseController
             'message' => 'Partido actualizado.',
             'event' => $payload,
         ]);
+    }
+
+    public function syncLiveScoresLeague($leagueId)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado'])->setStatusCode(403);
+        }
+
+        try {
+            $result = (new \App\Services\LiveScoreProviderService())->syncLeague((int) $leagueId);
+            if (($result['updated'] ?? 0) > 0) {
+                (new \App\Services\SettlementService())->settleEvents();
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => "Proveedor live: {$result['updated']} actualizados, {$result['matched']} vinculados, {$result['unmatched']} sin match.",
+                'results' => $result['results'],
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ])->setStatusCode(500);
+        }
+    }
+
+    public function syncLiveScoreEvent($id)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado'])->setStatusCode(403);
+        }
+
+        $event = \Config\Database::connect()->table('events')->where('id', (int) $id)->get()->getRowArray();
+        if (! $event) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Evento no encontrado'])->setStatusCode(404);
+        }
+
+        try {
+            $result = (new \App\Services\LiveScoreProviderService())->syncEvent($event);
+            if (($result['status'] ?? '') === 'finished') {
+                (new \App\Services\SettlementService())->settleEvents();
+            }
+
+            return $this->response->setJSON([
+                'status' => $result['matched'] ? 'success' : 'error',
+                'message' => $result['message'],
+                'result' => $result,
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ])->setStatusCode(500);
+        }
+    }
+
+    public function linkApiFixture($id)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado'])->setStatusCode(403);
+        }
+
+        try {
+            $result = (new \App\Services\LiveScoreProviderService())->linkEvent(
+                (int) $id,
+                trim((string) $this->request->getPost('fixture_id'))
+            );
+            if (($result['status'] ?? '') === 'finished') {
+                (new \App\Services\SettlementService())->settleEvents();
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Fixture vinculado. ' . $result['message'],
+                'result' => $result,
+            ]);
+        } catch (\Throwable $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ])->setStatusCode(422);
+        }
     }
 
     public function createEvent($leagueId)

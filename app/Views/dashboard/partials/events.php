@@ -273,6 +273,7 @@
             <div class="events-modal-header">
                 <h3 style="font-family:'Outfit', sans-serif; font-size:1.3rem; font-weight:700;" x-text="leagueName"></h3>
                 <div style="display:flex;align-items:center;gap:0.6rem;">
+                    <button @click="syncLeagueLiveScores($event.target)" style="cursor:pointer;font-size:0.75rem;font-weight:900;color:#0f172a;background:linear-gradient(135deg,#93c5fd,#38bdf8);padding:0.45rem 0.7rem;border-radius:6px;border:none;">Sync Live API</button>
                     <button @click="fetchScoresManual($event.target)" style="cursor:pointer;font-size:0.75rem;font-weight:900;color:#fff;background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:0.45rem 0.7rem;border-radius:6px;border:none;">📡 Obtener Marcadores</button>
                     <button @click="generateLeagueMarkets()" style="cursor:pointer;font-size:0.75rem;font-weight:900;color:#0f172a;background:linear-gradient(135deg,#34d399,#22c55e);padding:0.45rem 0.7rem;border-radius:6px;border:none;">Generar mercados</button>
                     <button @click="showModal = false" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.5rem;">&times;</button>
@@ -546,6 +547,66 @@
             btn.innerText = 'Fijar Marcador';
         }
     };
+
+    async function syncLiveScoreEvent(id, btn) {
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = 'Sync...';
+        try {
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/events/sync-live/' + id)
+                : await (await fetch('/dashboard/events/sync-live/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' }
+                })).json();
+
+            alert(result.message || 'Sincronizacion finalizada.');
+            const root = document.querySelector('[x-data="eventsManager()"]');
+            const data = (typeof Alpine !== 'undefined' && root) ? Alpine.$data(root) : null;
+            if (data && data.leagueId) {
+                const reload = await fetch('/dashboard/events/league/' + data.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
+                data.eventsHtml = await reload.text();
+            }
+        } catch (e) {
+            alert(e.message || 'Error al sincronizar el partido.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
+
+    async function linkApiFixture(id, btn) {
+        const fixtureId = prompt('Ingrese el ID externo del proveedor live gratuito para este partido:');
+        if (!fixtureId || !fixtureId.trim()) return;
+
+        const original = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = 'Vinculando...';
+        try {
+            const body = new FormData();
+            body.append('fixture_id', fixtureId.trim());
+            const result = typeof postDashboardAction === 'function'
+                ? await postDashboardAction('/dashboard/events/link-api-fixture/' + id, body)
+                : await (await fetch('/dashboard/events/link-api-fixture/' + id, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', '<?= csrf_header() ?>': '<?= csrf_hash() ?>' },
+                    body
+                })).json();
+
+            alert(result.message || 'Fixture vinculado.');
+            const root = document.querySelector('[x-data="eventsManager()"]');
+            const data = (typeof Alpine !== 'undefined' && root) ? Alpine.$data(root) : null;
+            if (data && data.leagueId) {
+                const reload = await fetch('/dashboard/events/league/' + data.leagueId, { headers: {'X-Requested-With': 'XMLHttpRequest'} });
+                data.eventsHtml = await reload.text();
+            }
+        } catch (e) {
+            alert(e.message || 'Error al vincular fixture.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = original;
+        }
+    }
 
     async function generateMarkets(id, btn) {
         const original = btn.innerText;
