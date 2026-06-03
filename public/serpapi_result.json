@@ -1,0 +1,494 @@
+{
+  "search_metadata": {
+    "id": "6a1f80a8e3e176dfc7330c30",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/KN_B46OWft5roXsWVWvi9w/6a1f80a8e3e176dfc7330c30.json",
+    "pixel_position_endpoint": "https://serpapi.com/searches/KN_B46OWft5roXsWVWvi9w/6a1f80a8e3e176dfc7330c30.json_with_pixel_position",
+    "created_at": "2026-06-03 01:17:28 UTC",
+    "processed_at": "2026-06-03 01:17:28 UTC",
+    "google_url": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&oq=Marruecos+vs+Madagascar+resultado&sourceid=chrome&ie=UTF-8",
+    "raw_html_file": "https://serpapi.com/searches/KN_B46OWft5roXsWVWvi9w/6a1f80a8e3e176dfc7330c30.html",
+    "total_time_taken": 1.37
+  },
+  "search_parameters": {
+    "engine": "google",
+    "q": "Marruecos vs Madagascar resultado",
+    "google_domain": "google.com",
+    "device": "desktop"
+  },
+  "search_information": {
+    "query_displayed": "Marruecos vs Madagascar resultado",
+    "total_results": 129,
+    "time_taken_displayed": 0.27,
+    "organic_results_state": "Results for exact spelling"
+  },
+  "sports_results": {
+    "game_spotlight": {
+      "league": "Friendlies",
+      "date": "today, 1:00 PM",
+      "status": "Full-time",
+      "teams": [
+        {
+          "name": "Morocco",
+          "thumbnail": "https://ssl.gstatic.com/onebox/media/sports/logos/optimized/I3gt2Ew39ux3GGdZ-4JE3g_96x96.png",
+          "kgmid": "/m/03_9hm",
+          "score": "4",
+          "goal_summary": [
+            {
+              "player": {
+                "name": "Ismael Saibari"
+              },
+              "goals": [
+                {
+                  "in_game_time": {
+                    "minute": 4,
+                    "second": 0
+                  }
+                },
+                {
+                  "in_game_time": {
+                    "minute": 25,
+                    "second": 0
+                  }
+                }
+              ]
+            },
+            {
+              "player": {
+                "name": "Soufiane Rahimi"
+              },
+              "goals": [
+                {
+                  "type": "P",
+                  "in_game_time": {
+                    "minute": 78,
+                    "second": 0
+                  }
+                }
+              ]
+            },
+            {
+              "player": {
+                "name": "Ayoub El Kaabi"
+              },
+              "goals": [
+                {
+                  "in_game_time": {
+                    "minute": 87,
+                    "second": 0
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Madagascar",
+          "thumbnail": "https://ssl.gstatic.com/onebox/media/sports/logos/optimized/5Cah_q9WSSXkrEUQVXpfkQ_96x96.png",
+          "kgmid": "/m/04h3yj",
+          "score": "0"
+        }
+      ]
+    }
+  },
+  "inline_videos": [
+    {
+      "position": 1,
+      "title": "Morocco 5-0 Madagascar Highlights Today | All Goals & Full ...",
+      "link": "https://www.youtube.com/watch?v=aa7rkqH5pao",
+      "thumbnail": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/uHyNgjdJz6gz8jQddxNm9tof0hg1s3eF1NS1rn8scTg.jpeg",
+      "channel": "التربوو ابوحازم والحمام",
+      "duration": "16:03",
+      "platform": "YouTube",
+      "date": "6 hours ago"
+    },
+    {
+      "position": 2,
+      "title": "Morocco 4|0 Madagascar: Extended Highlights & Goals [02|06 ...",
+      "link": "https://www.youtube.com/watch?v=r6tWAYE49xo",
+      "thumbnail": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/5DF-yqazhcezeeHJ4NRg28P-cpu8mYsDo4vTa_g7mxM.jpeg",
+      "channel": "F90",
+      "duration": "2:06",
+      "platform": "YouTube",
+      "date": "6 hours ago"
+    },
+    {
+      "position": 3,
+      "title": "Morocco vs Madagascar 4-0 | All Goals & Extеndеd Hіghlіghts ...",
+      "link": "https://www.youtube.com/watch?v=pQmgXaVcLBI",
+      "thumbnail": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/JVgpgqADrKVGjjTQZ-K-TyXKDt0yuHITrCeZBfhGHvA.jpeg",
+      "channel": "احمد ابوهاجر . ومحبي الحمام",
+      "duration": "10:59",
+      "platform": "YouTube",
+      "date": "5 hours ago"
+    }
+  ],
+  "related_questions": [
+    {
+      "question": "¿Quién ganó hoy entre Madagascar y Marruecos?",
+      "type": "featured_snippet",
+      "snippet": "A pesar de la reacción tardía de Madagascar, Marruecos se mantuvo firme para asegurar una victoria por 3-2 y conseguir su tercer título del CHAN, un récord que se suma a sus triunfos de 2018 y 2020.",
+      "title": "Marruecos vence a Madagascar en una dramática final y se alza con su tercer título del CHAN.",
+      "date": "Aug 30, 2025",
+      "link": "https://translate.google.com/translate?u=https://www.olympics.com/en/news/morocco-overcome-madagascar-in-dramatic-final-to-claim-third-chan-title&hl=es&sl=en&tl=es&client=rq#:~:text=Despite%20a%20late%20surge%20from,triumphs%20in%202018%20and%202020.",
+      "displayed_link": "https://www.olympics.com › news › morocco-overcome-...",
+      "source_logo": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/1q66OK22hqU5ICRP_9_YwzHy202_wxcXVHevslp-l3s.png",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUVzR6TFhsUlVsSjJSVVU1UzJWRWNtUm9XR0pvYWs0MlNHNWpha0pQWWpsQ1RFdG1ZVXM0TTBSRk56Z3hkbkZ6UlVOd2MyMTVkVVozUVdGMFNGazBhV05VWWxaV1QzWTFlbVpRT0dsV1pIVkthMTlITVRVNFIwWlJiVnBzYzNoclp4SVhjVWxCWm1GMVdFbExYMlprY25WRlVIUm1aa1ZwUVc4YUlrRktTMHhHYlVwMWN6QkJURjlVTUVsNVVUVkJUWGxJVmxoRlZHdHhjRlI1YWxFIiwiZmN2IjoiMyIsImVpIjoicUlBZmF1WElLX2ZkcnVFUHRmZkVpQW8iLCJxYyI6IkNpRnRZWEp5ZFdWamIzTWdkbk1nYldGa1lXZGhjMk5oY2lCeVpYTjFiSFJoWkc4UURuMnczdDAtIiwicXVlc3Rpb24iOiLCv1F1acOpbiBnYW7DsyBob3kgZW50cmUgTWFkYWdhc2NhciB5IE1hcnJ1ZWNvcz8iLCJsayI6IkdpeDNhRzhnZDI5dUlHSmxkSGRsWlc0Z2JXRmtZV2RoYzJOaGNpQmhibVFnYlc5eWIyTmpieUIwYjJSaGVTZ0EiLCJicyI6ImMzV1BzVTdETUJDR1lmWFVNY3AwQzJvbHFBZ2V1akJrWUs0UVFtSV83R3RpeWJHRFl6Y0tMNE1ZR1poNGdFakpTX0FJUEFhV2lwb01aYm83NmZ2X18zNVdzR3pvSDRJYVB3d1VhTVl2S0cwSFpMd2oyS0xFQWh1QkRycDRPQmRJMkNaUFBpWFAwcXUydE5CYUE4X2tXeUlEMVVTamtWQlpaNFd3NEszRWJuWEdudGhxNkdlT1FtT2pka3JFUk5Td0RVYXFPSG5HTjNueWRzdVg2VVgxSDF6TllHYlladWdmQ1VvOFVpanQ5QzdVNkJCb2lwRDBsX0x6eW1fU2RZbDdPajc3RWxCSEI1S3dzdzU4ZVVCalRhY2xpRkRISG9KZERfMWRHTi1OUDVoN0plT2lOZTF4bHRvb0F6VTVTUzVQdnVfNU9yMFVBVTlKcWhPU3hma3YiLCJpZCI6ImZjX3FJQWZhdVhJS19mZHJ1RVB0ZmZFaUFvXzQifQ==",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUVzR6TFhsUlVsSjJSVVU1UzJWRWNtUm9XR0pvYWs0MlNHNWpha0pQWWpsQ1RFdG1ZVXM0TTBSRk56Z3hkbkZ6UlVOd2MyMTVkVVozUVdGMFNGazBhV05VWWxaV1QzWTFlbVpRT0dsV1pIVkthMTlITVRVNFIwWlJiVnBzYzNoclp4SVhjVWxCWm1GMVdFbExYMlprY25WRlVIUm1aa1ZwUVc4YUlrRktTMHhHYlVwMWN6QkJURjlVTUVsNVVUVkJUWGxJVmxoRlZHdHhjRlI1YWxFIiwiZmN2IjoiMyIsImVpIjoicUlBZmF1WElLX2ZkcnVFUHRmZkVpQW8iLCJxYyI6IkNpRnRZWEp5ZFdWamIzTWdkbk1nYldGa1lXZGhjMk5oY2lCeVpYTjFiSFJoWkc4UURuMnczdDAtIiwicXVlc3Rpb24iOiLCv1F1acOpbiBnYW7DsyBob3kgZW50cmUgTWFkYWdhc2NhciB5IE1hcnJ1ZWNvcz8iLCJsayI6IkdpeDNhRzhnZDI5dUlHSmxkSGRsWlc0Z2JXRmtZV2RoYzJOaGNpQmhibVFnYlc5eWIyTmpieUIwYjJSaGVTZ0EiLCJicyI6ImMzV1BzVTdETUJDR1lmWFVNY3AwQzJvbHFBZ2V1akJrWUs0UVFtSV83R3RpeWJHRFl6Y0tMNE1ZR1poNGdFakpTX0FJUEFhV2lwb01aYm83NmZ2X18zNVdzR3pvSDRJYVB3d1VhTVl2S0cwSFpMd2oyS0xFQWh1QkRycDRPQmRJMkNaUFBpWFAwcXUydE5CYUE4X2tXeUlEMVVTamtWQlpaNFd3NEszRWJuWEdudGhxNkdlT1FtT2pka3JFUk5Td0RVYXFPSG5HTjNueWRzdVg2VVgxSDF6TllHYlladWdmQ1VvOFVpanQ5QzdVNkJCb2lwRDBsX0x6eW1fU2RZbDdPajc3RWxCSEI1S3dzdzU4ZVVCalRhY2xpRkRISG9KZERfMWRHTi1OUDVoN0plT2lOZTF4bHRvb0F6VTVTUzVQdnVfNU9yMFVBVTlKcWhPU3hma3YiLCJpZCI6ImZjX3FJQWZhdVhJS19mZHJ1RVB0ZmZFaUFvXzQifQ%3D%3D"
+    },
+    {
+      "question": "¿Madagascar clasificó al Mundial 2026?",
+      "type": "featured_snippet",
+      "snippet": "El Grupo I de la clasificación de CAF para la Copa Mundial de Fútbol de 2026 fue uno de los 9 grupos en los que se dividió la primera ronda de la clasificación africana. El grupo estuvo conformado por las selecciones de Malí, Ghana, Madagascar, República Centroafricana, Comoras y Chad.",
+      "title": "Anexo:Grupo I de la Clasificación de CAF para la Copa Mundial de ...",
+      "link": "https://es.wikipedia.org/wiki/Anexo:Grupo_I_de_la_Clasificaci%C3%B3n_de_CAF_para_la_Copa_Mundial_de_F%C3%BAtbol_de_2026#:~:text=El%20Grupo%20I%20de%20la,Rep%C3%BAblica%20Centroafricana%2C%20Comoras%20y%20Chad.",
+      "displayed_link": "https://es.wikipedia.org › wiki › Anexo:Grupo_I_de_la_...",
+      "source_logo": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/1q66OK22hqU5ICRP_9_Yw4q1j7SZG09cSM-E8YCWexU.png",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUVzR6TFhsUlVsSjJSVVU1UzJWRWNtUm9XR0pvYWs0MlNHNWpha0pQWWpsQ1RFdG1ZVXM0TTBSRk56Z3hkbkZ6UlVOd2MyMTVkVVozUVdGMFNGazBhV05VWWxaV1QzWTFlbVpRT0dsV1pIVkthMTlITVRVNFIwWlJiVnBzYzNoclp4SVhjVWxCWm1GMVdFbExYMlprY25WRlVIUm1aa1ZwUVc4YUlrRktTMHhHYlVwMWN6QkJURjlVTUVsNVVUVkJUWGxJVmxoRlZHdHhjRlI1YWxFIiwiZmN2IjoiMyIsImVpIjoicUlBZmF1WElLX2ZkcnVFUHRmZkVpQW8iLCJxYyI6IkNpRnRZWEp5ZFdWamIzTWdkbk1nYldGa1lXZGhjMk5oY2lCeVpYTjFiSFJoWkc4UURuMnczdDAtIiwicXVlc3Rpb24iOiLCv01hZGFnYXNjYXIgY2xhc2lmaWPDsyBhbCBNdW5kaWFsIDIwMjY/IiwibGsiOiJHaVZ0WVdSaFoyRnpZMkZ5SUdOc1lYTnBabWxqdzdNZ1lXd2diWFZ1WkdsaGJDQXlNREkyIiwiYnMiOiJjM1dQc1U3RE1CQ0dZZlhVTWNwMEMyb2xxQWdldWpCa1lLNFFRbUlfN0d0aXliR0RZemNLTDRNWUdaaDRnRWpKU19BSVBBYVdpcG9NWmJvNzZmdl9fMzVXc0d6b0g0SWFQd3dVYU1ZdktHMEhaTHdqMktMRUFodUJEcnA0T0JkSTJDWlBQaVhQMHF1MnROQmFBOF9rV3lJRDFVU2prVkJaWjRXdzRLM0ViblhHbnRocTZHZU9RbU9qZGtyRVJOU3dEVWFxT0huR04zbnlkc3VYNlVYMUgxek5ZR2JZWnVnZkNVbzhVaWp0OUM3VTZCQm9pcEQwbF9MenltX1NkWWw3T2o3N0VsQkhCNUt3c3c1OGVVQmpUYWNsaUZESEhvSmREXzFkR04tTlA1aDdKZU9pTmUxeGx0b29BelU1U1M1UHZ1XzVPcjBVQVU5SnFoT1N4Zmt2IiwiaWQiOiJmY19xSUFmYXVYSUtfZmRydUVQdGZmRWlBb180In0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUVzR6TFhsUlVsSjJSVVU1UzJWRWNtUm9XR0pvYWs0MlNHNWpha0pQWWpsQ1RFdG1ZVXM0TTBSRk56Z3hkbkZ6UlVOd2MyMTVkVVozUVdGMFNGazBhV05VWWxaV1QzWTFlbVpRT0dsV1pIVkthMTlITVRVNFIwWlJiVnBzYzNoclp4SVhjVWxCWm1GMVdFbExYMlprY25WRlVIUm1aa1ZwUVc4YUlrRktTMHhHYlVwMWN6QkJURjlVTUVsNVVUVkJUWGxJVmxoRlZHdHhjRlI1YWxFIiwiZmN2IjoiMyIsImVpIjoicUlBZmF1WElLX2ZkcnVFUHRmZkVpQW8iLCJxYyI6IkNpRnRZWEp5ZFdWamIzTWdkbk1nYldGa1lXZGhjMk5oY2lCeVpYTjFiSFJoWkc4UURuMnczdDAtIiwicXVlc3Rpb24iOiLCv01hZGFnYXNjYXIgY2xhc2lmaWPDsyBhbCBNdW5kaWFsIDIwMjY%2FIiwibGsiOiJHaVZ0WVdSaFoyRnpZMkZ5SUdOc1lYTnBabWxqdzdNZ1lXd2diWFZ1WkdsaGJDQXlNREkyIiwiYnMiOiJjM1dQc1U3RE1CQ0dZZlhVTWNwMEMyb2xxQWdldWpCa1lLNFFRbUlfN0d0aXliR0RZemNLTDRNWUdaaDRnRWpKU19BSVBBYVdpcG9NWmJvNzZmdl9fMzVXc0d6b0g0SWFQd3dVYU1ZdktHMEhaTHdqMktMRUFodUJEcnA0T0JkSTJDWlBQaVhQMHF1MnROQmFBOF9rV3lJRDFVU2prVkJaWjRXdzRLM0ViblhHbnRocTZHZU9RbU9qZGtyRVJOU3dEVWFxT0huR04zbnlkc3VYNlVYMUgxek5ZR2JZWnVnZkNVbzhVaWp0OUM3VTZCQm9pcEQwbF9MenltX1NkWWw3T2o3N0VsQkhCNUt3c3c1OGVVQmpUYWNsaUZESEhvSmREXzFkR04tTlA1aDdKZU9pTmUxeGx0b29BelU1U1M1UHZ1XzVPcjBVQVU5SnFoT1N4Zmt2IiwiaWQiOiJmY19xSUFmYXVYSUtfZmRydUVQdGZmRWlBb180In0%3D"
+    },
+    {
+      "question": "¿Se ha clasificado Marruecos para el Mundial de 2026?",
+      "type": "featured_snippet",
+      "snippet": "Marruecos se clasifica para el Mundial de 2026. La selección marroquí se ha convertido oficialmente en el primer equipo africano en clasificarse para la Copa Mundial de la FIFA 2026. 🎉⚽ Marruecos, que impresionó al mundo al llegar a las semifinales en Qatar 2022, ha mantenido su buen rendimiento en las eliminatorias.",
+      "title": "Marruecos se aseguró su plaza en la Copa Mundial de la FIFA 2026 ... - Facebook",
+      "date": "Apr 19, 2026",
+      "link": "https://translate.google.com/translate?u=https://www.facebook.com/fifa/posts/get-to-know-morocco-morocco-secured-their-place-at-fifa-world-cup-2026-on-5-sept/1915494019141241/&hl=es&sl=en&tl=es&client=rq#:~:text=Morocco%20Qualify%20for%20the%202026,strong%20form%20in%20the%20qualifiers.",
+      "displayed_link": "https://www.facebook.com › fifa › posts › get-to-know-...",
+      "source_logo": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/1q66OK22hqU5ICRP_9_Yw6U5CBYjCGXoW3PGC9SysFs.png",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUVzR6TFhsUlVsSjJSVVU1UzJWRWNtUm9XR0pvYWs0MlNHNWpha0pQWWpsQ1RFdG1ZVXM0TTBSRk56Z3hkbkZ6UlVOd2MyMTVkVVozUVdGMFNGazBhV05VWWxaV1QzWTFlbVpRT0dsV1pIVkthMTlITVRVNFIwWlJiVnBzYzNoclp4SVhjVWxCWm1GMVdFbExYMlprY25WRlVIUm1aa1ZwUVc4YUlrRktTMHhHYlVwMWN6QkJURjlVTUVsNVVUVkJUWGxJVmxoRlZHdHhjRlI1YWxFIiwiZmN2IjoiMyIsImVpIjoicUlBZmF1WElLX2ZkcnVFUHRmZkVpQW8iLCJxYyI6IkNpRnRZWEp5ZFdWamIzTWdkbk1nYldGa1lXZGhjMk5oY2lCeVpYTjFiSFJoWkc4UURuMnczdDAtIiwicXVlc3Rpb24iOiLCv1NlIGhhIGNsYXNpZmljYWRvIE1hcnJ1ZWNvcyBwYXJhIGVsIE11bmRpYWwgZGUgMjAyNj8iLCJsayI6IkdpMW9ZWFpsSUcxdmNtOWpZMjhnY1hWaGJHbG1hV1ZrSUdadmNpQjBhR1VnTWpBeU5pQjNiM0pzWkNCamRYQW9BQSIsImJzIjoiYzNXUHNVN0RNQkNHWWZYVU1jcDBDMm9scUFnZXVqQmtZSzRRUW1JXzdHdGl5YkdEWXpjS0w0TVlHWmg0Z0VqSlNfQUlQQWFXaXBvTVpibzc2ZnZfXzM1V3NHem9INElhUHd3VWFNWXZLRzBIWkx3ajJLTEVBaHVCRHJwNE9CZEkyQ1pQUGlYUDBxdTJ0TkJhQThfa1d5SUQxVVNqa1ZCWlo0V3c0SzNFYm5YR250aHE2R2VPUW1PamRrckVSTlN3RFVhcU9IbkdOM255ZHN1WDZVWDFIMXpOWUdiWVp1Z2ZDVW84VWlqdDlDN1U2QkJvaXBEMGxfTHp5bV9TZFlsN09qNzdFbEJIQjVLd3N3NThlVUJqVGFjbGlGREhIb0pkRF8xZEdOLU5QNWg3SmVPaU5lMXhsdG9vQXpVNVNTNVB2dV81T3IwVUFVOUpxaE9TeGZrdiIsImlkIjoiZmNfcUlBZmF1WElLX2ZkcnVFUHRmZkVpQW9fNCJ9",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUVzR6TFhsUlVsSjJSVVU1UzJWRWNtUm9XR0pvYWs0MlNHNWpha0pQWWpsQ1RFdG1ZVXM0TTBSRk56Z3hkbkZ6UlVOd2MyMTVkVVozUVdGMFNGazBhV05VWWxaV1QzWTFlbVpRT0dsV1pIVkthMTlITVRVNFIwWlJiVnBzYzNoclp4SVhjVWxCWm1GMVdFbExYMlprY25WRlVIUm1aa1ZwUVc4YUlrRktTMHhHYlVwMWN6QkJURjlVTUVsNVVUVkJUWGxJVmxoRlZHdHhjRlI1YWxFIiwiZmN2IjoiMyIsImVpIjoicUlBZmF1WElLX2ZkcnVFUHRmZkVpQW8iLCJxYyI6IkNpRnRZWEp5ZFdWamIzTWdkbk1nYldGa1lXZGhjMk5oY2lCeVpYTjFiSFJoWkc4UURuMnczdDAtIiwicXVlc3Rpb24iOiLCv1NlIGhhIGNsYXNpZmljYWRvIE1hcnJ1ZWNvcyBwYXJhIGVsIE11bmRpYWwgZGUgMjAyNj8iLCJsayI6IkdpMW9ZWFpsSUcxdmNtOWpZMjhnY1hWaGJHbG1hV1ZrSUdadmNpQjBhR1VnTWpBeU5pQjNiM0pzWkNCamRYQW9BQSIsImJzIjoiYzNXUHNVN0RNQkNHWWZYVU1jcDBDMm9scUFnZXVqQmtZSzRRUW1JXzdHdGl5YkdEWXpjS0w0TVlHWmg0Z0VqSlNfQUlQQWFXaXBvTVpibzc2ZnZfXzM1V3NHem9INElhUHd3VWFNWXZLRzBIWkx3ajJLTEVBaHVCRHJwNE9CZEkyQ1pQUGlYUDBxdTJ0TkJhQThfa1d5SUQxVVNqa1ZCWlo0V3c0SzNFYm5YR250aHE2R2VPUW1PamRrckVSTlN3RFVhcU9IbkdOM255ZHN1WDZVWDFIMXpOWUdiWVp1Z2ZDVW84VWlqdDlDN1U2QkJvaXBEMGxfTHp5bV9TZFlsN09qNzdFbEJIQjVLd3N3NThlVUJqVGFjbGlGREhIb0pkRF8xZEdOLU5QNWg3SmVPaU5lMXhsdG9vQXpVNVNTNVB2dV81T3IwVUFVOUpxaE9TeGZrdiIsImlkIjoiZmNfcUlBZmF1WElLX2ZkcnVFUHRmZkVpQW9fNCJ9"
+    },
+    {
+      "question": "¿Cuántos partidos lleva Marruecos sin perder?",
+      "type": "featured_snippet",
+      "snippet": "21 seguidos sin perder. Estos datos no hacen sino confirmar el crecimiento del fútbol marroquí, que acaba de meterse, por primera vez, para su cuarto Mundial seguido, y, además organizará el del 2030, junto a España y Portugal.",
+      "title": "La Selección con mejores resultados del mundo: no es ni España ni ...",
+      "date": "Nov 20, 2025",
+      "link": "https://www.marca.com/futbol/mundial/2025/11/20/seleccion-mejores-resultados-mundo-espana-argentina.html#:~:text=21%20seguidos%20sin%20perder.,junto%20a%20Espa%C3%B1a%20y%20Portugal.",
+      "displayed_link": "https://www.marca.com › futbol › mundial › 2025/11/20",
+      "source_logo": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/1q66OK22hqU5ICRP_9_Yw7iJu1mOZlv4YeS8Rrc2JoU.png",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUVzR6TFhsUlVsSjJSVVU1UzJWRWNtUm9XR0pvYWs0MlNHNWpha0pQWWpsQ1RFdG1ZVXM0TTBSRk56Z3hkbkZ6UlVOd2MyMTVkVVozUVdGMFNGazBhV05VWWxaV1QzWTFlbVpRT0dsV1pIVkthMTlITVRVNFIwWlJiVnBzYzNoclp4SVhjVWxCWm1GMVdFbExYMlprY25WRlVIUm1aa1ZwUVc4YUlrRktTMHhHYlVwMWN6QkJURjlVTUVsNVVUVkJUWGxJVmxoRlZHdHhjRlI1YWxFIiwiZmN2IjoiMyIsImVpIjoicUlBZmF1WElLX2ZkcnVFUHRmZkVpQW8iLCJxYyI6IkNpRnRZWEp5ZFdWamIzTWdkbk1nYldGa1lXZGhjMk5oY2lCeVpYTjFiSFJoWkc4UURuMnczdDAtIiwicXVlc3Rpb24iOiLCv0N1w6FudG9zIHBhcnRpZG9zIGxsZXZhIE1hcnJ1ZWNvcyBzaW4gcGVyZGVyPyIsImxrIjoiYzVQU1RpNU56Q3ZKTDFZb1NDd3F5VXdCTW5KeVVzc1NGWElUaTRwS1U1T0JfT0xNUElXQzFLS1UxQ0lBIiwiYnMiOiJjM1dQc1U3RE1CQ0dZZlhVTWNwMEMyb2xxQWdldWpCa1lLNFFRbUlfN0d0aXliR0RZemNLTDRNWUdaaDRnRWpKU19BSVBBYVdpcG9NWmJvNzZmdl9fMzVXc0d6b0g0SWFQd3dVYU1ZdktHMEhaTHdqMktMRUFodUJEcnA0T0JkSTJDWlBQaVhQMHF1MnROQmFBOF9rV3lJRDFVU2prVkJaWjRXdzRLM0ViblhHbnRocTZHZU9RbU9qZGtyRVJOU3dEVWFxT0huR04zbnlkc3VYNlVYMUgxek5ZR2JZWnVnZkNVbzhVaWp0OUM3VTZCQm9pcEQwbF9MenltX1NkWWw3T2o3N0VsQkhCNUt3c3c1OGVVQmpUYWNsaUZESEhvSmREXzFkR04tTlA1aDdKZU9pTmUxeGx0b29BelU1U1M1UHZ1XzVPcjBVQVU5SnFoT1N4Zmt2IiwiaWQiOiJmY19xSUFmYXVYSUtfZmRydUVQdGZmRWlBb180In0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJUVzR6TFhsUlVsSjJSVVU1UzJWRWNtUm9XR0pvYWs0MlNHNWpha0pQWWpsQ1RFdG1ZVXM0TTBSRk56Z3hkbkZ6UlVOd2MyMTVkVVozUVdGMFNGazBhV05VWWxaV1QzWTFlbVpRT0dsV1pIVkthMTlITVRVNFIwWlJiVnBzYzNoclp4SVhjVWxCWm1GMVdFbExYMlprY25WRlVIUm1aa1ZwUVc4YUlrRktTMHhHYlVwMWN6QkJURjlVTUVsNVVUVkJUWGxJVmxoRlZHdHhjRlI1YWxFIiwiZmN2IjoiMyIsImVpIjoicUlBZmF1WElLX2ZkcnVFUHRmZkVpQW8iLCJxYyI6IkNpRnRZWEp5ZFdWamIzTWdkbk1nYldGa1lXZGhjMk5oY2lCeVpYTjFiSFJoWkc4UURuMnczdDAtIiwicXVlc3Rpb24iOiLCv0N1w6FudG9zIHBhcnRpZG9zIGxsZXZhIE1hcnJ1ZWNvcyBzaW4gcGVyZGVyPyIsImxrIjoiYzVQU1RpNU56Q3ZKTDFZb1NDd3F5VXdCTW5KeVVzc1NGWElUaTRwS1U1T0JfT0xNUElXQzFLS1UxQ0lBIiwiYnMiOiJjM1dQc1U3RE1CQ0dZZlhVTWNwMEMyb2xxQWdldWpCa1lLNFFRbUlfN0d0aXliR0RZemNLTDRNWUdaaDRnRWpKU19BSVBBYVdpcG9NWmJvNzZmdl9fMzVXc0d6b0g0SWFQd3dVYU1ZdktHMEhaTHdqMktMRUFodUJEcnA0T0JkSTJDWlBQaVhQMHF1MnROQmFBOF9rV3lJRDFVU2prVkJaWjRXdzRLM0ViblhHbnRocTZHZU9RbU9qZGtyRVJOU3dEVWFxT0huR04zbnlkc3VYNlVYMUgxek5ZR2JZWnVnZkNVbzhVaWp0OUM3VTZCQm9pcEQwbF9MenltX1NkWWw3T2o3N0VsQkhCNUt3c3c1OGVVQmpUYWNsaUZESEhvSmREXzFkR04tTlA1aDdKZU9pTmUxeGx0b29BelU1U1M1UHZ1XzVPcjBVQVU5SnFoT1N4Zmt2IiwiaWQiOiJmY19xSUFmYXVYSUtfZmRydUVQdGZmRWlBb180In0%3D"
+    }
+  ],
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "Marruecos 4-0 Madagascar (2 de Jun., 2026) Resultado ...",
+      "link": "https://espndeportes.espn.com/futbol/partido/_/juegoId/401872680/madagascar-marruecos",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://espndeportes.espn.com/futbol/partido/_/juegoId/401872680/madagascar-marruecos&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQFnoECCEQAQ",
+      "displayed_link": "https://espndeportes.espn.com › m...",
+      "favicon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3Dux9mESK-dPpnnur8ujGhI.png",
+      "snippet": "Resumen del partido Marruecos vs. Madagascar Amistosos Internacionales resultado final 4-0, jugado el 2 de Junio, 2026 en ESPN DEPORTES.",
+      "snippet_highlighted_words": [
+        "Marruecos vs",
+        "Madagascar",
+        "resultado"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Resumen del partido Marruecos vs. Madagascar Amistosos Internacionales resultado final 4-0, jugado el 2 de Junio, 2026 en ESPN DEPORTES.",
+          "source_info_link": "https://espndeportes.espn.com/futbol/partido/_/juegoId/401872680/madagascar-marruecos",
+          "icon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3DkpY1b2jfHrmixHMrcaG5P9lDELI9siQo3l07xcsIEQ.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://espndeportes.espn.com/futbol/partido/_/juegoId/401872680/madagascar-marruecos&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fespndeportes.espn.com%2Ffutbol%2Fpartido%2F_%2FjuegoId%2F401872680%2Fmadagascar-marruecos",
+      "source": "ESPN Deportes"
+    },
+    {
+      "position": 2,
+      "title": "Marruecos vs Madagascar 02/06/2026 | Fútbol",
+      "link": "https://www.flashscore.es/partido/futbol/madagascar-88OzY9OB/marruecos-IDKYO3R8/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.flashscore.es/partido/futbol/madagascar-88OzY9OB/marruecos-IDKYO3R8/&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQFnoECCMQAQ",
+      "displayed_link": "https://www.flashscore.es › futbol",
+      "favicon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3KMWiO1Lmx06zHaYIyqF6Vg.png",
+      "snippet": "Sigue el Marruecos v Madagascar 02/06/2026 historial de enfrentamientos (H2H), últimas noticias, resultados y más información en Flashscore.",
+      "snippet_highlighted_words": [
+        "Marruecos v Madagascar",
+        "resultados"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Sigue el Marruecos v Madagascar 02/06/2026 historial de enfrentamientos (H2H), últimas noticias, resultados y más información en Flashscore.",
+          "source_info_link": "https://www.flashscore.es/partido/futbol/madagascar-88OzY9OB/marruecos-IDKYO3R8/",
+          "icon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3EzfCdmS1KrnEQqEJG97SNuSd96NdlgyysXHSxWgiSJ7.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.flashscore.es/partido/futbol/madagascar-88OzY9OB/marruecos-IDKYO3R8/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.flashscore.es%2Fpartido%2Ffutbol%2Fmadagascar-88OzY9OB%2Fmarruecos-IDKYO3R8%2F",
+      "source": "Flashscore.es"
+    },
+    {
+      "position": 3,
+      "title": "Marruecos - Madagascar en vivo, resultados H2H",
+      "link": "https://www.sofascore.com/es/football/match/madagascar-morocco/DVbsKkd",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.sofascore.com/es/football/match/madagascar-morocco/DVbsKkd&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQFnoECCUQAQ",
+      "displayed_link": "https://www.sofascore.com › match › DVbsKkd",
+      "favicon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3E8w45V3tccHJ4oLDTx_FKc.png",
+      "snippet": "En Sofascore puntuaciones en directo puedes encontrar todos los resultados de partidos precios entre Marruecos y Madagascar clasificaciones, calendarios, ...",
+      "snippet_highlighted_words": [
+        "puedes encontrar todos los resultados de partidos precios entre Marruecos y Madagascar"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "En Sofascore puntuaciones en directo puedes encontrar todos los resultados de partidos precios entre Marruecos y Madagascar clasificaciones, calendarios,  ...",
+          "source_info_link": "https://www.sofascore.com/es/football/match/madagascar-morocco/DVbsKkd",
+          "icon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3KZbjBMl40yf38h-8N8odeTlC9zuYlbXfb8AbtNqGoz5.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.sofascore.com/es/football/match/madagascar-morocco/DVbsKkd&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.sofascore.com%2Fes%2Ffootball%2Fmatch%2Fmadagascar-morocco%2FDVbsKkd",
+      "source": "Sofascore"
+    },
+    {
+      "position": 4,
+      "title": "Marruecos vs Madagascar: Alineaciones, estadísticas y ...",
+      "link": "https://www.365scores.com/es/football/match/friendly-international-570/madagascar-morocco-5093-5597-570",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.365scores.com/es/football/match/friendly-international-570/madagascar-morocco-5093-5597-570&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQFnoECCQQAQ",
+      "displayed_link": "https://www.365scores.com › match",
+      "favicon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3IsWpGMVZ9aGIHuZcbY9-tE.png",
+      "snippet": "Madagascar Madagascar African Nations Championship 2 - 3 Marruecos 30/08/2025 Marruecos African Nations Championship 0 - 3 Madagascar 19/01/2023. Con 365Scores ...",
+      "snippet_highlighted_words": [
+        "Madagascar Madagascar",
+        "Marruecos",
+        "Marruecos",
+        "Madagascar"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Madagascar Madagascar African Nations Championship 2 - 3 Marruecos 30/08/2025 Marruecos African Nations Championship 0 - 3 Madagascar 19/01/2023. Con 365Scores ...",
+          "source_info_link": "https://www.365scores.com/es/football/match/friendly-international-570/madagascar-morocco-5093-5597-570",
+          "icon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3Jx1-bgxVwqm1-f5RZC37J5ELvme_tyxTOftZazfbK7g.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.365scores.com/es/football/match/friendly-international-570/madagascar-morocco-5093-5597-570&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.365scores.com%2Fes%2Ffootball%2Fmatch%2Ffriendly-international-570%2Fmadagascar-morocco-5093-5597-570",
+      "source": "365Scores"
+    },
+    {
+      "position": 5,
+      "title": "Marruecos vs Madagascar H2H historia resultados",
+      "link": "https://www.aiscore.com/es/head-to-head/soccer-madagascar-vs-morocco",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.aiscore.com/es/head-to-head/soccer-madagascar-vs-morocco&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQFnoECB8QAQ",
+      "displayed_link": "https://www.aiscore.com › soccer-...",
+      "favicon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3NVVmGIl0Fm7hW62wVj_nKo.png",
+      "snippet": "Entre ellos, Marruecos ganó 1 partidos (Goles totales 3, PPG 1.5), Madagascar ganó 1 (Goles totales 5, PPG 2.5), y empataron -. Resultados anteriores de ...",
+      "snippet_highlighted_words": [
+        "Marruecos",
+        "Madagascar",
+        "Resultados"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Entre ellos, Marruecos ganó 1 partidos (Goles totales 3, PPG 1.5), Madagascar ganó 1 (Goles totales 5, PPG 2.5), y empataron -. Resultados anteriores de ...",
+          "source_info_link": "https://www.aiscore.com/es/head-to-head/soccer-madagascar-vs-morocco",
+          "icon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3Bqvz-WjMKkvJ5L2ziIQ24IIWu5rMb9LORld5vAp5wnW.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.aiscore.com/es/head-to-head/soccer-madagascar-vs-morocco&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.aiscore.com%2Fes%2Fhead-to-head%2Fsoccer-madagascar-vs-morocco",
+      "source": "AiScore",
+      "read_more_link": "https://www.aiscore.com/es/head-to-head/soccer-madagascar-vs-morocco#:~:text=Los%20equipos%20de%20f%C3%BAtbol%20Marruecos,goles%20totales%20m%C3%A1s%20de%20100.0%25."
+    },
+    {
+      "position": 6,
+      "title": "Marruecos vs Madagascar 02/06/2026 | Fútbol",
+      "link": "https://www.flashscore.co/partido/futbol/madagascar-88OzY9OB/marruecos-IDKYO3R8/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.flashscore.co/partido/futbol/madagascar-88OzY9OB/marruecos-IDKYO3R8/&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQFnoECB4QAQ",
+      "displayed_link": "https://www.flashscore.co › futbol",
+      "favicon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3N6MOY4j2UZfqdy7_rkMWD0.png",
+      "snippet": "Sigue el Marruecos v Madagascar 02/06/2026 historial de enfrentamientos (H2H), últimas noticias, resultados y más información en Flashscore.",
+      "snippet_highlighted_words": [
+        "Marruecos v Madagascar",
+        "resultados"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Sigue el Marruecos v Madagascar 02/06/2026 historial de enfrentamientos (H2H), últimas noticias, resultados y más información en Flashscore.",
+          "source_info_link": "https://www.flashscore.co/partido/futbol/madagascar-88OzY9OB/marruecos-IDKYO3R8/",
+          "icon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3L6oyBib9zeUOtPfo50pTvZPP3cQYIPYEtTu2Ns7_CtS.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.flashscore.co/partido/futbol/madagascar-88OzY9OB/marruecos-IDKYO3R8/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.flashscore.co%2Fpartido%2Ffutbol%2Fmadagascar-88OzY9OB%2Fmarruecos-IDKYO3R8%2F",
+      "source": "Flashscore.co"
+    },
+    {
+      "position": 7,
+      "title": "Marruecos vs Madagascar + “resultados”",
+      "link": "https://onefootball.com/es/partido/2682950",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://onefootball.com/es/partido/2682950&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQFnoECCAQAQ",
+      "displayed_link": "https://onefootball.com › partido",
+      "favicon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3J8BSrocZcCPkOM_gCooYuI.png",
+      "snippet": "Marruecos aplastó a Madagascar en amistoso previo al Mundial 2026 y se despidió de su público con notable 4-0.La Selección de Marruecos mostró credenciales en ...",
+      "snippet_highlighted_words": [
+        "Marruecos aplastó a Madagascar en amistoso previo al Mundial 2026"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Marruecos aplastó a Madagascar en amistoso previo al Mundial 2026 y se despidió de su público con notable 4-0.La Selección de Marruecos mostró credenciales en ...",
+          "source_info_link": "https://onefootball.com/es/partido/2682950",
+          "icon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3PGvxpm6TYR2NksHZ-PHGedflG3On41Ym7q4szJtP5kM.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://onefootball.com/es/partido/2682950&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fonefootball.com%2Fes%2Fpartido%2F2682950",
+      "source": "OneFootball",
+      "read_more_link": "https://onefootball.com/es/partido/2682950#:~:text=Vermouth%20Deportivo%C2%B7"
+    },
+    {
+      "position": 8,
+      "title": "Comparador: Marruecos vs Madagascar | AS.com",
+      "link": "https://as.com/resultados/comparador/equipo/marruecos_1884/madagascar_689386675bb0e34/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://as.com/resultados/comparador/equipo/marruecos_1884/madagascar_689386675bb0e34/&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQFnoECCIQAQ",
+      "displayed_link": "https://as.com › marruecos_1884",
+      "favicon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3EPmIwbfRjkSTNxvRM5fGys.png",
+      "snippet": "Compara Marruecos y Madagascar y consulta quién es mejor: datos, edades, títulos, palmarés, quién marcó más goles, dio más asistencias, cometió más faltas y ...",
+      "snippet_highlighted_words": [
+        "Marruecos",
+        "Madagascar"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Compara Marruecos y Madagascar y consulta quién es mejor: datos, edades, títulos, palmarés, quién marcó más goles, dio más asistencias, cometió más faltas y ...",
+          "source_info_link": "https://as.com/resultados/comparador/equipo/marruecos_1884/madagascar_689386675bb0e34/",
+          "icon": "https://serpapi.com/searches/6a1f80a8e3e176dfc7330c30/images/wbTF4xDIACveDZ-RpieF3BMyaiN9aEA2WD8OolkMgQ3sk73ha6IvzSVOfSvAb_um.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://as.com/resultados/comparador/equipo/marruecos_1884/madagascar_689386675bb0e34/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fas.com%2Fresultados%2Fcomparador%2Fequipo%2Fmarruecos_1884%2Fmadagascar_689386675bb0e34%2F",
+      "source": "Diario AS"
+    }
+  ],
+  "related_searches": [
+    {
+      "block_position": 1,
+      "query": "Marruecos vs madagascar resultado live",
+      "link": "https://www.google.com/search?sca_esv=f6b7f188eae7b463&q=Marruecos+vs+madagascar+resultado+live&sa=X&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ1QJ6BAg7EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+madagascar+resultado+live"
+    },
+    {
+      "block_position": 1,
+      "query": "Resultado Marruecos hoy",
+      "link": "https://www.google.com/search?sca_esv=f6b7f188eae7b463&q=Resultado+Marruecos+hoy&sa=X&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ1QJ6BAhaEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Resultado+Marruecos+hoy"
+    },
+    {
+      "block_position": 1,
+      "query": "Morocco vs madagascar live",
+      "link": "https://www.google.com/search?sca_esv=f6b7f188eae7b463&q=Morocco+vs+madagascar+live&sa=X&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ1QJ6BAhTEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Morocco+vs+madagascar+live"
+    },
+    {
+      "block_position": 1,
+      "query": "Morocco vs madagascar prediction",
+      "link": "https://www.google.com/search?sca_esv=f6b7f188eae7b463&q=Morocco+vs+madagascar+prediction&sa=X&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ1QJ6BAhOEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Morocco+vs+madagascar+prediction"
+    },
+    {
+      "block_position": 1,
+      "query": "Madagascar vs Marruecos",
+      "link": "https://www.google.com/search?sca_esv=f6b7f188eae7b463&q=Madagascar+vs+Marruecos&sa=X&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ1QJ6BAhKEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Madagascar+vs+Marruecos"
+    },
+    {
+      "block_position": 1,
+      "query": "Marruecos vs hoy",
+      "link": "https://www.google.com/search?sca_esv=f6b7f188eae7b463&q=Marruecos+vs+hoy&sa=X&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ1QJ6BAhJEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+hoy"
+    },
+    {
+      "block_position": 1,
+      "query": "Brasil vs Madagascar hoy",
+      "link": "https://www.google.com/search?sca_esv=f6b7f188eae7b463&q=Brasil+vs+Madagascar+hoy&sa=X&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ1QJ6BAhHEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Brasil+vs+Madagascar+hoy"
+    },
+    {
+      "block_position": 1,
+      "query": "Resultado madagascar hoy",
+      "link": "https://www.google.com/search?sca_esv=f6b7f188eae7b463&q=Resultado+madagascar+hoy&sa=X&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ1QJ6BAhGEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Resultado+madagascar+hoy"
+    }
+  ],
+  "pagination": {
+    "current": 1,
+    "next": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=10&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8NMDegQINxAW",
+    "other_pages": {
+      "2": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=10&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8tMDegQINxAE",
+      "3": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=20&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8tMDegQINxAG",
+      "4": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=30&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8tMDegQINxAI",
+      "5": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=40&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8tMDegQINxAK",
+      "6": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=50&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8tMDegQINxAM",
+      "7": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=60&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8tMDegQINxAO",
+      "8": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=70&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8tMDegQINxAQ",
+      "9": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=80&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8tMDegQINxAS",
+      "10": "https://www.google.com/search?q=Marruecos+vs+Madagascar+resultado&sca_esv=f6b7f188eae7b463&ei=qIAfauXIK_fdruEPtffEiAo&start=90&sa=N&sstk=AU9db-Ds7k0Xz4rATaG54_WgDUYfWgXeUiNSO_5kPDz6SC0PZUyrDoTdTKegHfEuXglmbLEEMj_l0fuHPZ7VMSnyuZnfSjR9ke9kBg&ved=2ahUKEwjlvLmH8-mUAxX3risGHbU7EaEQ8tMDegQINxAU"
+    }
+  },
+  "serpapi_pagination": {
+    "current": 1,
+    "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=10",
+    "next": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=10",
+    "other_pages": {
+      "2": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=10",
+      "3": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=20",
+      "4": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=30",
+      "5": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=40",
+      "6": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=50",
+      "7": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=60",
+      "8": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=70",
+      "9": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=80",
+      "10": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&q=Marruecos+vs+Madagascar+resultado&start=90"
+    }
+  }
+}
