@@ -27,6 +27,7 @@ $routes->post('sportsbook/responsible-limits', 'Sportsbook::saveResponsibleLimit
 $routes->get('sportsbook/profile', 'Sportsbook::profile');
 $routes->post('sportsbook/profile/update', 'Sportsbook::updateProfile');
 $routes->post('sportsbook/self-exclusion', 'Sportsbook::selfExclusion');
+$routes->get('sportsbook/cashout/quote/(:num)', 'Sportsbook::cashOutQuote/$1');
 $routes->post('sportsbook/cashout/(:num)', 'Sportsbook::cashOut/$1');
 $routes->post('sportsbook/deposit', 'Sportsbook::deposit');
 $routes->get('sportsbook/kyc', 'Sportsbook::kyc');
@@ -130,6 +131,12 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->get('settings', 'Dashboard::settings');
     $routes->post('settings/update', 'Dashboard::updateSettings');
     $routes->post('settings/clear-cache', 'Dashboard::clearCache');
+    
+    // API-Football Jobs
+    $routes->post('jobs/fetch-fixtures', 'Dashboard::triggerFetchFixtures');
+    $routes->post('jobs/fetch-odds', 'Dashboard::triggerFetchOdds');
+    $routes->post('jobs/settle', 'Dashboard::triggerSettleBets');
+    $routes->post('jobs/start-websocket', 'Dashboard::triggerStartWebSocket');
 });
 
 $routes->get('run-migrations-public', function() {

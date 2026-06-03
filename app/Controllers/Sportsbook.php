@@ -764,6 +764,23 @@ class Sportsbook extends BaseController
         ]);
     }
 
+    public function cashOutQuote($slipId)
+    {
+        if (!session()->get('isLoggedIn')) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Debes iniciar sesion.']);
+        }
+
+        $userId = (int) session()->get('user_id');
+        $cashOutService = new \App\Services\CashOutService();
+        $value = $cashOutService->calculateCashOutValue($slipId);
+
+        if ($value === null) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Cash-out no disponible.']);
+        }
+
+        return $this->response->setJSON(['status' => 'success', 'value' => $value]);
+    }
+
     public function cashOut($slipId)
     {
         if (!session()->get('isLoggedIn')) {
@@ -776,74 +793,29 @@ class Sportsbook extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => $compliance['message']]);
         }
 
-        $db = \Config\Database::connect();
-        $slip = $db->table('bet_slips')
-            ->where('id', (int) $slipId)
-            ->where('user_id', $userId)
-            ->get()
-            ->getRowArray();
+        try {
+            $cashOutService = new \App\Services\CashOutService();
+            $value = $cashOutService->executeCashOut($slipId, $userId);
 
-        if (! $slip) {
-            return $this->response->setStatusCode(404)->setJSON(['status' => 'error', 'message' => 'Ticket no encontrado.']);
+            // Fetch new balance to return
+            $db = \Config\Database::connect();
+            $wallet = $db->table('wallets')->where('user_id', $userId)->get()->getRowArray();
+
+            \App\Libraries\AuditLogger::log($userId, 'ticket_cashed_out', 'bet_slip', (int) $slipId, ['status' => 'cashed_out'], [
+                'cashout_value' => $value,
+                'balance' => $wallet['balance'],
+            ]);
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Cash-out procesado correctamente.',
+                'cashout_value' => $value,
+                'new_balance' => $wallet['balance'],
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
         }
-
-        $cashOut = new \App\Services\CashOutService();
-        $allowed = $cashOut->canCashOut($slip);
-        if (! $allowed['allowed']) {
-            return $this->response->setJSON(['status' => 'error', 'message' => $allowed['message']]);
-        }
-
-        $value = $cashOut->quote($slip);
-        if ($value <= 0) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Cash-out no disponible para este ticket.']);
-        }
-
-        $walletModel = new \App\Models\WalletModel();
-        $txModel = new \App\Models\TransactionModel();
-        $wallet = $walletModel->where('user_id', $userId)->first();
-        if (! $wallet) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Billetera no encontrada.']);
-        }
-
-        $newBalance = round((float) $wallet['balance'] + $value, 2);
-
-        $db->transStart();
-        $db->table('bet_slips')->where('id', (int) $slipId)->where('status', 'pending')->update([
-            'status' => 'cashed_out',
-            'cashout_value' => $value,
-            'cashed_out_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-        $db->table('bet_selections')->where('bet_slip_id', (int) $slipId)->where('status', 'pending')->update([
-            'status' => 'void',
-            'updated_at' => date('Y-m-d H:i:s'),
-        ]);
-        $walletModel->update((int) $wallet['id'], ['balance' => $newBalance]);
-        $txModel->insert([
-            'wallet_id' => (int) $wallet['id'],
-            'type' => 'bet_cashout',
-            'amount' => $value,
-            'balance_after' => $newBalance,
-            'reference_id' => (int) $slipId,
-            'description' => 'Cash-out Ticket #' . (int) $slipId,
-        ]);
-        $db->transComplete();
-
-        if (! $db->transStatus()) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'No se pudo procesar el cash-out.']);
-        }
-
-        \App\Libraries\AuditLogger::log($userId, 'ticket_cashed_out', 'bet_slip', (int) $slipId, ['status' => $slip['status']], [
-            'cashout_value' => $value,
-            'balance' => $newBalance,
-        ]);
-
-        return $this->response->setJSON([
-            'status' => 'success',
-            'message' => 'Cash-out procesado correctamente.',
-            'cashout_value' => $value,
-            'new_balance' => $newBalance,
-        ]);
     }
 
     public function ticket($slipId)

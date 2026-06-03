@@ -48,74 +48,155 @@ class ScoreFetcherService
     {
         $leagueId = self::LEAGUE_MAP[$apiSportKey] ?? null;
 
-        if (!$leagueId) {
-            log_message('warning', "ScoreFetcher: Liga no mapeada para key '{$apiSportKey}'");
+        if ($leagueId) {
+            // Endpoint: últimos 15 partidos finalizados de la liga
+            $url = self::BASE_URL . "/eventspastleague.php?id={$leagueId}";
+
+            try {
+                $client = \Config\Services::curlrequest();
+                $response = $client->request('GET', $url, [
+                    'http_errors' => false,
+                    'timeout' => 8
+                ]);
+
+                if ($response->getStatusCode() === 200) {
+                    $data = json_decode($response->getBody(), true);
+                    $matches = $data['events'] ?? [];
+
+                    if (!empty($matches)) {
+                        $homeTeamDb = strtolower(trim($event['home_team']));
+                        $awayTeamDb = strtolower(trim($event['away_team']));
+
+                        foreach ($matches as $match) {
+                            $homeApi = strtolower(trim($match['strHomeTeam'] ?? ''));
+                            $awayApi = strtolower(trim($match['strAwayTeam'] ?? ''));
+
+                            if ($match['intHomeScore'] === null || $match['intAwayScore'] === null) {
+                                continue;
+                            }
+
+                            $normalMatch = $this->isMatch($homeTeamDb, $homeApi) && $this->isMatch($awayTeamDb, $awayApi);
+                            $reversedMatch = $this->isMatch($homeTeamDb, $awayApi) && $this->isMatch($awayTeamDb, $homeApi);
+
+                            if ($normalMatch || $reversedMatch) {
+                                if ($normalMatch) {
+                                    $homeScore = (int) $match['intHomeScore'];
+                                    $awayScore = (int) $match['intAwayScore'];
+                                } else {
+                                    $homeScore = (int) $match['intAwayScore'];
+                                    $awayScore = (int) $match['intHomeScore'];
+                                }
+
+                                return "{$homeScore}-{$awayScore}";
+                            }
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                log_message('error', 'ScoreFetcherService TheSportsDB Exception: ' . $e->getMessage());
+            }
+        }
+
+        // Si no encontró con TheSportsDB o la liga no estaba mapeada, intentar búsqueda directa por Google (SerpApi)
+        $serpApiResult = $this->searchByGoogleSerpApi($event);
+        if ($serpApiResult) {
+            return $serpApiResult;
+        }
+
+        // Fallback a TheSportsDB direct search
+        return $this->searchByEventName($event);
+    }
+
+
+    /**
+     * Búsqueda del resultado en Google usando SerpApi.
+     */
+    private function searchByGoogleSerpApi(array $event): ?string
+    {
+        $serpApiKey = env('SERPAPI_KEY') ?: getenv('SERPAPI_KEY') ?: ($_ENV['SERPAPI_KEY'] ?? $_SERVER['SERPAPI_KEY'] ?? null);
+        if (!$serpApiKey) {
+            log_message('error', 'ScoreFetcher: No SERPAPI_KEY found in .env');
             return null;
         }
 
-        // Endpoint: últimos 15 partidos finalizados de la liga
-        $url = self::BASE_URL . "/eventspastleague.php?id={$leagueId}";
+        $query = urlencode(trim($event['home_team']) . ' vs ' . trim($event['away_team']) . ' resultado');
+        $url = "https://serpapi.com/search.json?engine=google&q={$query}&api_key={$serpApiKey}";
 
         try {
             $client = \Config\Services::curlrequest();
             $response = $client->request('GET', $url, [
                 'http_errors' => false,
-                'timeout' => 8
+                'timeout' => 10
             ]);
 
-            if ($response->getStatusCode() !== 200) {
-                log_message('error', "TheSportsDB HTTP {$response->getStatusCode()}: {$response->getBody()}");
-                return null;
-            }
+            if ($response->getStatusCode() === 200) {
+                $data = json_decode($response->getBody(), true);
+                
+                $homeTeamDb = strtolower(trim($event['home_team']));
+                $awayTeamDb = strtolower(trim($event['away_team']));
 
-            $data = json_decode($response->getBody(), true);
-            $matches = $data['events'] ?? [];
+                // Strategy 1: game_spotlight
+                if (isset($data['sports_results']['game_spotlight']['teams'])) {
+                    $teams = $data['sports_results']['game_spotlight']['teams'];
+                    
+                    if (count($teams) >= 2) {
+                        $homeApi = strtolower(trim($teams[0]['name']));
+                        $awayApi = strtolower(trim($teams[1]['name']));
+                        
+                        $score0 = $teams[0]['score'] ?? null;
+                        $score1 = $teams[1]['score'] ?? null;
 
-            if (empty($matches)) {
-                log_message('info', "ScoreFetcher: No hay eventos recientes en TheSportsDB para liga {$leagueId}");
-                return null;
-            }
+                        if ($score0 !== null && $score1 !== null) {
+                            $homeMatch = $this->isMatch($homeTeamDb, $homeApi);
+                            $awayMatch = $this->isMatch($awayTeamDb, $awayApi);
 
-            $homeTeamDb = strtolower(trim($event['home_team']));
-            $awayTeamDb = strtolower(trim($event['away_team']));
+                            if ($homeMatch || $awayMatch) {
+                                $homeScore = (int)$score0;
+                                $awayScore = (int)$score1;
+                            } else {
+                                $homeScore = (int)$score1;
+                                $awayScore = (int)$score0;
+                            }
 
-            log_message('info', "ScoreFetcher: Buscando [{$homeTeamDb}] vs [{$awayTeamDb}] en " . count($matches) . " resultados de TheSportsDB");
-
-            foreach ($matches as $match) {
-                $homeApi = strtolower(trim($match['strHomeTeam'] ?? ''));
-                $awayApi = strtolower(trim($match['strAwayTeam'] ?? ''));
-
-                // Verificar que el partido tenga marcador
-                if ($match['intHomeScore'] === null || $match['intAwayScore'] === null) {
-                    continue;
-                }
-
-                // Intento 1: orden normal (home=home, away=away)
-                $normalMatch = $this->isMatch($homeTeamDb, $homeApi) && $this->isMatch($awayTeamDb, $awayApi);
-
-                // Intento 2: orden invertido (la BD puede tener home/away al revés que la API)
-                $reversedMatch = $this->isMatch($homeTeamDb, $awayApi) && $this->isMatch($awayTeamDb, $homeApi);
-
-                if ($normalMatch || $reversedMatch) {
-                    if ($normalMatch) {
-                        $homeScore = (int) $match['intHomeScore'];
-                        $awayScore = (int) $match['intAwayScore'];
-                    } else {
-                        // Invertir scores si los equipos están al revés
-                        $homeScore = (int) $match['intAwayScore'];
-                        $awayScore = (int) $match['intHomeScore'];
+                            log_message('info', "ScoreFetcher: ✓ Marcador (Google SerpApi spotlight): {$homeScore}-{$awayScore}");
+                            return "{$homeScore}-{$awayScore}";
+                        }
                     }
+                }
 
-                    log_message('info', "ScoreFetcher: ✓ Marcador encontrado para [{$homeTeamDb}] vs [{$awayTeamDb}]: {$homeScore}-{$awayScore} (fuente: TheSportsDB, invertido=" . ($reversedMatch ? 'SÍ' : 'NO') . ")");
-                    return "{$homeScore}-{$awayScore}";
+                // Strategy 2: games list
+                if (isset($data['sports_results']['games'])) {
+                    foreach ($data['sports_results']['games'] as $game) {
+                        if (isset($game['teams']) && count($game['teams']) >= 2) {
+                            $homeApi = strtolower(trim($game['teams'][0]['name']));
+                            $awayApi = strtolower(trim($game['teams'][1]['name']));
+                            
+                            $normalMatch = $this->isMatch($homeTeamDb, $homeApi) && $this->isMatch($awayTeamDb, $awayApi);
+                            $reversedMatch = $this->isMatch($homeTeamDb, $awayApi) && $this->isMatch($awayTeamDb, $homeApi);
+                            
+                            if ($normalMatch || $reversedMatch) {
+                                $score0 = $game['teams'][0]['score'] ?? null;
+                                $score1 = $game['teams'][1]['score'] ?? null;
+                                
+                                if ($score0 !== null && $score1 !== null) {
+                                    if ($normalMatch) {
+                                        $homeScore = (int)$score0;
+                                        $awayScore = (int)$score1;
+                                    } else {
+                                        $homeScore = (int)$score1;
+                                        $awayScore = (int)$score0;
+                                    }
+
+                                    log_message('info', "ScoreFetcher: ✓ Marcador (Google SerpApi games list): {$homeScore}-{$awayScore}");
+                                    return "{$homeScore}-{$awayScore}";
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
-            // Si no encontró con eventspastleague, intentar búsqueda directa por nombre
-            return $this->searchByEventName($event);
-
         } catch (\Exception $e) {
-            log_message('error', 'ScoreFetcherService Exception: ' . $e->getMessage());
+            log_message('error', 'ScoreFetcher searchByGoogleSerpApi Exception: ' . $e->getMessage());
         }
 
         return null;

@@ -33,8 +33,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?></title>
+    <title><?= esc($title ?? 'Mis Apuestas') ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
     <style>
         :root {
             --bg-body: #09111f;
@@ -96,6 +97,8 @@
         .footer-value { font-family: Outfit, sans-serif; font-weight: 900; font-size: 1.05rem; }
         .empty { text-align: center; padding: 4rem 1rem; color: var(--text-muted); background: var(--bg-panel); border: 1px solid var(--border); border-radius: 0.8rem; }
         .pagination { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin-top: 1rem; color: var(--text-muted); font-weight: 800; }
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         @media (max-width: 760px) {
             .topbar, .page-head, .ticket-header { align-items: flex-start; flex-direction: column; }
@@ -185,6 +188,18 @@
                             <a class="btn btn-ghost" href="/sportsbook/ticket/<?= (int) $slip['id'] ?>/pdf">
                                 <i data-lucide="file-down" style="width:15px;height:15px;"></i> PDF 80mm
                             </a>
+                            
+                            <?php if ($slip['status'] === 'pending'): ?>
+                                <div x-data="cashOutComponent(<?= $slip['id'] ?>)" x-init="startPolling()" style="display:inline-block;">
+                                    <template x-if="value > 0">
+                                        <button @click="doCashOut()" class="btn btn-primary" style="background:var(--cyan); border-color:var(--cyan);" :disabled="loading">
+                                            <i data-lucide="coins" style="width:15px;height:15px;" :class="loading ? 'spin' : ''"></i>
+                                            <span x-text="loading ? 'Procesando...' : 'Cash Out: ' + money(value)"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            <?php endif; ?>
+
                             <span class="status-badge <?= $statusClass($slip['status']) ?>"><?= esc($statusText($slip['status'])) ?></span>
                         </div>
                     </div>
@@ -242,6 +257,52 @@
     </main>
 
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script>lucide.createIcons();</script>
+    <script>
+        lucide.createIcons();
+        function cashOutComponent(slipId) {
+            return {
+                slipId: slipId,
+                value: 0,
+                loading: false,
+                pollInterval: null,
+                money: function(val) { return parseFloat(val).toFixed(2) + ' K'; },
+                async checkQuote() {
+                    try {
+                        const res = await fetch('/sportsbook/cashout/quote/' + this.slipId);
+                        const data = await res.json();
+                        if (data.status === 'success' && data.value > 0) {
+                            this.value = data.value;
+                        } else {
+                            this.value = 0;
+                        }
+                    } catch(e) {
+                        // silent fail
+                    }
+                },
+                startPolling() {
+                    this.checkQuote();
+                    this.pollInterval = setInterval(() => this.checkQuote(), 8000);
+                },
+                async doCashOut() {
+                    if(!confirm('¿Estás seguro de cerrar esta apuesta por ' + this.money(this.value) + '?')) return;
+                    this.loading = true;
+                    try {
+                        const res = await fetch('/sportsbook/cashout/' + this.slipId, { method: 'POST' });
+                        const data = await res.json();
+                        if(data.status === 'success') {
+                            alert('Cash Out procesado. Nuevo saldo: ' + this.money(data.new_balance));
+                            window.location.reload();
+                        } else {
+                            alert(data.message);
+                            this.loading = false;
+                        }
+                    } catch(e) {
+                        alert('Error de conexión.');
+                        this.loading = false;
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 </html>

@@ -21,6 +21,16 @@ class Dashboard extends BaseController
     public function __construct()
     {
         $this->cache = CacheManager::getInstance();
+        
+        // Autocopy World Cup collage if generated
+        $src = "C:\\Users\\luism\\.gemini\\antigravity-ide\\brain\\cf4d8f7a-6493-419f-9dee-8a70a0d87b23\\worldcup2026_collage_1780453523921.png";
+        $dest = FCPATH . "assets/images/worldcup_collage.png";
+        if (file_exists($src)) {
+            if (!file_exists(dirname($dest))) {
+                @mkdir(dirname($dest), 0777, true);
+            }
+            @copy($src, $dest);
+        }
     }
 
     /**
@@ -1771,15 +1781,31 @@ class Dashboard extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado'])->setStatusCode(403);
         }
 
+        $leagueId = $this->request->getPost('league_id');
         $db = \Config\Database::connect();
 
-        // Buscar eventos finalizados sin marcador
-        $eventsWithoutScore = $db->table('events e')
+        $builder = $db->table('events e')
             ->select('e.id, e.home_team, e.away_team, l.api_sport_key')
             ->join('leagues l', 'l.id = e.league_id', 'left')
-            ->where('e.status', 'finished')
-            ->where('e.score_home IS NULL', null, false)
-            ->get()->getResultArray();
+            ->groupStart()
+                ->where('e.status', 'finished')
+                ->orGroupStart()
+                    ->where('e.status', 'pending')
+                    ->where('e.start_time <=', date('Y-m-d H:i:s'))
+                ->groupEnd()
+            ->groupEnd()
+            ->where('e.score_home IS NULL', null, false);
+            
+        if ($leagueId) {
+            $builder->where('e.league_id', $leagueId);
+            $builder->where('e.start_time >=', date('Y-m-d H:i:s', strtotime('-30 days')));
+        } else {
+            $builder->where('e.start_time >=', date('Y-m-d H:i:s', strtotime('-7 days')))
+                    ->limit(15);
+        }
+
+        $eventsWithoutScore = $builder->orderBy('e.start_time', 'DESC')->get()->getResultArray();
+
 
         if (empty($eventsWithoutScore)) {
             return $this->response->setJSON([
@@ -1796,16 +1822,14 @@ class Dashboard extends BaseController
         $results = [];
 
         foreach ($eventsWithoutScore as $ev) {
-            $score = null;
-            if (!empty($ev['api_sport_key'])) {
-                $score = $fetcher->fetchScoreForEvent($ev, $ev['api_sport_key']);
-            }
+            $score = $fetcher->fetchScoreForEvent($ev, $ev['api_sport_key'] ?? '');
 
             if ($score) {
                 [$home, $away] = explode('-', $score);
                 $db->table('events')->where('id', $ev['id'])->update([
                     'score_home' => (int)$home,
-                    'score_away' => (int)$away
+                    'score_away' => (int)$away,
+                    'status'     => 'finished'
                 ]);
                 $updated++;
                 $results[] = "{$ev['home_team']} vs {$ev['away_team']}: {$home}-{$away} ✓";
@@ -3554,6 +3578,65 @@ class Dashboard extends BaseController
             return $this->response->setJSON(['status' => 'success']);
         } catch (\Exception $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()])->setStatusCode(500);
+        }
+    }
+
+    // --- Endpoints for API-Football Jobs triggered from Quick Actions ---
+
+    public function triggerFetchFixtures()
+    {
+        if (session()->get('role_id') != 1) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        
+        try {
+            command('sportsbook:fetch_fixtures');
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Nuevos partidos descargados desde la API exitosamente.']);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function triggerFetchOdds()
+    {
+        if (session()->get('role_id') != 1) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        
+        try {
+            command('sportsbook:fetch_odds');
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Cuotas y mercados actualizados correctamente.']);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function triggerSettleBets()
+    {
+        if (session()->get('role_id') != 1) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        
+        try {
+            command('sportsbook:settle');
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Proceso de liquidación masiva finalizado con éxito.']);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function triggerStartWebSocket()
+    {
+        if (session()->get('role_id') != 1) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        
+        try {
+            // Ejecutar el server de Node.js en segundo plano (Para entornos de desarrollo local en Windows)
+            $path = ROOTPATH . 'websocket-server';
+            $command = "cd " . escapeshellarg($path) . " && npm install && npm start";
+            
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                pclose(popen('start /B cmd /c "' . $command . '"', 'r'));
+            } else {
+                exec($command . ' > /dev/null 2>&1 &');
+            }
+
+            return $this->response->setJSON(['status' => 'success', 'message' => 'WebSocket Server inicializado en segundo plano (Puerto 3000).']);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
 }

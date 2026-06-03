@@ -1442,6 +1442,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     
     <script>
         const initWalletBalance = <?= isset($walletBalance) ? $walletBalance : '0.00' ?>;
@@ -1833,49 +1834,52 @@
             });
         }
 
-        // --- REAL-TIME POLLING LOGIC ---
+        // --- WEBSOCKET REAL-TIME LOGIC ---
         document.addEventListener("DOMContentLoaded", function() {
-            setInterval(async () => {
-                try {
-                    const res = await fetch("/realtime/poll");
-                    const json = await res.json();
-                    
-                    if (json.status === 'success' && json.data.length > 0) {
-                        const changes = json.data;
-                        
-                        changes.forEach(change => {
-                            const btn = document.getElementById('odd-btn-' + change.odd_id);
-                            const valSpan = document.getElementById('odd-val-' + change.odd_id);
-                            
-                            if (btn && valSpan) {
-                                // Update visual value
-                                valSpan.innerText = parseFloat(change.new_odds).toFixed(2);
-                                
-                                // Add flash animation based on direction
-                                btn.classList.remove('flash-up', 'flash-down');
-                                void btn.offsetWidth; // trigger reflow to restart animation
-                                if (change.direction === 'up') {
-                                    btn.classList.add('flash-up');
-                                } else {
-                                    btn.classList.add('flash-down');
-                                }
+            // Conectar al servidor Socket.io
+            const socket = io('http://localhost:3000');
+            
+            socket.on('connect', () => {
+                console.log('Conectado al servidor de WebSockets para cuotas en vivo');
+                // Opcional: suscribirse al evento actual
+                // socket.emit('subscribe_event', <?= (int)$event['id'] ?>);
+            });
 
-                                 // Update Alpine state if needed
-                                const alpineApp = Alpine.$data(document.querySelector('[x-data="betSlipApp()"]'));
-                                if (alpineApp) {
-                                    const slipItem = alpineApp.selections.find(s => s.id === change.odd_id);
-                                    if (slipItem) {
-                                        slipItem.odds = parseFloat(change.new_odds);
-                                        alpineApp.updateBuilderOdds();
-                                    }
-                                }
-                            }
-                        });
+            socket.on('odd_update', (change) => {
+                const btn = document.getElementById('odd-btn-' + change.odd_id);
+                const valSpan = document.getElementById('odd-val-' + change.odd_id);
+                
+                if (btn && valSpan) {
+                    // Update visual value
+                    valSpan.innerText = parseFloat(change.new_value).toFixed(2);
+                    
+                    // Determinar dirección para animación CSS (como en Betsson)
+                    const direction = parseFloat(change.new_value) > parseFloat(change.old_value) ? 'up' : 'down';
+                    
+                    // Add flash animation based on direction
+                    btn.classList.remove('flash-up', 'flash-down');
+                    void btn.offsetWidth; // trigger reflow to restart animation
+                    if (direction === 'up') {
+                        btn.classList.add('flash-up');
+                    } else {
+                        btn.classList.add('flash-down');
                     }
-                } catch(e) {
-                    // Ignore network errors in polling
+
+                    // Update Alpine state if needed (Boleto de apuestas)
+                    const alpineApp = document.querySelector('body')._x_dataStack?.[0];
+                    if (alpineApp) {
+                        const slipItem = alpineApp.selections.find(s => Number(s.id) === Number(change.odd_id));
+                        if (slipItem) {
+                            slipItem.odds = parseFloat(change.new_value);
+                            alpineApp.updateBuilderOdds();
+                        }
+                    }
                 }
-            }, 2000); // Check every 2 seconds
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Desconectado del servidor de WebSockets');
+            });
         });
     </script>
 </body>

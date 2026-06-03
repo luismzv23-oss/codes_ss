@@ -484,9 +484,9 @@
             background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.02), transparent 50%);
         }
         .banner {
-            background: linear-gradient(135deg, #0f172a, #131a35, #1e1b4b, #0f172a);
-            background-size: 300% 300%;
-            animation: gradientShift 12s ease infinite;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 30%, rgba(30, 27, 75, 0.7) 100%), url('/assets/images/worldcup_collage.png');
+            background-size: cover;
+            background-position: center;
             border: 1px solid var(--border);
             border-radius: 1rem;
             padding: 2.25rem 2.5rem;
@@ -496,7 +496,9 @@
             box-shadow: var(--shadow-md);
         }
         html.light-theme .banner {
-            background: linear-gradient(135deg, #ffffff, #f1f5f9, #e0e7ff, #ffffff);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.88)), url('/assets/images/worldcup_collage.png');
+            background-size: cover;
+            background-position: center;
             border-color: var(--border);
             box-shadow: var(--shadow-md);
         }
@@ -1602,6 +1604,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
         const initWalletBalance = <?= isset($walletBalance) ? $walletBalance : '0.00' ?>;
         const initMinStake = <?= isset($minStake) ? $minStake : '100.00' ?>;
@@ -2032,51 +2035,52 @@
             });
         }
 
-        // --- REAL-TIME POLLING LOGIC ---
-        // Se reemplazó SSE por Polling para máxima compatibilidad con servidores single-thread en dev
+        // --- WEBSOCKET REAL-TIME LOGIC ---
         document.addEventListener("DOMContentLoaded", function() {
             applyFavoriteState();
-            setInterval(async () => {
-                try {
-                    const res = await fetch("/realtime/poll");
-                    const json = await res.json();
-                    
-                    if (json.status === 'success' && json.data.length > 0) {
-                        const changes = json.data;
-                        
-                        changes.forEach(change => {
-                            const btn = document.getElementById('odd-btn-' + change.odd_id);
-                            const valSpan = document.getElementById('odd-val-' + change.odd_id);
-                            
-                            if (btn && valSpan) {
-                                // Update visual value
-                                valSpan.innerText = parseFloat(change.new_odds).toFixed(2);
-                                
-                                // Add flash animation based on direction
-                                btn.classList.remove('flash-up', 'flash-down');
-                                void btn.offsetWidth; // trigger reflow to restart animation
-                                if (change.direction === 'up') {
-                                    btn.classList.add('flash-up');
-                                } else {
-                                    btn.classList.add('flash-down');
-                                }
+            
+            // Conectar al servidor Socket.io
+            const socket = io('http://localhost:3000');
+            
+            socket.on('connect', () => {
+                console.log('Conectado al servidor de WebSockets para cuotas en vivo');
+            });
 
-                                 // Update Alpine state if needed
-                                const alpineApp = Alpine.$data(document.querySelector('[x-data="betSlipApp()"]'));
-                                if (alpineApp) {
-                                    const slipItem = alpineApp.selections.find(s => s.id === change.odd_id);
-                                    if (slipItem) {
-                                        slipItem.odds = parseFloat(change.new_odds);
-                                        alpineApp.updateBuilderOdds();
-                                    }
-                                }
-                            }
-                        });
+            socket.on('odd_update', (change) => {
+                const btn = document.getElementById('odd-btn-' + change.odd_id);
+                const valSpan = document.getElementById('odd-val-' + change.odd_id);
+                
+                if (btn && valSpan) {
+                    // Update visual value
+                    valSpan.innerText = parseFloat(change.new_value).toFixed(2);
+                    
+                    // Determinar dirección para animación CSS
+                    const direction = parseFloat(change.new_value) > parseFloat(change.old_value) ? 'up' : 'down';
+                    
+                    // Add flash animation based on direction
+                    btn.classList.remove('flash-up', 'flash-down');
+                    void btn.offsetWidth; // trigger reflow to restart animation
+                    if (direction === 'up') {
+                        btn.classList.add('flash-up');
+                    } else {
+                        btn.classList.add('flash-down');
                     }
-                } catch(e) {
-                    // Ignore network errors in polling
+
+                    // Update Alpine state if needed (Boleto de apuestas)
+                    const alpineApp = document.querySelector('body')._x_dataStack?.[0];
+                    if (alpineApp) {
+                        const slipItem = alpineApp.selections.find(s => Number(s.id) === Number(change.odd_id));
+                        if (slipItem) {
+                            slipItem.odds = parseFloat(change.new_value);
+                            alpineApp.updateBuilderOdds();
+                        }
+                    }
                 }
-            }, 2000); // Check every 2 seconds
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Desconectado del servidor de WebSockets');
+            });
         });
     </script>
 </body>

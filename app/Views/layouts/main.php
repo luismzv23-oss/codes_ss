@@ -273,7 +273,8 @@
                         
                         const res = await fetch('/dashboard/events/fetch-scores', {
                             method: 'POST',
-                            headers
+                            headers,
+                            body: this.leagueId ? new URLSearchParams({league_id: this.leagueId}) : null
                         });
                         const result = await res.json();
                         if (result.status === 'success') {

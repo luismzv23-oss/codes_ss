@@ -407,7 +407,10 @@
 
         .qr-frame {
             padding: 1.5rem;
-            background: white;
+            background: #ffffff !important;
+            color: #000000 !important;
+            color-scheme: light !important;
+            forced-color-adjust: none !important;
             border-radius: 16px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             display: inline-block;
@@ -418,6 +421,9 @@
             width: 180px;
             height: 180px;
             display: block;
+            filter: none !important;
+            color-scheme: light !important;
+            forced-color-adjust: none !important;
         }
 
         .qr-logo-overlay {
@@ -886,9 +892,9 @@
 
                             <!-- QR Frame -->
                             <div class="qr-frame"
-                                style="padding: 1rem; background: white; border-radius: 12px; position: relative; display: inline-block;">
+                                style="padding: 1rem; background: #ffffff !important; color: #000000 !important; color-scheme: light !important; forced-color-adjust: none !important; border-radius: 12px; position: relative; display: inline-block;">
                                 <img src="<?= $qrBase64 ?>" class="qr-img"
-                                    style="object-fit: contain; width: 150px; height: 150px; display: block;"
+                                    style="object-fit: contain; width: 150px; height: 150px; display: block; filter: none !important; color-scheme: light !important; forced-color-adjust: none !important;"
                                     alt="Código QR de Pago">
                             </div>
 

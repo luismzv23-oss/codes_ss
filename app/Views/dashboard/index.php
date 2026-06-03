@@ -154,21 +154,50 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="glass-card" x-data>
-                <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">Acciones Rápidas</h3>
+            <div class="glass-card" x-data="{
+                async triggerJob(endpoint, btn) {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i data-lucide=\'loader\' style=\'width:16px;height:16px;animation:spin 1s linear infinite;\'></i> Procesando...';
+                    btn.disabled = true;
+                    try {
+                        const csrfHeader = document.querySelector('meta[name=\'csrf-token-name\']')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name=\'csrf-token\']')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+                        
+                        const res = await fetch(endpoint, { method: 'POST', headers });
+                        const result = await res.json();
+                        alert(result.message || 'Operación completada.');
+                    } catch(e) {
+                        alert('Error de conexión.');
+                    } finally {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                        lucide.createIcons();
+                    }
+                }
+            }">
+                <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">Acciones Rápidas (API)</h3>
                 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; display:flex; align-items:center; gap:0.6rem; text-align:left;"
-                        @click="$root.openModal('Crear Evento', '¿Desea crear un nuevo evento deportivo?', () => {})">
-                        <i data-lucide="plus-circle" style="width:16px;height:16px;color:var(--primary);"></i>
-                        Crear Evento Deportivo
+                        @click="triggerJob('/dashboard/jobs/fetch-fixtures', $event.currentTarget)">
+                        <i data-lucide="download-cloud" style="width:16px;height:16px;color:var(--primary);"></i>
+                        Descargar Nuevos Partidos
                     </button>
-                    <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; display:flex; align-items:center; gap:0.6rem; text-align:left;">
-                        <i data-lucide="user-plus" style="width:16px;height:16px;color:var(--accent-cyan);"></i>
-                        Registrar Usuario Manual
+                    <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; display:flex; align-items:center; gap:0.6rem; text-align:left;"
+                        @click="triggerJob('/dashboard/jobs/fetch-odds', $event.currentTarget)">
+                        <i data-lucide="refresh-cw" style="width:16px;height:16px;color:var(--accent-cyan);"></i>
+                        Sincronizar Cuotas (Odds)
                     </button>
-                    <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; display:flex; align-items:center; gap:0.6rem; text-align:left;">
-                        <i data-lucide="database" style="width:16px;height:16px;color:var(--accent-amber);"></i>
-                        Backup Base de Datos
+                    <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; display:flex; align-items:center; gap:0.6rem; text-align:left;"
+                        @click="triggerJob('/dashboard/jobs/settle', $event.currentTarget)">
+                        <i data-lucide="check-circle" style="width:16px;height:16px;color:var(--accent-emerald);"></i>
+                        Liquidar Apuestas (Settlement)
+                    </button>
+                    <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; display:flex; align-items:center; gap:0.6rem; text-align:left; color: #d946ef;"
+                        @click="triggerJob('/dashboard/jobs/start-websocket', $event.currentTarget)">
+                        <i data-lucide="radio" style="width:16px;height:16px;color:#d946ef;"></i>
+                        Iniciar WebSocket Server
                     </button>
                 </div>
             </div>
