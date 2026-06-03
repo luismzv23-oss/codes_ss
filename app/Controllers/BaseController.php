@@ -51,6 +51,8 @@ abstract class BaseController extends Controller
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
+        date_default_timezone_set(config('App')->appTimezone);
+
         // Preload any models, libraries, etc, here.
         
         $db = \Config\Database::connect();
@@ -92,19 +94,19 @@ abstract class BaseController extends Controller
     {
         $db = \Config\Database::connect();
         $now = date('Y-m-d H:i:s');
-        $twoHoursAgo = date('Y-m-d H:i:s', strtotime('-2 hours'));
+        $liveWindowStart = date('Y-m-d H:i:s', strtotime('-4 hours'));
 
         // 1. Transicionar de pending -> live
         $db->table('events')
             ->where('status', 'pending')
             ->where('start_time <=', $now)
-            ->where('start_time >', $twoHoursAgo)
+            ->where('start_time >', $liveWindowStart)
             ->update(['status' => 'live']);
 
         // 2. Transicionar de pending o live -> finished
         $db->table('events')
             ->whereIn('status', ['pending', 'live'])
-            ->where('start_time <=', $twoHoursAgo)
+            ->where('start_time <=', $liveWindowStart)
             ->update(['status' => 'finished', 'settled' => 0]);
 
         // 3. Ejecutar la liquidación para eventos que YA tienen marcador asignado
@@ -116,4 +118,3 @@ abstract class BaseController extends Controller
         }
     }
 }
-
