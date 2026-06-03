@@ -1505,7 +1505,7 @@ class Dashboard extends BaseController
 
         $before = array_intersect_key($event, $payload);
         $eventModel->update($id, $payload);
-        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
+        CacheManager::getInstance()->forget('sports_feed_full');
 
         AuditLogger::log(
             (int) session()->get('user_id'),
@@ -1584,7 +1584,7 @@ class Dashboard extends BaseController
 
         $eventModel = new \App\Models\EventModel();
         $eventId = $eventModel->insert($payload, true);
-        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
+        CacheManager::getInstance()->forget('sports_feed_full');
 
         AuditLogger::log(
             (int) session()->get('user_id'),
@@ -1632,7 +1632,7 @@ class Dashboard extends BaseController
         );
 
         // Notify cache if needed
-        $cache = \App\Libraries\CacheManager::getInstance();
+        $cache = CacheManager::getInstance();
         $cache->forget('sports_feed_full');
 
         return $this->response->setJSON(['status' => 'success', 'new_status' => $newStatus]);
@@ -1655,7 +1655,7 @@ class Dashboard extends BaseController
         $newStatus = ($league['active'] == 1) ? 0 : 1;
         $leagueModel->update($id, ['active' => $newStatus]);
 
-        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
+        CacheManager::getInstance()->forget('sports_feed_full');
 
         return $this->response->setJSON([
             'status' => 'success', 
@@ -1683,7 +1683,7 @@ class Dashboard extends BaseController
         }
 
         $leagueModel->update($id, ['name' => $name]);
-        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
+        CacheManager::getInstance()->forget('sports_feed_full');
 
         return $this->response->setJSON([
             'status' => 'success',
@@ -1730,7 +1730,7 @@ class Dashboard extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Error al eliminar la liga.'])->setStatusCode(500);
         }
 
-        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
+        CacheManager::getInstance()->forget('sports_feed_full');
 
         return $this->response->setJSON(['status' => 'success', 'message' => 'Liga eliminada exitosamente.']);
     }
@@ -1767,7 +1767,7 @@ class Dashboard extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Error al eliminar el evento.'])->setStatusCode(500);
         }
 
-        \App\Libraries\CacheManager::getInstance()->forget('sports_feed_full');
+        CacheManager::getInstance()->forget('sports_feed_full');
 
         return $this->response->setJSON(['status' => 'success', 'message' => 'Evento eliminado exitosamente.']);
     }

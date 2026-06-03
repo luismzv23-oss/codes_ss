@@ -14,6 +14,7 @@ class UserModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'role_id', 'username', 'email', 'password_hash', 'is_active',
+        'google_id', 'oauth_provider',
         'phone', 'country', 'birthdate', 'document_type', 'document_number',
         'kyc_status', 'is_2fa_enabled', 'last_login_at', 'last_login_ip',
         'failed_login_attempts', 'locked_until',

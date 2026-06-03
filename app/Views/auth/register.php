@@ -177,6 +177,13 @@
     </button>
 </form>
 
+<div class="auth-divider">o</div>
+
+<a class="btn-google" href="/auth/google">
+    <span class="google-mark">G</span>
+    Registrarse con Google
+</a>
+
 <div class="auth-links">
     <p>¿Ya tiene una cuenta? <a href="/auth/login" hx-get="/auth/login" hx-target="#auth-content" hx-swap="innerHTML transition:true" hx-push-url="true">Inicie sesión</a></p>
 </div>

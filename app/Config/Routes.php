@@ -58,6 +58,8 @@ $routes->group('api/v1', ['filter' => 'jwt_auth'], function ($routes) {
 // Auth Routes
 $routes->get('auth/login', 'Auth::login');
 $routes->post('auth/loginAction', 'Auth::loginAction');
+$routes->get('auth/google', 'Auth::google');
+$routes->get('auth/google/callback', 'Auth::googleCallback');
 $routes->get('auth/register', 'Auth::register');
 $routes->post('auth/registerAction', 'Auth::registerAction');
 $routes->get('auth/verify/(:any)', 'Auth::verify/$1');

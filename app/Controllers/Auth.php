@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\UserModel;
 use App\Libraries\JWTAuth;
+use GuzzleHttp\Client;
 
 class Auth extends BaseController
 {
@@ -63,38 +64,122 @@ class Auth extends BaseController
             return redirect()->back()->withInput()->with('error', $message);
         }
 
-        // Generate JWT Token
-        $token = JWTAuth::generateToken($user);
-
-        // Hybrid Auth: Set both JWT cookie and traditional session
-        
-        // 1. Set JWT Cookie (HTTP Only)
-        $this->response->setCookie(
-            'access_token',
-            $token,
-            8 * 3600,
-            '',
-            '',
-            '',
-            false, // Secure (set to true only in HTTPS production)
-            true // HttpOnly
-        );
-
-        // 2. Set Session Data
-        $sessionData = [
-            'user_id'    => $user['id'],
-            'username'   => $user['username'],
-            'role_id'    => $user['role_id'],
-            'isLoggedIn' => true,
-            'login_at'   => time(),
-        ];
-        session()->set($sessionData);
+        $this->startUserSession($user);
 
         if ($this->request->isAJAX() || strpos($this->request->getHeaderLine('HX-Request'), 'true') !== false) {
             // HTMX specific redirect
             $this->response->setHeader('HX-Redirect', ((int) $user['role_id'] === 1) ? '/dashboard/overview' : '/');
             return '';
         }
+
+        return ((int) $user['role_id'] === 1)
+            ? redirect()->to('/dashboard/overview')
+            : redirect()->to('/');
+    }
+
+    public function google()
+    {
+        if (session()->get('isLoggedIn')) {
+            return session()->get('role_id') == 1
+                ? redirect()->to('/dashboard/overview')
+                : redirect()->to('/');
+        }
+
+        $clientId = $this->googleClientId();
+        if ($clientId === '' || $this->googleClientSecret() === '') {
+            return redirect()->to('/auth/login')->with('error', 'Google Login no esta configurado. Defina GOOGLE_CLIENT_ID y GOOGLE_CLIENT_SECRET en .env.');
+        }
+
+        $state = bin2hex(random_bytes(32));
+        session()->set('google_oauth_state', $state);
+
+        $params = [
+            'client_id'     => $clientId,
+            'redirect_uri'  => $this->googleRedirectUri(),
+            'response_type' => 'code',
+            'scope'         => 'openid email profile',
+            'state'         => $state,
+            'access_type'   => 'online',
+            'prompt'        => 'select_account',
+        ];
+
+        return redirect()->to('https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query($params));
+    }
+
+    public function googleCallback()
+    {
+        $state = (string) $this->request->getGet('state');
+        $expectedState = (string) session()->get('google_oauth_state');
+        session()->remove('google_oauth_state');
+
+        if ($state === '' || $expectedState === '' || ! hash_equals($expectedState, $state)) {
+            return redirect()->to('/auth/login')->with('error', 'No se pudo validar la sesion de Google. Intente nuevamente.');
+        }
+
+        $code = (string) $this->request->getGet('code');
+        if ($code === '') {
+            return redirect()->to('/auth/login')->with('error', 'Google no devolvio un codigo de autorizacion.');
+        }
+
+        try {
+            $googleUser = $this->fetchGoogleUser($code);
+        } catch (\Throwable $e) {
+            log_message('error', 'Google OAuth error: ' . $e->getMessage());
+            return redirect()->to('/auth/login')->with('error', 'No se pudo iniciar sesion con Google.');
+        }
+
+        if (empty($googleUser['email']) || empty($googleUser['sub'])) {
+            return redirect()->to('/auth/login')->with('error', 'Google no devolvio un email valido para la cuenta.');
+        }
+
+        if (isset($googleUser['email_verified']) && ! filter_var($googleUser['email_verified'], FILTER_VALIDATE_BOOLEAN)) {
+            return redirect()->to('/auth/login')->with('error', 'El email de Google no esta verificado.');
+        }
+
+        $userModel = new UserModel();
+        $user = $userModel->where('google_id', $googleUser['sub'])->first();
+
+        if (! $user) {
+            $user = $userModel->where('email', $googleUser['email'])->first();
+        }
+
+        if ($user) {
+            if (! $user['is_active']) {
+                return redirect()->to('/auth/login')->with('error', 'Su cuenta esta inactiva.');
+            }
+
+            if (!empty($user['locked_until']) && strtotime($user['locked_until']) > time()) {
+                return redirect()->to('/auth/login')->with('error', 'Cuenta bloqueada hasta ' . date('d/m/Y H:i', strtotime($user['locked_until'])) . '.');
+            }
+
+            $userModel->update($user['id'], [
+                'google_id'         => $googleUser['sub'],
+                'oauth_provider'    => 'google',
+                'email_verified_at' => $user['email_verified_at'] ?: date('Y-m-d H:i:s'),
+                'last_login_at'     => date('Y-m-d H:i:s'),
+                'last_login_ip'     => $this->request->getIPAddress(),
+            ]);
+            $user = $userModel->find($user['id']);
+        } else {
+            $userId = $userModel->insert([
+                'role_id'                 => 2,
+                'username'                => $this->makeUniqueGoogleUsername($googleUser),
+                'email'                   => $googleUser['email'],
+                'google_id'               => $googleUser['sub'],
+                'oauth_provider'          => 'google',
+                'password_hash'           => bin2hex(random_bytes(32)),
+                'is_active'               => 1,
+                'kyc_status'              => 'pending',
+                'email_verified_at'       => date('Y-m-d H:i:s'),
+                'email_verification_token'=> null,
+                'email_verification_sent_at'=> null,
+                'last_login_at'           => date('Y-m-d H:i:s'),
+                'last_login_ip'           => $this->request->getIPAddress(),
+            ]);
+            $user = $userModel->find($userId);
+        }
+
+        $this->startUserSession($user);
 
         return ((int) $user['role_id'] === 1)
             ? redirect()->to('/dashboard/overview')
@@ -297,5 +382,92 @@ class Auth extends BaseController
         session()->destroy();
         $this->response->deleteCookie('access_token');
         return redirect()->to('/');
+    }
+
+    private function startUserSession(array $user): void
+    {
+        $token = JWTAuth::generateToken($user);
+
+        $this->response->setCookie(
+            'access_token',
+            $token,
+            8 * 3600,
+            '',
+            '',
+            '',
+            false,
+            true
+        );
+
+        session()->set([
+            'user_id'    => $user['id'],
+            'username'   => $user['username'],
+            'role_id'    => $user['role_id'],
+            'isLoggedIn' => true,
+            'login_at'   => time(),
+        ]);
+    }
+
+    private function fetchGoogleUser(string $code): array
+    {
+        $client = new Client(['timeout' => 10]);
+        $tokenResponse = $client->post('https://oauth2.googleapis.com/token', [
+            'form_params' => [
+                'code'          => $code,
+                'client_id'     => $this->googleClientId(),
+                'client_secret' => $this->googleClientSecret(),
+                'redirect_uri'  => $this->googleRedirectUri(),
+                'grant_type'    => 'authorization_code',
+            ],
+        ]);
+
+        $tokenData = json_decode((string) $tokenResponse->getBody(), true);
+        if (empty($tokenData['access_token'])) {
+            throw new \RuntimeException('Google token response did not include access_token.');
+        }
+
+        $userResponse = $client->get('https://www.googleapis.com/oauth2/v3/userinfo', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $tokenData['access_token'],
+            ],
+        ]);
+
+        return json_decode((string) $userResponse->getBody(), true) ?: [];
+    }
+
+    private function makeUniqueGoogleUsername(array $googleUser): string
+    {
+        $base = $googleUser['name'] ?? explode('@', $googleUser['email'])[0] ?? 'google_user';
+        $base = strtolower(trim((string) $base));
+        $base = preg_replace('/[^a-z0-9 ]+/', '', $base) ?: 'google_user';
+        $base = trim(preg_replace('/\s+/', ' ', $base) ?? $base);
+        $base = substr($base, 0, 80);
+
+        $userModel = new UserModel();
+        $username = $base;
+        $suffix = 1;
+
+        while ($userModel->where('username', $username)->first()) {
+            $suffix++;
+            $username = substr($base, 0, 75) . ' ' . $suffix;
+        }
+
+        return $username;
+    }
+
+    private function googleClientId(): string
+    {
+        return trim((string) (env('GOOGLE_CLIENT_ID') ?: getenv('GOOGLE_CLIENT_ID') ?: ''));
+    }
+
+    private function googleClientSecret(): string
+    {
+        return trim((string) (env('GOOGLE_CLIENT_SECRET') ?: getenv('GOOGLE_CLIENT_SECRET') ?: ''));
+    }
+
+    private function googleRedirectUri(): string
+    {
+        $configured = trim((string) (env('GOOGLE_REDIRECT_URI') ?: getenv('GOOGLE_REDIRECT_URI') ?: ''));
+        return $configured !== '' ? $configured : base_url('auth/google/callback');
     }
 }
