@@ -3443,8 +3443,32 @@ class Dashboard extends BaseController
 
         $model = new \App\Models\StagedEventModel();
         $staged = $model->where('status', 'pending_review')->orderBy('created_at', 'DESC')->findAll();
+        $loader = new \App\Services\EventLoaderService();
 
         foreach ($staged as &$e) {
+            $needsMetadata = empty($e['venue']) || substr((string) ($e['start_time'] ?? ''), 11) === '00:00:00';
+            if ($needsMetadata) {
+                $metadata = $loader->enrichStagedEventMetadata($e);
+                $updates = [];
+                foreach (['start_time', 'stage', 'group_name', 'venue', 'venue_url'] as $field) {
+                    if (!empty($metadata[$field]) && empty($e[$field])) {
+                        $updates[$field] = $metadata[$field];
+                        $e[$field] = $metadata[$field];
+                    }
+                }
+                if (!empty($metadata['start_time']) && substr((string) ($e['start_time'] ?? ''), 11) === '00:00:00') {
+                    $updates['start_time'] = $metadata['start_time'];
+                    $e['start_time'] = $metadata['start_time'];
+                }
+                if ($updates !== []) {
+                    $model->update((int) $e['id'], $updates);
+                }
+            }
+            $timestamp = strtotime((string) ($e['start_time'] ?? ''));
+            $hasRealTime = substr((string) ($e['start_time'] ?? ''), 11) !== '00:00:00';
+            $e['match_date_label'] = $timestamp !== false
+                ? ($hasRealTime ? date('d/m/Y H:i', $timestamp) : date('d/m/Y', $timestamp) . ' (A confirmar)')
+                : 'Fecha no disponible';
             $e['odds_data'] = json_decode($e['odds_data'], true);
             if (empty($e['venue_url']) && !empty($e['venue'])) {
                 $e['venue_url'] = 'https://www.google.com/search?tbm=isch&q=' . rawurlencode($e['venue'] . ' estadio fachada');
@@ -3764,6 +3788,249 @@ class Dashboard extends BaseController
             }
 
             return $this->response->setJSON(['status' => 'success', 'message' => 'Simulación AMQP enviada vía Python. Revisa la terminal del consumidor.']);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function triggerSyncOdds()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        try {
+            $sportKey = $this->request->getPost('sport_key') ?: 'soccer_conmebol_copa_libertadores';
+            $markets  = ['h2h', 'totals'];
+
+            $service = new \App\Services\OddsSyncService();
+            $result  = $service->syncSport($sportKey, $markets);
+
+            $msg = "Sync OK → {$result['events_created']} eventos nuevos, "
+                 . "{$result['odds_updated']} odds actualizados, "
+                 . "{$result['markets_created']} mercados creados.";
+
+            return $this->response->setJSON([
+                'status'  => 'success',
+                'message' => $msg,
+                'data'    => $result,
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function getSyncList()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        try {
+            $service = new \App\Services\OddsSyncService();
+            $sports = $service->listSports();
+
+            if (empty($sports)) {
+                return $this->response->setJSON([
+                    'status' => 'success',
+                    'sports' => []
+                ]);
+            }
+
+            $leagueModel = new \App\Models\LeagueModel();
+            $localLeagues = $leagueModel->findAll();
+
+            $enrichedSports = [];
+            foreach ($sports as $sport) {
+                if (!($sport['active'] ?? false)) {
+                    continue;
+                }
+
+                $status = 'unregistered';
+                $leagueId = null;
+
+                // Match with local leagues
+                foreach ($localLeagues as $localLeague) {
+                    if (!empty($localLeague['api_sport_key']) && $localLeague['api_sport_key'] === $sport['key']) {
+                        $status = ($localLeague['active'] == 1) ? 'active' : 'inactive';
+                        $leagueId = (int)$localLeague['id'];
+                        break;
+                    }
+                }
+
+                if ($status === 'unregistered') {
+                    foreach ($localLeagues as $localLeague) {
+                        if (strcasecmp($localLeague['name'], $sport['title']) === 0) {
+                            $status = ($localLeague['active'] == 1) ? 'active' : 'inactive';
+                            $leagueId = (int)$localLeague['id'];
+                            break;
+                        }
+                    }
+                }
+
+                $enrichedSports[] = [
+                    'key'         => $sport['key'],
+                    'group'       => $sport['group'],
+                    'title'       => $sport['title'],
+                    'description' => $sport['description'] ?? '',
+                    'status'      => $status,
+                    'league_id'   => $leagueId
+                ];
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'sports' => $enrichedSports
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function acceptSyncSport()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        $sportKey = $this->request->getPost('sport_key');
+        if (empty($sportKey)) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Debe ingresar el sport_key.']);
+        }
+
+        try {
+            $service = new \App\Services\OddsSyncService();
+            $result = $service->syncSport($sportKey, ['h2h', 'totals']);
+
+            $leagueModel = new \App\Models\LeagueModel();
+            $league = $leagueModel->where('api_sport_key', $sportKey)->first();
+            if (!$league) {
+                $sports = $service->listSports();
+                $title = '';
+                foreach ($sports as $s) {
+                    if ($s['key'] === $sportKey) {
+                        $title = $s['title'];
+                        break;
+                    }
+                }
+                if (!empty($title)) {
+                    $league = $leagueModel->where('name', $title)->first();
+                }
+            }
+
+            if ($league) {
+                $leagueModel->update($league['id'], [
+                    'active' => 1,
+                    'api_sport_key' => $sportKey
+                ]);
+
+                $eventModel = new \App\Models\EventModel();
+                $eventModel->where('league_id', $league['id'])
+                           ->where('status', 'inactive')
+                           ->set(['status' => 'active'])
+                           ->update();
+            }
+
+            $msg = "Deporte sincronizado y registrado correctamente. "
+                 . "{$result['events_created']} partidos creados, "
+                 . "{$result['odds_updated']} cuotas actualizadas, "
+                 . "{$result['markets_created']} mercados creados.";
+
+            return $this->response->setJSON([
+                'status'  => 'success',
+                'message' => $msg,
+                'data'    => $result,
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function cancelSyncSport()
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        }
+
+        $sportKey = $this->request->getPost('sport_key');
+        $title = $this->request->getPost('title');
+
+        if (empty($sportKey) && empty($title)) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Faltan parámetros']);
+        }
+
+        try {
+            $db = \Config\Database::connect();
+            $leagueModel = new \App\Models\LeagueModel();
+            
+            $league = null;
+            if (!empty($sportKey)) {
+                $league = $leagueModel->where('api_sport_key', $sportKey)->first();
+            }
+            if (!$league && !empty($title)) {
+                $league = $leagueModel->where('name', $title)->first();
+            }
+
+            if (!$league) {
+                return $this->response->setJSON(['status' => 'error', 'message' => 'Liga no encontrada']);
+            }
+
+            // Desactivar liga
+            $leagueModel->update($league['id'], ['active' => 0]);
+
+            // Procesar sus eventos
+            $eventModel = new \App\Models\EventModel();
+            $events = $eventModel->where('league_id', $league['id'])->findAll();
+
+            $deletedCount = 0;
+            $inactivatedCount = 0;
+
+            foreach ($events as $event) {
+                $eventId = (int)$event['id'];
+
+                // Comprobar apuestas
+                $betCount = $db->table('bet_selections bs')
+                    ->join('odds o', 'o.id = bs.odd_id')
+                    ->join('markets m', 'm.id = o.market_id')
+                    ->where('m.event_id', $eventId)
+                    ->countAllResults();
+
+                if ($betCount > 0) {
+                    $eventModel->update($eventId, ['status' => 'inactive']);
+                    $inactivatedCount++;
+                } else {
+                    $db->transStart();
+                    
+                    // Borrar odds
+                    $db->table('odds')
+                        ->whereIn('market_id', function($builder) use ($eventId) {
+                            return $builder->select('id')->from('markets')->where('event_id', $eventId);
+                        })->delete();
+
+                    // Borrar markets
+                    $db->table('markets')->where('event_id', $eventId)->delete();
+
+                    // Borrar event
+                    $eventModel->delete($eventId);
+
+                    $db->transComplete();
+                    if ($db->transStatus() !== false) {
+                        $deletedCount++;
+                    } else {
+                        $eventModel->update($eventId, ['status' => 'inactive']);
+                        $inactivatedCount++;
+                    }
+                }
+            }
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => "La liga se desactivó correctamente. Eventos eliminados (sin apuestas): {$deletedCount}. Eventos inactivados (con apuestas): {$inactivatedCount}.",
+                'data' => [
+                    'deleted_count' => $deletedCount,
+                    'inactivated_count' => $inactivatedCount
+                ]
+            ]);
         } catch (\Exception $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
         }

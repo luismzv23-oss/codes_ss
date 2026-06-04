@@ -1,0 +1,502 @@
+{
+  "search_metadata": {
+    "id": "6a21b6eccbcccfb04df3f4df",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/ndwSmGWPdabmZ76iNspNHg/6a21b6eccbcccfb04df3f4df.json",
+    "pixel_position_endpoint": "https://serpapi.com/searches/ndwSmGWPdabmZ76iNspNHg/6a21b6eccbcccfb04df3f4df.json_with_pixel_position",
+    "created_at": "2026-06-04 17:33:32 UTC",
+    "processed_at": "2026-06-04 17:33:32 UTC",
+    "google_url": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&oq=Amistosos+Internacionales+Hoy&hl=es&gl=ar&sourceid=chrome&ie=UTF-8",
+    "raw_html_file": "https://serpapi.com/searches/ndwSmGWPdabmZ76iNspNHg/6a21b6eccbcccfb04df3f4df.html",
+    "total_time_taken": 1.78
+  },
+  "search_parameters": {
+    "engine": "google",
+    "q": "Amistosos Internacionales Hoy",
+    "google_domain": "google.com",
+    "hl": "es",
+    "gl": "ar",
+    "device": "desktop"
+  },
+  "search_information": {
+    "query_displayed": "Amistosos Internacionales Hoy",
+    "total_results": 193,
+    "time_taken_displayed": 0.71,
+    "organic_results_state": "Results for exact spelling"
+  },
+  "sports_results": {
+    "title": "Amistosos internacionales",
+    "games": [
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo71'",
+        "teams": [
+          {
+            "name": "Eslovenia",
+            "score": "1",
+            "kgmid": "/m/03ys48"
+          },
+          {
+            "name": "Chipre",
+            "score": "1",
+            "kgmid": "/m/035qlx"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo71'",
+        "teams": [
+          {
+            "name": "Irlanda del Norte",
+            "score": "1",
+            "kgmid": "/m/0272vm"
+          },
+          {
+            "name": "Guinea",
+            "score": "0",
+            "kgmid": "/m/043y95"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo72'",
+        "teams": [
+          {
+            "name": "Afganistán",
+            "score": "0",
+            "kgmid": "/m/04gssk"
+          },
+          {
+            "name": "selección de fútbol sub-23 de Bangladesh",
+            "score": "0",
+            "kgmid": "/m/011170tn"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo32'",
+        "teams": [
+          {
+            "name": "Andorra",
+            "score": "0",
+            "kgmid": "/m/0300nb"
+          },
+          {
+            "name": "Liechtenstein",
+            "score": "0",
+            "kgmid": "/m/02_t6d"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo31'",
+        "teams": [
+          {
+            "name": "Suecia",
+            "score": "0",
+            "kgmid": "/m/02rytm"
+          },
+          {
+            "name": "Grecia",
+            "score": "1",
+            "kgmid": "/m/035qgm"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Por definirse",
+        "teams": [
+          {
+            "name": "Irán",
+            "kgmid": "/m/01n_2f"
+          },
+          {
+            "name": "Malí",
+            "kgmid": "/m/0416f1"
+          }
+        ]
+      }
+    ]
+  },
+  "knowledge_graph": {
+    "title": "Amistosos internacionales",
+    "entity_type": "sports_league",
+    "main_tab_text": "Información general",
+    "kgmid": "/g/11b66jrs60",
+    "knowledge_graph_search_link": "https://www.google.com/search?kgmid=/g/11b66jrs60&hl=es-AR&q=Amistosos+internacionales",
+    "serpapi_knowledge_graph_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es-AR&kgmid=%2Fg%2F11b66jrs60&q=Amistosos+internacionales",
+    "tabs": [
+      {
+        "text": "Partidos",
+        "si": "AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w==",
+        "link": "https://www.google.com/search?si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w==",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+      }
+    ]
+  },
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "Calendario de fútbol Amistosos 2026",
+      "link": "https://www.espn.com.ar/futbol/calendario/_/liga/fifa.friendly",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.espn.com.ar/futbol/calendario/_/liga/fifa.friendly&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECCkQAQ",
+      "displayed_link": "https://www.espn.com.ar › futbol › liga › fifa.friendly",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAWlBMVEXsHCTsGyPsDxrsFR7uQUf82tz70tTtKjHxYWb____96OnsBBTzf4P71NXrAA_2pKf5wML3r7L3q67ydHfrAADwUVbtLzb_9_fvSE384uP6y830gobyeHzwWFzD1SbZAAAAj0lEQVR4AcXSNQKEQAAEQdx93f7_zHOZiQjptGA9u7KcYssLrCQtqxprWtSi67EhQxwnwnlEXFbCbcmgYtqPf7soEHNJjWTZNjdz82pu5lqVuBNtaE5LaMmMfiFv033yvM3w2vq4jK-Kl_E2nYjvUkm40ZzrgjsZZ8JppG0OhF2B2DY1VtGceVlg-fkjuaY7LXoMIxMy1FEAAAAASUVORK5CYII.png",
+      "snippet": "Calendario del año 2026 de todas las grandes ligas de fútbol en ESPN. Incluye horarios y programación de TV de la Premier League, MLS, LaLiga y más.",
+      "about_this_result": {
+        "source": {
+          "description": "Calendario del año 2026 de todas las grandes ligas de fútbol en ESPN. Incluye horarios y programación de TV de la Premier League, MLS, LaLiga y más.",
+          "source_info_link": "https://www.espn.com.ar/futbol/calendario/_/liga/fifa.friendly",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAWlBMVEXsHCTsGyPsDxrsFR7uQUf82tz70tTtKjHxYWb____96OnsBBTzf4P71NXrAA_2pKf5wML3r7L3q67ydHfrAADwUVbtLzb_9_fvSE384uP6y830gobyeHzwWFzD1SbZAAAAj0lEQVR4AcXSNQKEQAAEQdx93f7_zHOZiQjptGA9u7KcYssLrCQtqxprWtSi67EhQxwnwnlEXFbCbcmgYtqPf7soEHNJjWTZNjdz82pu5lqVuBNtaE5LaMmMfiFv033yvM3w2vq4jK-Kl_E2nYjvUkm40ZzrgjsZZ8JppG0OhF2B2DY1VtGceVlg-fkjuaY7LXoMIxMy1FEAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.espn.com.ar/futbol/calendario/_/liga/fifa.friendly&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.espn.com.ar%2Ffutbol%2Fcalendario%2F_%2Fliga%2Ffifa.friendly",
+      "source": "ESPN Deportes"
+    },
+    {
+      "position": 2,
+      "title": "Resultados en vivo de Amistosos Internacionales 2026, ...",
+      "link": "https://www.flashscore.com.ar/futbol/mundial/amistosos-internacionales/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.flashscore.com.ar/futbol/mundial/amistosos-internacionales/&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECD4QAQ",
+      "displayed_link": "https://www.flashscore.com.ar › futbol › mundial › ami...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAYFBMVEVHcEwAHigAHigAHigAHigAHigAHigAFCAABBUAAAZWYWWhpqi_wsSODjPDDj3cCkGdEzjw8vL____c3t__AEdmGDB7g4ZXGS6vtLZ1fIBtdXmHjZAyQEfO0NInNz49SU-mgqcQAAAAB3RSTlMANqzs_62qPQs-QAAAAOdJREFUeAF90wUCgzAMBVAkW_LbMgkTZHL_U-JuH-chVa-KH4S0SHjyvSZn2sx5aUv1aTe-F-xj4E3KwgLItFTeSDDWOcvRpc31RgPC3LVKjEeb65MGxEubmKilN9GAbGqJE4uRBsS9MgORaKABOa2tLumExn9miUN1eFfFYBGZolibf7j_vU1ymSBiVSsdZsnXztCpftEhC2RWoJe6H7g5_YOXBfrB3P_MwqIx8QIlV73D2J-kqrREq5oj0Vxgc1kgIbsDri6WCC2RGCRJnAxS42zgyaKzD4fJ4QA7HJpHg3pvOgR-BSU3PRT21Y37VAAAAABJRU5ErkJggg.png",
+      "snippet": "Partidos de hoy ; Croacia Sub-18. Noruega Sub-18. 22 ; Corea del Sur Sub-23. Emiratos Árabes Unidos Sub-23. 11 ; Tailandia Sub-23. Kirguistán Sub-23. 11.",
+      "snippet_highlighted_words": [
+        "Croacia Sub-18. Noruega Sub-18. 22"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Partidos de hoy ; Croacia Sub-18. Noruega Sub-18. 22 ; Corea del Sur Sub-23. Emiratos Árabes Unidos Sub-23. 11 ; Tailandia Sub-23. Kirguistán Sub-23. 11.",
+          "source_info_link": "https://www.flashscore.com.ar/futbol/mundial/amistosos-internacionales/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAYFBMVEVHcEwAHigAHigAHigAHigAHigAHigAFCAABBUAAAZWYWWhpqi_wsSODjPDDj3cCkGdEzjw8vL____c3t__AEdmGDB7g4ZXGS6vtLZ1fIBtdXmHjZAyQEfO0NInNz49SU-mgqcQAAAAB3RSTlMANqzs_62qPQs-QAAAAOdJREFUeAF90wUCgzAMBVAkW_LbMgkTZHL_U-JuH-chVa-KH4S0SHjyvSZn2sx5aUv1aTe-F-xj4E3KwgLItFTeSDDWOcvRpc31RgPC3LVKjEeb65MGxEubmKilN9GAbGqJE4uRBsS9MgORaKABOa2tLumExn9miUN1eFfFYBGZolibf7j_vU1ymSBiVSsdZsnXztCpftEhC2RWoJe6H7g5_YOXBfrB3P_MwqIx8QIlV73D2J-kqrREq5oj0Vxgc1kgIbsDri6WCC2RGCRJnAxS42zgyaKzD4fJ4QA7HJpHg3pvOgR-BSU3PRT21Y37VAAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.flashscore.com.ar/futbol/mundial/amistosos-internacionales/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.flashscore.com.ar%2Ffutbol%2Fmundial%2Famistosos-internacionales%2F",
+      "source": "Flashscore.com.ar"
+    },
+    {
+      "position": 3,
+      "title": "Amistosos Internacionales",
+      "link": "https://www.plus.fifa.com/es/showcase/amistosos-internacionales/817f28ea-e283-48ff-b44d-077e4bd14c76",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.plus.fifa.com/es/showcase/amistosos-internacionales/817f28ea-e283-48ff-b44d-077e4bd14c76&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECD0QAQ",
+      "displayed_link": "https://www.plus.fifa.com › showcase › amistosos-inter...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAZlBMVEUCEiwCDywCACkCDSwDkEMDvU0DukwDuEwCPjID61kD_18D_14D3FUDxlABACMCKzADfT4CdTwDq0kBACUCJy8Dl0QBAB8DzFED_2MCACgD-FwDsUoDikECaDoDhEADZjkCTzUD1FPb-xWKAAAAkUlEQVR4Ae2QhQGEMAxFjwjycW1x2H_Ic7cJePXGs9u44tAHDl9lTKLuHc_zXBXy-SoLAITAY48Q0EVIijhJs1yKsqrrJgJMaaF0Frbd8RUhr3uKwPmAbKRJ0d6FbXYWDhHF7UN4ddtYjFK0dl7qMrZPbrkNEABdh9Npj2e3Imj5Vkqtnncu4zq1Jv7XhKto4wARHwmqZJ8XjAAAAABJRU5ErkJggg.png",
+      "snippet": "Partidos completos - Amistosos Internacionales ; Nueva Zelanda vs Chile. FIFA Series 2026™ Nueva Zelanda ; Nueva Zelanda vs Finlandia. FIFA Series 2026™ Nueva ...",
+      "snippet_highlighted_words": [
+        "Nueva Zelanda vs Chile"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Partidos completos - Amistosos Internacionales ; Nueva Zelanda vs Chile. FIFA Series 2026™ Nueva Zelanda ; Nueva Zelanda vs Finlandia. FIFA Series 2026™ Nueva ...",
+          "source_info_link": "https://www.plus.fifa.com/es/showcase/amistosos-internacionales/817f28ea-e283-48ff-b44d-077e4bd14c76",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAZlBMVEUCEiwCDywCACkCDSwDkEMDvU0DukwDuEwCPjID61kD_18D_14D3FUDxlABACMCKzADfT4CdTwDq0kBACUCJy8Dl0QBAB8DzFED_2MCACgD-FwDsUoDikECaDoDhEADZjkCTzUD1FPb-xWKAAAAkUlEQVR4Ae2QhQGEMAxFjwjycW1x2H_Ic7cJePXGs9u44tAHDl9lTKLuHc_zXBXy-SoLAITAY48Q0EVIijhJs1yKsqrrJgJMaaF0Frbd8RUhr3uKwPmAbKRJ0d6FbXYWDhHF7UN4ddtYjFK0dl7qMrZPbrkNEABdh9Npj2e3Imj5Vkqtnncu4zq1Jv7XhKto4wARHwmqZJ8XjAAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.plus.fifa.com/es/showcase/amistosos-internacionales/817f28ea-e283-48ff-b44d-077e4bd14c76&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.plus.fifa.com%2Fes%2Fshowcase%2Famistosos-internacionales%2F817f28ea-e283-48ff-b44d-077e4bd14c76",
+      "source": "DAZN"
+    },
+    {
+      "position": 4,
+      "title": "Amistosos de Selecciones",
+      "link": "https://www.tycsports.com/amistosos-de-selecciones.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.tycsports.com/amistosos-de-selecciones.html&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECEEQAQ",
+      "displayed_link": "https://www.tycsports.com › amistosos-de-selecciones",
+      "favicon": "https://serpapi.com/images/i/_9j_4AAQSkZJRgABAQAAAQABAAD_2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys_RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3NzctNys3NTctNzcrN__AABEIABwAHAMBIgACEQEDEQH_xAAZAAACAwEAAAAAAAAAAAAAAAAFBgABBAf_xAAnEAABAwQBAwMFAAAAAAAAAAABAgMEAAURIRIGE0FRcZEHFSIxMv_EABcBAQADAAAAAAAAAAAAAAAAAAEABAX_xAAaEQACAwEBAAAAAAAAAAAAAAABAgARIRIx_9oADAMBAAIRAxEAPwBBKgDgmpmnD6e3FcZN8ZMWG-hm2SJrYkMJWQ6gJ47O-PqKxv2lmZ07ars1HW5LnXR1uZ2AeKQVZCQkaTo6rb7o0ZR5sZFzIqZroFxgR-l2b_Msdtakyo91RCbTIbMgR2C0lfLifJUeOT7Ck7q9oQ78-2i2qtnIJWqGpxLnaKgDgcf0N5CTsZ8Uo4c5Iy8jZniTJMIvmI8povsLju4A_NtX9J364oz0beo9jkSnZM28R0rCMItvbw7gnIXz9xgjezQDFTFLKGFGANG4YX1Rdvv869QpKoMmYolwMnKePhOxvGBvHxQd0qedW88tTjriipa1nJUo7JJ8mrxVCkADyB32f__Z.jpeg",
+      "snippet": "Encontrá las últimas noticias de Amistosos de Selecciones: Brasil espera por Neymar: el primer equipo que ensayó Ancelotti en Estados Unidos, Atento, ...",
+      "snippet_highlighted_words": [
+        "Brasil espera por Neymar"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Encontrá las últimas noticias de Amistosos de Selecciones: Brasil espera por Neymar: el primer equipo que ensayó Ancelotti en Estados Unidos, Atento, ...",
+          "source_info_link": "https://www.tycsports.com/amistosos-de-selecciones.html",
+          "icon": "https://serpapi.com/images/i/_9j_4AAQSkZJRgABAQAAAQABAAD_2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys_RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3NzctNys3NTctNzcrN__AABEIABwAHAMBIgACEQEDEQH_xAAZAAACAwEAAAAAAAAAAAAAAAAFBgABBAf_xAAnEAABAwQBAwMFAAAAAAAAAAABAgMEAAURIRIGE0FRcZEHFSIxMv_EABcBAQADAAAAAAAAAAAAAAAAAAEABAX_xAAaEQACAwEBAAAAAAAAAAAAAAABAgARIRIx_9oADAMBAAIRAxEAPwBBKgDgmpmnD6e3FcZN8ZMWG-hm2SJrYkMJWQ6gJ47O-PqKxv2lmZ07ars1HW5LnXR1uZ2AeKQVZCQkaTo6rb7o0ZR5sZFzIqZroFxgR-l2b_Msdtakyo91RCbTIbMgR2C0lfLifJUeOT7Ck7q9oQ78-2i2qtnIJWqGpxLnaKgDgcf0N5CTsZ8Uo4c5Iy8jZniTJMIvmI8povsLju4A_NtX9J364oz0beo9jkSnZM28R0rCMItvbw7gnIXz9xgjezQDFTFLKGFGANG4YX1Rdvv869QpKoMmYolwMnKePhOxvGBvHxQd0qedW88tTjriipa1nJUo7JJ8mrxVCkADyB32f__Z.jpeg"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.tycsports.com/amistosos-de-selecciones.html&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.tycsports.com%2Famistosos-de-selecciones.html",
+      "source": "TyC Sports"
+    },
+    {
+      "position": 5,
+      "title": "Amistosos Internacionales 2026 » Calendario",
+      "link": "https://www.livefutbol.com/competition/co571/fifa-amistosos-internacionales/all-matches/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.livefutbol.com/competition/co571/fifa-amistosos-internacionales/all-matches/&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECEMQAQ",
+      "displayed_link": "https://www.livefutbol.com › competition › all-matches",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAfCAMAAACxiD--AAAAllBMVEX____63dz0trTvko_tfnnuhoLxoZ73ycf--PjjAADmLSDrbGbuiobpVE3qXljwmZXmMyjyqab_8PD41NPnOzH1u7nZ2dloaWpVVljs7OyIiYqqqqr76Oj--fnNzc5YWVpmZ2jDw8NPUFFiY2TqZmBbXF3i4uLoSkJfYGF2d3j2xMLoRz68vL2PkJDmOS-lpablHgs6PD5sTxa7AAABjElEQVR4AWzQB6KiMBRA0Wv32QFFYksAo0FhnP2v7mMNv5z0Xvim1e50u73-YMhfhh2R0bg36U5FZgN-mcsiCHmKurIM-SZcyopavF4niYJwFW-2eDuZ7rk7aGPSPaCyXPsZQznyktgTd6k1-Ya385m3tVY8OJvFLZ4C8TcqdMzTQV2EJwnwE-yBD-m_NsBLXMqTH7l2-NgnrqRx-eiVe9Zt8aZzIJI93tZWeJ0j0BYaSrfGa_8DgiUNN5fzouDyHwgWNBij1eusTD0nrIS7U0xNafP8iJs27kZwBVoSAmVidXWgdMaVoLaFccmNXpearFCFdc7k1uamVhS6nreNYRRQ60YHnSdpmeSmQT8231GUSlXauRhU4YznUuieIc201abkodJ-QnJiJwOgyvWhFfFUWm1dzbp8A9cZd1lFT3a8nE7pdlvGaXKgK0Pu4j0c_YynMqMnLbyxrGi6VYFENPVl1sLLDuMd3-1mcg5aeyC8dGLNH1qdkTwNqpK_hdHgMtihvmaoxoAfIAwAAHZrKE3iB-PHAAAAAElFTkSuQmCC.png",
+      "snippet": "Trin. y Tob. Trinidad y Tobago. Final. 25.03.2026. Kuwait · Kuwait · Kuwait · -:-. n.d.. Namibia · Namibia · Kazajistán · Kazajistán · Kazajistán.",
+      "snippet_highlighted_words": [
+        "Trin. y Tob. Trinidad y Tobago"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Trin. y Tob. Trinidad y Tobago. Final. 25.03.2026. Kuwait · Kuwait · Kuwait · -:-. n.d.. Namibia · Namibia · Kazajistán · Kazajistán · Kazajistán.",
+          "source_info_link": "https://www.livefutbol.com/competition/co571/fifa-amistosos-internacionales/all-matches/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAfCAMAAACxiD--AAAAllBMVEX____63dz0trTvko_tfnnuhoLxoZ73ycf--PjjAADmLSDrbGbuiobpVE3qXljwmZXmMyjyqab_8PD41NPnOzH1u7nZ2dloaWpVVljs7OyIiYqqqqr76Oj--fnNzc5YWVpmZ2jDw8NPUFFiY2TqZmBbXF3i4uLoSkJfYGF2d3j2xMLoRz68vL2PkJDmOS-lpablHgs6PD5sTxa7AAABjElEQVR4AWzQB6KiMBRA0Wv32QFFYksAo0FhnP2v7mMNv5z0Xvim1e50u73-YMhfhh2R0bg36U5FZgN-mcsiCHmKurIM-SZcyopavF4niYJwFW-2eDuZ7rk7aGPSPaCyXPsZQznyktgTd6k1-Ya385m3tVY8OJvFLZ4C8TcqdMzTQV2EJwnwE-yBD-m_NsBLXMqTH7l2-NgnrqRx-eiVe9Zt8aZzIJI93tZWeJ0j0BYaSrfGa_8DgiUNN5fzouDyHwgWNBij1eusTD0nrIS7U0xNafP8iJs27kZwBVoSAmVidXWgdMaVoLaFccmNXpearFCFdc7k1uamVhS6nreNYRRQ60YHnSdpmeSmQT8231GUSlXauRhU4YznUuieIc201abkodJ-QnJiJwOgyvWhFfFUWm1dzbp8A9cZd1lFT3a8nE7pdlvGaXKgK0Pu4j0c_YynMqMnLbyxrGi6VYFENPVl1sLLDuMd3-1mcg5aeyC8dGLNH1qdkTwNqpK_hdHgMtihvmaoxoAfIAwAAHZrKE3iB-PHAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.livefutbol.com/competition/co571/fifa-amistosos-internacionales/all-matches/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.livefutbol.com%2Fcompetition%2Fco571%2Ffifa-amistosos-internacionales%2Fall-matches%2F",
+      "source": "livefutbol.com"
+    },
+    {
+      "position": 6,
+      "title": "Amistosos en Vivo - marcadores y resultados Fútbol",
+      "link": "https://www.sportytrader.com/es/resultados-vivo/futbol/international/amistosos-411/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.sportytrader.com/es/resultados-vivo/futbol/international/amistosos-411/&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECDwQAQ",
+      "displayed_link": "https://www.sportytrader.com › ... › Fútbol en vivo",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAe1BMVEX______fz_t6__cV7_MwD_FAD_bFj_sKf_-ff_q6H_HwD_KwD_LwD_IQD_m47_WkH_QyL_8vD_Siz_xL3_AAD_wLj_ubD_xsD_29f_TTH_o5j_4t7_kIL_joH_iHn_g3T_n5T_emn_0s3_ZlH_7er_Pxn_lor_blv_YUrw-N7JAAAA-UlEQVR4AbXQBQ7DMAxAUa-1C3FcZhjT_S843sriPUX4w_BvK8NEIrRsByZcpVgjahbyxst8hT8ShIMYMPaw7ldLcICjrsWEWt7UW5J2m2pmz3jIsixN0ziOc_gqSJcrWFAJ1ZA2TdO27XqzhWLXdit3zADJi7BqwSWm3TduWK0AnmOPWgxYMyJ9b5QSWw687BUV4GtENr9LD4pJRMiEI5EDCh_x0F3pJMIs7mOlhiM9opxhImIL9s-VVMCP4zhhGOYB89rZCqKOulYm9KSeN6FHw2TfxYpwQK2hZ02Ddhl9YcLfxEkDI_WFhB-ErgVMhcbaNNf2Ef7tDmV2D9gj2MNFAAAAAElFTkSuQmCC.png",
+      "snippet": "Calendario Amistosos ; 06:30. Filipinas. Guam ; 07:30. Kirguistán. Kenia ; 12:00. Gibraltar. Islas Vírgenes, Gran Bretaña ; 13:00. Dinamarca. RD Congo ; 13:00.",
+      "snippet_highlighted_words": [
+        "as"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Calendario Amistosos ; 06:30. Filipinas. Guam ; 07:30. Kirguistán. Kenia ; 12:00. Gibraltar. Islas Vírgenes, Gran Bretaña ; 13:00. Dinamarca. RD Congo ; 13:00.",
+          "source_info_link": "https://www.sportytrader.com/es/resultados-vivo/futbol/international/amistosos-411/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAe1BMVEX______fz_t6__cV7_MwD_FAD_bFj_sKf_-ff_q6H_HwD_KwD_LwD_IQD_m47_WkH_QyL_8vD_Siz_xL3_AAD_wLj_ubD_xsD_29f_TTH_o5j_4t7_kIL_joH_iHn_g3T_n5T_emn_0s3_ZlH_7er_Pxn_lor_blv_YUrw-N7JAAAA-UlEQVR4AbXQBQ7DMAxAUa-1C3FcZhjT_S843sriPUX4w_BvK8NEIrRsByZcpVgjahbyxst8hT8ShIMYMPaw7ldLcICjrsWEWt7UW5J2m2pmz3jIsixN0ziOc_gqSJcrWFAJ1ZA2TdO27XqzhWLXdit3zADJi7BqwSWm3TduWK0AnmOPWgxYMyJ9b5QSWw687BUV4GtENr9LD4pJRMiEI5EDCh_x0F3pJMIs7mOlhiM9opxhImIL9s-VVMCP4zhhGOYB89rZCqKOulYm9KSeN6FHw2TfxYpwQK2hZ02Ddhl9YcLfxEkDI_WFhB-ErgVMhcbaNNf2Ef7tDmV2D9gj2MNFAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.sportytrader.com/es/resultados-vivo/futbol/international/amistosos-411/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.sportytrader.com%2Fes%2Fresultados-vivo%2Ffutbol%2Finternational%2Famistosos-411%2F",
+      "source": "SportyTrader"
+    },
+    {
+      "position": 7,
+      "title": "Resultados de Amistosos internacionales - temporada 2026",
+      "link": "https://www.espn.com.ar/futbol/resultados/_/liga/fifa.friendly",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.espn.com.ar/futbol/resultados/_/liga/fifa.friendly&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECEAQAQ",
+      "displayed_link": "https://www.espn.com.ar › resultados › liga › fifa.friendly",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAWlBMVEXsHCTsGyPsDxrsFR7uQUf82tz70tTtKjHxYWb____96OnsBBTzf4P71NXrAA_2pKf5wML3r7L3q67ydHfrAADwUVbtLzb_9_fvSE384uP6y830gobyeHzwWFzD1SbZAAAAj0lEQVR4AcXSNQKEQAAEQdx93f7_zHOZiQjptGA9u7KcYssLrCQtqxprWtSi67EhQxwnwnlEXFbCbcmgYtqPf7soEHNJjWTZNjdz82pu5lqVuBNtaE5LaMmMfiFv033yvM3w2vq4jK-Kl_E2nYjvUkm40ZzrgjsZZ8JppG0OhF2B2DY1VtGceVlg-fkjuaY7LXoMIxMy1FEAAAAASUVORK5CYII.png",
+      "snippet": "Resultados en vivo de todas las grandes ligas de Amistosos internacionales en ESPN (AR). Incluye estadísticas, highlights, análisis de jugadas y cuotas ...",
+      "snippet_highlighted_words": [
+        "Resultados en vivo de todas las grandes ligas de Amistosos internacionales"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Resultados en vivo de todas las grandes ligas de Amistosos internacionales en ESPN (AR). Incluye estadísticas, highlights, análisis de jugadas y cuotas ...",
+          "source_info_link": "https://www.espn.com.ar/futbol/resultados/_/liga/fifa.friendly",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAWlBMVEXsHCTsGyPsDxrsFR7uQUf82tz70tTtKjHxYWb____96OnsBBTzf4P71NXrAA_2pKf5wML3r7L3q67ydHfrAADwUVbtLzb_9_fvSE384uP6y830gobyeHzwWFzD1SbZAAAAj0lEQVR4AcXSNQKEQAAEQdx93f7_zHOZiQjptGA9u7KcYssLrCQtqxprWtSi67EhQxwnwnlEXFbCbcmgYtqPf7soEHNJjWTZNjdz82pu5lqVuBNtaE5LaMmMfiFv033yvM3w2vq4jK-Kl_E2nYjvUkm40ZzrgjsZZ8JppG0OhF2B2DY1VtGceVlg-fkjuaY7LXoMIxMy1FEAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.espn.com.ar/futbol/resultados/_/liga/fifa.friendly&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.espn.com.ar%2Ffutbol%2Fresultados%2F_%2Fliga%2Ffifa.friendly",
+      "source": "ESPN Deportes"
+    },
+    {
+      "position": 8,
+      "title": "Partidos Amistosos Internacionales Masculinos Hoy",
+      "link": "https://www.instagram.com/popular/partidos-amistosos-internacionales-masculinos-hoy/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.instagram.com/popular/partidos-amistosos-internacionales-masculinos-hoy/&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECEUQAQ",
+      "displayed_link": "https://www.instagram.com › Popular",
+      "favicon": "https://serpapi.com/searches/6a21b6eccbcccfb04df3f4df/images/9LDI6ArTS08XKA9TNqdIduja4pnIk1-FJVNg8RYOgEo.png",
+      "snippet": "Partidos Amistosos Internacionales Masculinos Hoy · ⚽️ El gol de Alexander Santimateo luego de una gran jugada de Ricardo Montenegro, 46K · El mejor gol del ...",
+      "snippet_highlighted_words": [
+        "Partidos Amistosos Internacionales Masculinos Hoy"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Partidos Amistosos Internacionales Masculinos Hoy · ⚽️ El gol de Alexander Santimateo luego de una gran jugada de Ricardo Montenegro, 46K · El mejor gol del ...",
+          "source_info_link": "https://www.instagram.com/popular/partidos-amistosos-internacionales-masculinos-hoy/",
+          "icon": "https://serpapi.com/searches/6a21b6eccbcccfb04df3f4df/images/9LDI6ArTS08XKA9TNqdIdrbIWynoU667_5Pc0z0ygf8u6pmHUt5Byt9jjE01DtPb.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.instagram.com/popular/partidos-amistosos-internacionales-masculinos-hoy/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.instagram.com%2Fpopular%2Fpartidos-amistosos-internacionales-masculinos-hoy%2F",
+      "source": "Instagram"
+    },
+    {
+      "position": 9,
+      "title": "Amistoso Internacional: Resultados en vivo, partidos y tablas",
+      "link": "https://www.365scores.com/es/football/league/friendly-international-570",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.365scores.com/es/football/league/friendly-international-570&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECGUQAQ",
+      "displayed_link": "https://www.365scores.com › friendly-international-570",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAA3klEQVR4Ad3LIWzCUBiF0eMNFj25BIOpReKDqMR7hQ9yFltdV1X7XA26c8_nJYjKJiT_uoVsm5rnyPvleibD-6cxb1DnvLXJ49c0oMT9fp8jKg4RR6qIeZmieMjRsbQaush-KUtTPRrd92tXS6XdHoxxRL132LQlqXcoAUOIDCXEAFGQA1KI8jdmNNFRRzHEG-ellKjp4gK3mEvE3voe0xTzi31EmeMGtNN8rbBK05RWqK7zrfW__kIzvtIPHPPOum9oOpAaRuzb88npwrnvadLP87qlTxxPSC1N75l8AEW4lgaOvevQAAAAAElFTkSuQmCC.png",
+      "snippet": "Mis Marcadores de Amistoso Internacional: Resultados en vivo, estadísticas, tabla de posiciones, calendario, partidos de hoy y cuándo juega tu equipo ...",
+      "snippet_highlighted_words": [
+        "Resultados en vivo, estadísticas, tabla de posiciones, calendario, partidos de hoy"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Mis Marcadores de Amistoso Internacional: Resultados en vivo, estadísticas, tabla de posiciones, calendario, partidos de hoy y cuándo juega tu equipo ...",
+          "source_info_link": "https://www.365scores.com/es/football/league/friendly-international-570",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAA3klEQVR4Ad3LIWzCUBiF0eMNFj25BIOpReKDqMR7hQ9yFltdV1X7XA26c8_nJYjKJiT_uoVsm5rnyPvleibD-6cxb1DnvLXJ49c0oMT9fp8jKg4RR6qIeZmieMjRsbQaush-KUtTPRrd92tXS6XdHoxxRL132LQlqXcoAUOIDCXEAFGQA1KI8jdmNNFRRzHEG-ellKjp4gK3mEvE3voe0xTzi31EmeMGtNN8rbBK05RWqK7zrfW__kIzvtIPHPPOum9oOpAaRuzb88npwrnvadLP87qlTxxPSC1N75l8AEW4lgaOvevQAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.365scores.com/es/football/league/friendly-international-570&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.365scores.com%2Fes%2Ffootball%2Fleague%2Ffriendly-international-570",
+      "source": "365Scores"
+    },
+    {
+      "position": 10,
+      "title": "Amistosos Partidos, calendario y horarios",
+      "link": "https://www.eurosport.es/futbol/partidos-amistosos/calendario-resultados.shtml",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.eurosport.es/futbol/partidos-amistosos/calendario-resultados.shtml&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQFnoECD8QAQ",
+      "displayed_link": "https://www.eurosport.es › futbol › calendario-resultados",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAAB8AAAAgBAMAAAAYrL5yAAAAMFBMVEUaGhoaGhoZGRkQEBABAQFjY2P___-wsLB2dnbDw8PS0tKioqIzMzNXV1ePj4_s7OyfqGs1AAAAAnRSTlPD9CyUf7AAAACpSURBVHgBY2AURAEMDEqoQIFIAWUXCIALmKaBQboTTMADIpCJW8ACi4rl5eXlpUZIKrYALXGG26ITGvsE1WHGniWoAirPtiAJqLi4uILMMIIJnH737lnavHevL0ME4M5a6wTX4gnib3JGGKqyLC1tihOSLX5ABSi2hKXroQjY_nNROY_sdFtgSJmUI3lOGSjhiex9sD2oAsr-aAGkgx7ISkjRQEZUYiQHADJfcAJiZ5XcAAAAAElFTkSuQmCC.png",
+      "snippet": "Manténgase actualizado con el calendario completo de Amistosos . Eurosport le ofrece actualizaciones en directo, resultados en tiempo real y noticias de ...",
+      "snippet_highlighted_words": [
+        "Amistosos"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Manténgase actualizado con el calendario completo de Amistosos . Eurosport le ofrece actualizaciones en directo, resultados en tiempo real y noticias de ...",
+          "source_info_link": "https://www.eurosport.es/futbol/partidos-amistosos/calendario-resultados.shtml",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAAB8AAAAgBAMAAAAYrL5yAAAAMFBMVEUaGhoaGhoZGRkQEBABAQFjY2P___-wsLB2dnbDw8PS0tKioqIzMzNXV1ePj4_s7OyfqGs1AAAAAnRSTlPD9CyUf7AAAACpSURBVHgBY2AURAEMDEqoQIFIAWUXCIALmKaBQboTTMADIpCJW8ACi4rl5eXlpUZIKrYALXGG26ITGvsE1WHGniWoAirPtiAJqLi4uILMMIIJnH737lnavHevL0ME4M5a6wTX4gnib3JGGKqyLC1tihOSLX5ABSi2hKXroQjY_nNROY_sdFtgSJmUI3lOGSjhiex9sD2oAsr-aAGkgx7ISkjRQEZUYiQHADJfcAJiZ5XcAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.eurosport.es/futbol/partidos-amistosos/calendario-resultados.shtml&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.eurosport.es%2Ffutbol%2Fpartidos-amistosos%2Fcalendario-resultados.shtml",
+      "source": "Eurosport"
+    }
+  ],
+  "related_searches": [
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos hoy en vivo",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+hoy+en+vivo&sa=X&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ1QJ6BAhCEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+hoy+en+vivo"
+    },
+    {
+      "block_position": 1,
+      "query": "Amistosos internacionales hoy resultados",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Amistosos+internacionales+hoy+resultados&sa=X&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ1QJ6BAhhEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+internacionales+hoy+resultados"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos hoy Europa",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+hoy+Europa&sa=X&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ1QJ6BAhfEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+hoy+Europa"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos Amistosos hoy de Clubes",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+Amistosos+hoy+de+Clubes&sa=X&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ1QJ6BAheEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+Amistosos+hoy+de+Clubes"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos de hoy, horarios",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+de+hoy,+horarios&sa=X&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ1QJ6BAhWEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+de+hoy%2C+horarios"
+    },
+    {
+      "block_position": 1,
+      "query": "Amistosos internacionales FIFA 2026",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Amistosos+internacionales+FIFA+2026&sa=X&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ1QJ6BAhOEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+internacionales+FIFA+2026"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos hoy Argentina",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+hoy+Argentina&sa=X&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ1QJ6BAhGEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+hoy+Argentina"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos internacionales masculinos hoy",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+internacionales+masculinos+hoy&sa=X&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ1QJ6BAhEEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+internacionales+masculinos+hoy"
+    }
+  ],
+  "pagination": {
+    "current": 1,
+    "next": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=10&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8NMDegQIMRAW",
+    "other_pages": {
+      "2": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=10&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8tMDegQIMRAE",
+      "3": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=20&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8tMDegQIMRAG",
+      "4": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=30&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8tMDegQIMRAI",
+      "5": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=40&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8tMDegQIMRAK",
+      "6": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=50&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8tMDegQIMRAM",
+      "7": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=60&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8tMDegQIMRAO",
+      "8": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=70&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8tMDegQIMRAQ",
+      "9": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=80&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8tMDegQIMRAS",
+      "10": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=7bYhaoX4HMWsruEP_L_Q2Q0&start=90&sa=N&sstk=AU9db-B3KyUzbUcq4DrWxS6CODX-EYB-l_OXs59KXOSu9N8uavJTWIccQvIAJvcyxOzFQ7VBu1qMofsqXKR4hjHpDbRs0Bw35Kl3Rw&ved=2ahUKEwjFooSMj-6UAxVFlisGHfwfNNsQ8tMDegQIMRAU"
+    }
+  },
+  "serpapi_pagination": {
+    "current": 1,
+    "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=10",
+    "next": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=10",
+    "other_pages": {
+      "2": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=10",
+      "3": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=20",
+      "4": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=30",
+      "5": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=40",
+      "6": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=50",
+      "7": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=60",
+      "8": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=70",
+      "9": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=80",
+      "10": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&start=90"
+    }
+  }
+}

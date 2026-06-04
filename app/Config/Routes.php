@@ -112,6 +112,11 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->post('events/staged/reject/(:num)', 'Dashboard::rejectStagedEvent/$1');
     $routes->post('events/staged/bulk-approve/(:any)', 'Dashboard::bulkApproveBatch/$1');
     
+    // Odds API synchronization routes
+    $routes->get('events/sync-list', 'Dashboard::getSyncList');
+    $routes->post('events/sync-accept', 'Dashboard::acceptSyncSport');
+    $routes->post('events/sync-cancel', 'Dashboard::cancelSyncSport');
+    
     // Football-Data.org Integration (Real fixtures & results)
     $routes->get('events/football/competitions', 'Dashboard::getFootballCompetitions');
     $routes->post('events/football/search-team', 'Dashboard::searchFootballTeam');
@@ -143,6 +148,7 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->post('jobs/settle', 'Dashboard::triggerSettleBets');
     $routes->post('jobs/start-websocket', 'Dashboard::triggerStartWebSocket');
     $routes->post('jobs/trigger-b2b-mock', 'Dashboard::triggerB2BMock');
+    $routes->post('jobs/trigger-sync-odds', 'Dashboard::triggerSyncOdds');
 });
 
 $routes->get('run-migrations-public', function() {

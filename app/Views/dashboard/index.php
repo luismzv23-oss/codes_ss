@@ -204,6 +204,11 @@
                         <i data-lucide="zap" style="width:16px;height:16px;color:#eab308;"></i>
                         Simular Cuota B2B (Python)
                     </button>
+                    <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; display:flex; align-items:center; gap:0.6rem; text-align:left; color: #10b981;"
+                        @click="triggerJob('/dashboard/jobs/trigger-sync-odds', $event.currentTarget)">
+                        <i data-lucide="refresh-cw" style="width:16px;height:16px;color:#10b981;"></i>
+                        Sync Odds API (Libertadores)
+                    </button>
                 </div>
             </div>
         </div>

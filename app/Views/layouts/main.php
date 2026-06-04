@@ -157,6 +157,110 @@
                 leagueName: '',
                 eventsHtml: '<div style="padding:2rem;text-align:center;">Cargando eventos...</div>',
                 stagedEvents: [],
+                showOddsModal: false,
+                oddsSports: [],
+                oddsSportsLoading: false,
+                oddsSyncingKey: null,
+                oddsSearchQuery: '',
+                async openOddsModal() {
+                    this.showOddsModal = true;
+                    this.loadOddsSports();
+                },
+                async loadOddsSports() {
+                    this.oddsSportsLoading = true;
+                    try {
+                        const res = await fetch('/dashboard/events/sync-list');
+                        const data = await res.json();
+                        if (data.status === 'success') {
+                            this.oddsSports = data.sports;
+                        } else {
+                            alert(data.message || 'Error cargando lista de deportes');
+                        }
+                    } catch(e) {
+                        console.error('Error cargando sync list:', e);
+                    } finally {
+                        this.oddsSportsLoading = false;
+                    }
+                },
+                getFilteredOddsSports() {
+                    const query = this.oddsSearchQuery.trim().toLowerCase();
+                    if (!query) return this.oddsSports;
+                    return this.oddsSports.filter(s => 
+                        (s.title || '').toLowerCase().includes(query) || 
+                        (s.key || '').toLowerCase().includes(query) ||
+                        (s.group || '').toLowerCase().includes(query)
+                    );
+                },
+                getGroupedOddsSports() {
+                    const filtered = this.getFilteredOddsSports();
+                    const groups = {};
+                    filtered.forEach(s => {
+                        const group = s.group || 'Otros';
+                        if (!groups[group]) groups[group] = [];
+                        groups[group].push(s);
+                    });
+                    return groups;
+                },
+                async acceptOddsSport(sportKey) {
+                    if (this.oddsSyncingKey !== null) return;
+                    this.oddsSyncingKey = sportKey;
+                    try {
+                        const body = new URLSearchParams();
+                        body.append('sport_key', sportKey);
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+
+                        const res = await fetch('/dashboard/events/sync-accept', {
+                            method: 'POST',
+                            headers,
+                            body
+                        });
+                        const result = await res.json();
+                        alert(result.status === 'success' ? result.message : (result.message || 'Error al aceptar'));
+                        await this.loadOddsSports();
+                    } catch(e) {
+                        alert('Error de red al registrar el deporte.');
+                    } finally {
+                        this.oddsSyncingKey = null;
+                    }
+                },
+                async cancelOddsSport(sportKey, title) {
+                    const matched = this.oddsSports.find(s => s.key === sportKey);
+                    if (matched && matched.status === 'inactive') {
+                        return; // already inactive
+                    }
+                    if (matched && matched.status === 'unregistered') {
+                        return; // cannot cancel unregistered
+                    }
+                    if (this.oddsSyncingKey !== null) return;
+                    if (!confirm(`¿Estás seguro de cancelar la liga "${title}"? Se desactivará y se eliminarán sus partidos que no tengan apuestas registradas.`)) return;
+                    
+                    this.oddsSyncingKey = sportKey;
+                    try {
+                        const body = new URLSearchParams();
+                        body.append('sport_key', sportKey);
+                        body.append('title', title);
+                        const csrfHeader = document.querySelector('meta[name="csrf-header"]')?.content || 'X-CSRF-TOKEN';
+                        const csrfToken  = document.querySelector('meta[name="csrf-token"]')?.content || '';
+                        const headers = { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' };
+                        if (csrfToken) headers[csrfHeader] = csrfToken;
+
+                        const res = await fetch('/dashboard/events/sync-cancel', {
+                            method: 'POST',
+                            headers,
+                            body
+                        });
+                        const result = await res.json();
+                        alert(result.status === 'success' ? result.message : (result.message || 'Error al cancelar'));
+                        await this.loadOddsSports();
+                    } catch(e) {
+                        alert('Error de red al cancelar el deporte.');
+                    } finally {
+                        this.oddsSyncingKey = null;
+                    }
+                },
                 async loadStagedEvents() {
                     try {
                         const res = await fetch('/dashboard/events/staged');

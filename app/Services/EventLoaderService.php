@@ -12,6 +12,20 @@ use App\Libraries\AuditLogger;
 
 class EventLoaderService
 {
+    public function enrichStagedEventMetadata(array $stagedEvent): array
+    {
+        $sportKey = (string) ($stagedEvent['sport_key'] ?? '');
+        $home = (string) ($stagedEvent['home_team'] ?? '');
+        $away = (string) ($stagedEvent['away_team'] ?? '');
+        $startTime = (string) ($stagedEvent['start_time'] ?? '');
+
+        if ($home === '' || $away === '') {
+            return [];
+        }
+
+        return $this->enrichEventMetadataFromFreeFeeds($sportKey, $home, $away, $startTime);
+    }
+
     /**
      * Obtener los deportes de fútbol disponibles en la API (o mock)
      */
@@ -132,7 +146,15 @@ class EventLoaderService
 
                     $home = $apiEvent['home_team'];
                     $away = $apiEvent['away_team'];
-                    $startTime = date('Y-m-d H:i:s', strtotime($apiEvent['commence_time'] ?? 'now'));
+                    $startTime = $this->parseImportedStartTime($apiEvent['commence_time'] ?? null);
+                    $metadata = $this->enrichEventMetadataFromFreeFeeds($key, $home, $away, $startTime ?? '');
+                    if (!empty($metadata['start_time'])) {
+                        $startTime = $metadata['start_time'];
+                    }
+                    if ($startTime === null) {
+                        log_message('warning', "Skipping imported event without real match date: {$home} vs {$away} ({$key})");
+                        continue;
+                    }
                     $leagueName = $apiEvent['sport_title'] ?? 'Fútbol';
                     
                     // Determine country
@@ -256,6 +278,10 @@ class EventLoaderService
                         'home_team'      => $home,
                         'away_team'      => $away,
                         'start_time'     => $startTime,
+                        'stage'          => $metadata['stage'] ?? null,
+                        'group_name'     => $metadata['group_name'] ?? null,
+                        'venue'          => $metadata['venue'] ?? null,
+                        'venue_url'      => $metadata['venue_url'] ?? null,
                         'odds_data'      => json_encode($markets),
                         'status'         => 'pending_review'
                     ]);
@@ -703,6 +729,79 @@ class EventLoaderService
             }
 
             $data = json_decode($response, true);
+
+            // Si el widget deportivo tiene pestañas, buscar la pestaña de partidos ("Partidos") para obtener la lista completa sin límites
+            $siVal = null;
+            if (isset($data['knowledge_graph']['tabs']) && is_array($data['knowledge_graph']['tabs'])) {
+                foreach ($data['knowledge_graph']['tabs'] as $tab) {
+                    $tabText = mb_strtolower($tab['text'] ?? '');
+                    if (
+                        str_contains($tabText, 'partido') ||
+                        str_contains($tabText, 'match') ||
+                        str_contains($tabText, 'juego') ||
+                        str_contains($tabText, 'calendario') ||
+                        str_contains($tabText, 'schedule') ||
+                        str_contains($tabText, 'programac') || // programacion / programación
+                        str_contains($tabText, 'fixture') ||
+                        str_contains($tabText, 'jornada') ||
+                        str_contains($tabText, 'resultados') ||
+                        str_contains($tabText, 'directo') ||
+                        str_contains($tabText, 'en vivo')
+                    ) {
+                        $siVal = $tab['si'] ?? null;
+                        if (!$siVal && isset($tab['serpapi_link'])) {
+                            $parsedUrl = parse_url($tab['serpapi_link']);
+                            if (isset($parsedUrl['query'])) {
+                                parse_str($parsedUrl['query'], $queryParts);
+                                $siVal = $queryParts['si'] ?? null;
+                            }
+                        }
+                        if ($siVal) {
+                            break;
+                        }
+                    }
+                }
+
+                // Fallback: si no encontramos por palabra clave, pero los partidos iniciales son <= 6 y hay pestañas, elegir la primera pestaña con "si"
+                if (!$siVal && isset($data['sports_results']['games']) && count($data['sports_results']['games']) <= 6) {
+                    foreach ($data['knowledge_graph']['tabs'] as $tab) {
+                        $candidateSi = $tab['si'] ?? null;
+                        if (!$candidateSi && isset($tab['serpapi_link'])) {
+                            $parsedUrl = parse_url($tab['serpapi_link']);
+                            if (isset($parsedUrl['query'])) {
+                                parse_str($parsedUrl['query'], $queryParts);
+                                $candidateSi = $queryParts['si'] ?? null;
+                            }
+                        }
+                        if ($candidateSi) {
+                            $siVal = $candidateSi;
+                            break;
+                        }
+                    }
+                }
+                
+                if ($siVal) {
+                    $siUrl = "https://serpapi.com/search.json?engine=google&q=" . urlencode($normalizedQuery) . "&hl=es&gl=ar&api_key=" . urlencode($apiKey) . "&si=" . urlencode($siVal);
+                    
+                    $ch2 = curl_init();
+                    curl_setopt($ch2, CURLOPT_URL, $siUrl);
+                    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch2, CURLOPT_TIMEOUT, 12);
+                    curl_setopt($ch2, CURLOPT_SSL_VERIFYPEER, false);
+                    
+                    $response2 = curl_exec($ch2);
+                    $httpCode2 = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
+                    curl_close($ch2);
+                    
+                    if ($httpCode2 === 200 && $response2 !== false) {
+                        $data2 = json_decode($response2, true);
+                        if (isset($data2['sports_results']['games']) && is_array($data2['sports_results']['games'])) {
+                            $data = $data2;
+                            log_message('info', "SerpApi: Sincronización expandida exitosa usando parámetro 'si'. Encontrados " . count($data['sports_results']['games']) . " partidos.");
+                        }
+                    }
+                }
+            }
             
             if (!isset($data['sports_results']['games']) || !is_array($data['sports_results']['games'])) {
                 return [
@@ -916,6 +1015,198 @@ class EventLoaderService
         return $fallback;
     }
 
+    private function enrichEventMetadataFromFreeFeeds(string $sportKey, string $home, string $away, string $startTime): array
+    {
+        $metadata = $this->findEspnEventMetadata($sportKey, $home, $away, $startTime);
+
+        if (empty($metadata['venue'])) {
+            $metadata['venue'] = $this->fallbackHomeVenue($sportKey, $home);
+        }
+
+        if (!empty($metadata['venue']) && empty($metadata['venue_url'])) {
+            $metadata['venue_url'] = $this->buildVenueSearchUrl($metadata['venue'], $home, $away);
+        }
+
+        return array_filter($metadata, static fn($value) => $value !== null && $value !== '');
+    }
+
+    private function parseImportedStartTime($value): ?string
+    {
+        if (!is_scalar($value)) {
+            return null;
+        }
+
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        $timestamp = strtotime($value);
+        if ($timestamp === false) {
+            return null;
+        }
+
+        return date('Y-m-d H:i:s', $timestamp);
+    }
+
+    private function findEspnEventMetadata(string $sportKey, string $home, string $away, string $startTime): array
+    {
+        $path = $this->espnScoreboardPath($sportKey);
+        if ($path === '') {
+            return [];
+        }
+
+        $baseTimestamp = strtotime($startTime) ?: time();
+        foreach ([-1, 0, 1] as $offsetDays) {
+            $date = date('Ymd', strtotime(($offsetDays >= 0 ? '+' : '') . $offsetDays . ' days', $baseTimestamp));
+            $url = "https://site.api.espn.com/apis/site/v2/sports/{$path}/scoreboard?dates={$date}";
+            $data = $this->fetchJson($url);
+            if (empty($data['events']) || !is_array($data['events'])) {
+                continue;
+            }
+
+            foreach ($data['events'] as $event) {
+                $competition = $event['competitions'][0] ?? [];
+                $competitors = $competition['competitors'] ?? [];
+                if (count($competitors) < 2) {
+                    continue;
+                }
+
+                $espnHome = '';
+                $espnAway = '';
+                foreach ($competitors as $competitor) {
+                    $teamName = $competitor['team']['displayName'] ?? $competitor['team']['shortDisplayName'] ?? $competitor['team']['name'] ?? '';
+                    if (($competitor['homeAway'] ?? '') === 'home') {
+                        $espnHome = $teamName;
+                    } else {
+                        $espnAway = $teamName;
+                    }
+                }
+
+                if (!$this->teamsMatch($home, $espnHome) || !$this->teamsMatch($away, $espnAway)) {
+                    continue;
+                }
+
+                $venue = $this->serpApiText($competition['venue']['fullName'] ?? $competition['venue']['displayName'] ?? $competition['venue']['name'] ?? null, '');
+                $eventDate = $this->serpApiText($event['date'] ?? '', '');
+                $parsedDate = strtotime($eventDate);
+
+                return [
+                    'start_time' => $parsedDate !== false ? date('Y-m-d H:i:s', $parsedDate) : null,
+                    'stage' => $this->serpApiText($event['season']['name'] ?? $event['week']['text'] ?? null, ''),
+                    'group_name' => $this->extractGroupName($event),
+                    'venue' => $venue,
+                    'venue_url' => $this->buildVenueSearchUrl($venue, $home, $away),
+                ];
+            }
+        }
+
+        return [];
+    }
+
+    private function espnScoreboardPath(string $sportKey): string
+    {
+        $key = strtolower($sportKey);
+        if (str_contains($key, 'basketball_nba') || str_contains($key, 'nba')) {
+            return 'basketball/nba';
+        }
+        if (str_contains($key, 'soccer') || str_contains($key, 'football')) {
+            return 'soccer/all';
+        }
+
+        return '';
+    }
+
+    private function fetchJson(string $url): array
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode !== 200 || $response === false) {
+            return [];
+        }
+
+        $data = json_decode($response, true);
+        return is_array($data) ? $data : [];
+    }
+
+    private function teamsMatch(string $expected, string $actual): bool
+    {
+        $expected = $this->normalizeTeamName($expected);
+        $actual = $this->normalizeTeamName($actual);
+
+        if ($expected === '' || $actual === '') {
+            return false;
+        }
+
+        return $expected === $actual || str_contains($actual, $expected) || str_contains($expected, $actual);
+    }
+
+    private function normalizeTeamName(string $team): string
+    {
+        $team = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $team) ?: $team;
+        $team = strtolower($team);
+        $team = preg_replace('/\b(fc|cf|sc|club|de|la|el|the)\b/', ' ', $team) ?? $team;
+        $team = preg_replace('/[^a-z0-9]+/', ' ', $team) ?? $team;
+        return trim(preg_replace('/\s+/', ' ', $team) ?? $team);
+    }
+
+    private function fallbackHomeVenue(string $sportKey, string $home): string
+    {
+        if (!str_contains(strtolower($sportKey), 'nba')) {
+            return '';
+        }
+
+        $venues = [
+            'hawks' => 'State Farm Arena',
+            'celtics' => 'TD Garden',
+            'nets' => 'Barclays Center',
+            'hornets' => 'Spectrum Center',
+            'bulls' => 'United Center',
+            'cavaliers' => 'Rocket Mortgage FieldHouse',
+            'mavericks' => 'American Airlines Center',
+            'nuggets' => 'Ball Arena',
+            'pistons' => 'Little Caesars Arena',
+            'warriors' => 'Chase Center',
+            'rockets' => 'Toyota Center',
+            'pacers' => 'Gainbridge Fieldhouse',
+            'clippers' => 'Intuit Dome',
+            'lakers' => 'Crypto.com Arena',
+            'grizzlies' => 'FedExForum',
+            'heat' => 'Kaseya Center',
+            'bucks' => 'Fiserv Forum',
+            'timberwolves' => 'Target Center',
+            'pelicans' => 'Smoothie King Center',
+            'knicks' => 'Madison Square Garden',
+            'thunder' => 'Paycom Center',
+            'magic' => 'Kia Center',
+            '76ers' => 'Wells Fargo Center',
+            'suns' => 'Footprint Center',
+            'trail blazers' => 'Moda Center',
+            'kings' => 'Golden 1 Center',
+            'spurs' => 'Frost Bank Center',
+            'raptors' => 'Scotiabank Arena',
+            'jazz' => 'Delta Center',
+            'wizards' => 'Capital One Arena',
+        ];
+
+        $normalizedHome = $this->normalizeTeamName($home);
+        foreach ($venues as $team => $venue) {
+            if (str_contains($normalizedHome, $team)) {
+                return $venue;
+            }
+        }
+
+        return '';
+    }
+
     private function parseSerpApiStartTime(array $match, string $query = ''): string
     {
         foreach (['start_time', 'startTime', 'datetime', 'date_time', 'utcDate'] as $key) {
@@ -935,6 +1226,15 @@ class EventLoaderService
         }
 
         $dateStr = $dateStr !== '' ? $dateStr : $this->extractDateFromSearchQuery($query);
+
+        // Preprocess Spanish date formats like "Mar 2-6" -> "YYYY-MM-DD"
+        if (preg_match('/\b(lun|mar|mié|mie|jue|vie|sáb|sab|dom)\.?\s+(\d{1,2})[-|\/](\d{1,2})\b/i', $dateStr, $m)) {
+            $day = (int)$m[2];
+            $month = (int)$m[3];
+            $year = date('Y');
+            $dateStr = "{$year}-{$month}-{$day}";
+        }
+
         $translated = $this->translateSerpApiDate(trim($dateStr . ' ' . $timeStr));
 
         if (!preg_match('/\d{4}/', $translated)) {
@@ -956,8 +1256,8 @@ class EventLoaderService
         $spanishDays = ['lun.', 'mar.', 'mie.', 'miÃ©.', 'jue.', 'vie.', 'sab.', 'sÃ¡b.', 'dom.', 'lun', 'mar', 'mie', 'miÃ©', 'jue', 'vie', 'sab', 'sÃ¡b', 'dom'];
         $englishDays = ['Mon', 'Tue', 'Wed', 'Wed', 'Thu', 'Fri', 'Sat', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Wed', 'Thu', 'Fri', 'Sat', 'Sat', 'Sun'];
 
-        $value = str_ireplace($spanishMonths, $englishMonths, $value);
         $value = str_ireplace($spanishDays, $englishDays, $value);
+        $value = str_ireplace($spanishMonths, $englishMonths, $value);
         $value = str_ireplace(['Hoy', 'MaÃ±ana', 'Manana', 'Ayer'], ['Today', 'Tomorrow', 'Tomorrow', 'Yesterday'], $value);
         return str_ireplace(['a. m.', 'p. m.', 'a.m.', 'p.m.'], ['AM', 'PM', 'AM', 'PM'], $value);
     }
@@ -966,6 +1266,22 @@ class EventLoaderService
     {
         if (preg_match('/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/', $query, $matches)) {
             return $matches[1] . '/' . $matches[2] . '/' . $matches[3];
+        }
+
+        // Match Spanish formats like "3 de junio de 2026", "3 de junio 2026", "3 de junio"
+        $spanishMonthsRegex = '(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)[a-z]*';
+        if (preg_match('/\b(\d{1,2})\s+de\s+' . $spanishMonthsRegex . '\b(?:\s+(?:de\s+)?(\d{4}))?/i', $query, $matches)) {
+            $day = (int)$matches[1];
+            $monthStr = strtolower($matches[2]);
+            $year = isset($matches[3]) ? (int)$matches[3] : (int)date('Y');
+            
+            $monthsMap = [
+                'ene' => 1, 'feb' => 2, 'mar' => 3, 'abr' => 4, 'may' => 5, 'jun' => 6,
+                'jul' => 7, 'ago' => 8, 'sep' => 9, 'oct' => 10, 'nov' => 11, 'dic' => 12
+            ];
+            
+            $month = $monthsMap[substr($monthStr, 0, 3)] ?? 1;
+            return "{$year}-{$month}-{$day}";
         }
 
         return date('Y-m-d');

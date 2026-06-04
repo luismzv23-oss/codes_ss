@@ -1,0 +1,1125 @@
+{
+  "search_metadata": {
+    "id": "6a21b76118dc9333a7e5d8ee",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/7juryQN099jlrhIBDvpBSw/6a21b76118dc9333a7e5d8ee.json",
+    "pixel_position_endpoint": "https://serpapi.com/searches/7juryQN099jlrhIBDvpBSw/6a21b76118dc9333a7e5d8ee.json_with_pixel_position",
+    "created_at": "2026-06-04 17:35:29 UTC",
+    "processed_at": "2026-06-04 17:35:29 UTC",
+    "google_url": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&oq=Amistosos+Internacionales+Hoy&hl=es&gl=ar&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w==&sourceid=chrome&ie=UTF-8",
+    "raw_html_file": "https://serpapi.com/searches/7juryQN099jlrhIBDvpBSw/6a21b76118dc9333a7e5d8ee.html",
+    "total_time_taken": 2.23
+  },
+  "search_parameters": {
+    "engine": "google",
+    "q": "Amistosos Internacionales Hoy",
+    "google_domain": "google.com",
+    "hl": "es",
+    "gl": "ar",
+    "si": "AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w==",
+    "device": "desktop"
+  },
+  "search_information": {
+    "query_displayed": "partidos de amistosos internacionales",
+    "total_results": 116,
+    "time_taken_displayed": 0.63,
+    "organic_results_state": "Results for exact spelling"
+  },
+  "sports_results": {
+    "title": "Amistosos internacionales",
+    "games": [
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Mar 2-6",
+        "teams": [
+          {
+            "name": "Croacia",
+            "score": "0",
+            "kgmid": "/m/0356gk"
+          },
+          {
+            "name": "Bélgica",
+            "score": "2",
+            "kgmid": "/m/0329gm"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Mar 2-6",
+        "teams": [
+          {
+            "name": "Marruecos",
+            "score": "4",
+            "kgmid": "/m/03_9hm"
+          },
+          {
+            "name": "Madagascar",
+            "score": "0",
+            "kgmid": "/m/04h3yj"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Mar 2-6",
+        "teams": [
+          {
+            "name": "Georgia",
+            "score": "1",
+            "kgmid": "/m/03ytj1"
+          },
+          {
+            "name": "Rumania",
+            "score": "1",
+            "kgmid": "/m/0329nn"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "lugar": "Cardiff City Stadium",
+        "lugar_kgmid": "/m/02794kc",
+        "status": "Fin",
+        "date": "Mar 2-6",
+        "teams": [
+          {
+            "name": "Gales",
+            "score": "1",
+            "kgmid": "/m/02s2ys"
+          },
+          {
+            "name": "Ghana",
+            "score": "1",
+            "kgmid": "/m/03_qrp"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "lugar": "Chase Stadium",
+        "lugar_kgmid": "/g/11hz6plkmb",
+        "status": "Fin",
+        "date": "Mar 2-6",
+        "teams": [
+          {
+            "name": "Haití",
+            "score": "4",
+            "kgmid": "/m/03_9x6"
+          },
+          {
+            "name": "Nueva Zelanda",
+            "score": "0",
+            "kgmid": "/m/03_44z"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Ayer",
+        "teams": [
+          {
+            "name": "Filipinas",
+            "score": "5",
+            "kgmid": "/m/04k3r_"
+          },
+          {
+            "name": "Guam",
+            "score": "1",
+            "kgmid": "/m/04fyws"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Por definirse",
+        "teams": [
+          {
+            "name": "Kirguistán",
+            "kgmid": "/m/045bpx"
+          },
+          {
+            "name": "Kenia",
+            "kgmid": "/m/046fz5"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Ayer",
+        "teams": [
+          {
+            "name": "Gibraltar",
+            "score": "4",
+            "kgmid": "/m/0dqgws"
+          },
+          {
+            "name": "Islas Vírgenes Británicas",
+            "score": "0",
+            "kgmid": "/m/04hshb"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Ayer",
+        "teams": [
+          {
+            "name": "Dinamarca",
+            "score": "0",
+            "kgmid": "/m/02s2lg"
+          },
+          {
+            "name": "RD Congo",
+            "score": "0",
+            "kgmid": "/m/03_st3"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Ayer",
+        "teams": [
+          {
+            "name": "Albania",
+            "score": "0",
+            "kgmid": "/m/03z1c5"
+          },
+          {
+            "name": "Israel",
+            "score": "1",
+            "kgmid": "/m/039_ym"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Ayer",
+        "teams": [
+          {
+            "name": "Polonia",
+            "score": "2",
+            "kgmid": "/m/03b6j8"
+          },
+          {
+            "name": "Nigeria",
+            "score": "2",
+            "kgmid": "/m/03ylxn"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Ayer",
+        "teams": [
+          {
+            "name": "Países Bajos",
+            "score": "0",
+            "kgmid": "/m/02ltg3"
+          },
+          {
+            "name": "Argelia",
+            "score": "1",
+            "kgmid": "/m/03_qj1"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Ayer",
+        "teams": [
+          {
+            "name": "Luxemburgo",
+            "score": "0",
+            "kgmid": "/m/0329sr"
+          },
+          {
+            "name": "Italia",
+            "score": "1",
+            "kgmid": "/m/01_lhg"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Ayer",
+        "teams": [
+          {
+            "name": "Panamá",
+            "score": "4",
+            "kgmid": "/m/03_lsr"
+          },
+          {
+            "name": "República Dominicana",
+            "score": "2",
+            "kgmid": "/m/048d1s"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Ayer",
+        "teams": [
+          {
+            "name": "Corea del Sur",
+            "score": "1",
+            "kgmid": "/m/03zrhb"
+          },
+          {
+            "name": "El Salvador",
+            "score": "0",
+            "kgmid": "/m/03zm00"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Hoy",
+        "teams": [
+          {
+            "name": "Maldivas",
+            "score": "0",
+            "kgmid": "/m/04nrcg"
+          },
+          {
+            "name": "Pakistán",
+            "score": "3",
+            "kgmid": "/m/04r7f2"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Hoy",
+        "teams": [
+          {
+            "name": "Camboya",
+            "score": "4",
+            "kgmid": "/m/04nqn6"
+          },
+          {
+            "name": "Bután",
+            "score": "0",
+            "kgmid": "/m/049bz3"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Fin",
+        "date": "Hoy",
+        "teams": [
+          {
+            "name": "Lesoto",
+            "score": "1",
+            "kgmid": "/m/04m110"
+          },
+          {
+            "name": "Kenia",
+            "score": "1",
+            "kgmid": "/m/046fz5"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo73'",
+        "teams": [
+          {
+            "name": "Eslovenia",
+            "score": "1",
+            "kgmid": "/m/03ys48"
+          },
+          {
+            "name": "Chipre",
+            "score": "1",
+            "kgmid": "/m/035qlx"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Por definirse",
+        "teams": [
+          {
+            "name": "Burundi",
+            "kgmid": "/m/04hscp"
+          },
+          {
+            "name": "Guinea Ecuatorial",
+            "kgmid": "/m/04n8xs"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo73'",
+        "teams": [
+          {
+            "name": "Irlanda del Norte",
+            "score": "1",
+            "kgmid": "/m/0272vm"
+          },
+          {
+            "name": "Guinea",
+            "score": "0",
+            "kgmid": "/m/043y95"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo74'",
+        "teams": [
+          {
+            "name": "Afganistán",
+            "score": "0",
+            "kgmid": "/m/04gssk"
+          },
+          {
+            "name": "selección de fútbol sub-23 de Bangladesh",
+            "score": "0",
+            "kgmid": "/m/011170tn"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Por definirse",
+        "teams": [
+          {
+            "name": "Irán",
+            "kgmid": "/m/01n_2f"
+          },
+          {
+            "name": "Malí",
+            "kgmid": "/m/0416f1"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo34'",
+        "teams": [
+          {
+            "name": "Andorra",
+            "score": "0",
+            "kgmid": "/m/0300nb"
+          },
+          {
+            "name": "Liechtenstein",
+            "score": "0",
+            "kgmid": "/m/02_t6d"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "En vivo33'",
+        "teams": [
+          {
+            "name": "Suecia",
+            "score": "0",
+            "kgmid": "/m/02rytm"
+          },
+          {
+            "name": "Grecia",
+            "score": "1",
+            "kgmid": "/m/035qgm"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Hoy",
+        "time": "4:00 p. m.",
+        "teams": [
+          {
+            "name": "España",
+            "kgmid": "/m/02w64f"
+          },
+          {
+            "name": "Irak",
+            "kgmid": "/m/040p3y"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Hoy",
+        "time": "4:10 p. m.",
+        "teams": [
+          {
+            "name": "Francia",
+            "kgmid": "/m/01l3vx"
+          },
+          {
+            "name": "Costa de Marfil",
+            "kgmid": "/m/040pyq"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Hoy",
+        "time": "9:00 p. m.",
+        "teams": [
+          {
+            "name": "Chequia",
+            "kgmid": "/m/036b7l"
+          },
+          {
+            "name": "Guatemala",
+            "kgmid": "/m/03_kh0"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "lugar": "Estadio Nemesio Diez",
+        "lugar_kgmid": "/m/06flcj",
+        "date": "Hoy",
+        "time": "11:00 p. m.",
+        "teams": [
+          {
+            "name": "México",
+            "kgmid": "/m/03dj48"
+          },
+          {
+            "name": "Serbia",
+            "kgmid": "/m/03y_f8"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "8:30 a. m.",
+        "teams": [
+          {
+            "name": "Singapur",
+            "kgmid": "/m/04h54p"
+          },
+          {
+            "name": "China",
+            "kgmid": "/m/03lygq"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "9:00 a. m.",
+        "teams": [
+          {
+            "name": "Hong Kong",
+            "kgmid": "/m/04gj8r"
+          },
+          {
+            "name": "Mongolia",
+            "kgmid": "/m/047035"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "9:30 a. m.",
+        "teams": [
+          {
+            "name": "Tailandia",
+            "kgmid": "/m/046vvc"
+          },
+          {
+            "name": "Kuwait",
+            "kgmid": "/m/040wm3"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "10:00 a. m.",
+        "teams": [
+          {
+            "name": "Indonesia",
+            "kgmid": "/m/0413b_"
+          },
+          {
+            "name": "Omán",
+            "kgmid": "/m/046z5t"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "status": "Por definirse",
+        "teams": [
+          {
+            "name": "Angola",
+            "kgmid": "/m/044lbv"
+          },
+          {
+            "name": "Botsuana",
+            "kgmid": "/m/04c4pk"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "12:00 p. m.",
+        "teams": [
+          {
+            "name": "Tayikistán",
+            "kgmid": "/m/045bmm"
+          },
+          {
+            "name": "India",
+            "kgmid": "/m/035l_9"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "1:00 p. m.",
+        "teams": [
+          {
+            "name": "Bielorrusia",
+            "kgmid": "/m/03yvln"
+          },
+          {
+            "name": "Siria",
+            "kgmid": "/m/048_lz"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "1:00 p. m.",
+        "teams": [
+          {
+            "name": "Georgia",
+            "kgmid": "/m/03ytj1"
+          },
+          {
+            "name": "Baréin",
+            "kgmid": "/m/045346"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "1:30 p. m.",
+        "teams": [
+          {
+            "name": "Eslovaquia",
+            "kgmid": "/m/032hmd"
+          },
+          {
+            "name": "Montenegro",
+            "kgmid": "/m/0dg36q"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "2:00 p. m.",
+        "teams": [
+          {
+            "name": "San Marino",
+            "kgmid": "/m/02_zcj"
+          },
+          {
+            "name": "Bangladés",
+            "kgmid": "/m/04nqfp"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "2:00 p. m.",
+        "teams": [
+          {
+            "name": "Rusia",
+            "kgmid": "/m/03262k"
+          },
+          {
+            "name": "Burkina Faso",
+            "kgmid": "/m/0452h6"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "2:00 p. m.",
+        "teams": [
+          {
+            "name": "Moldavia",
+            "kgmid": "/m/03z0dt"
+          },
+          {
+            "name": "Bulgaria",
+            "kgmid": "/m/0329qp"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "2:45 p. m.",
+        "teams": [
+          {
+            "name": "Hungría",
+            "kgmid": "/m/0329kn"
+          },
+          {
+            "name": "Finlandia",
+            "kgmid": "/m/035s37"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "3:00 p. m.",
+        "teams": [
+          {
+            "name": "Azerbaiyán",
+            "kgmid": "/m/0303jw"
+          },
+          {
+            "name": "Malta",
+            "kgmid": "/m/03yvgp"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "3:00 p. m.",
+        "teams": [
+          {
+            "name": "Benín",
+            "kgmid": "/m/04glt1"
+          },
+          {
+            "name": "Níger",
+            "kgmid": "/m/04l67m"
+          }
+        ]
+      },
+      {
+        "tournament": "Amistosos internacionales",
+        "date": "Mañana",
+        "time": "4:00 p. m.",
+        "teams": [
+          {
+            "name": "Angola",
+            "kgmid": "/m/044lbv"
+          },
+          {
+            "name": "Mauritania",
+            "kgmid": "/m/04kv54"
+          }
+        ]
+      }
+    ]
+  },
+  "knowledge_graph": {
+    "title": "Amistosos internacionales",
+    "entity_type": "sports_league",
+    "main_tab_text": "Información general",
+    "kgmid": "/g/11b66jrs60",
+    "knowledge_graph_search_link": "https://www.google.com/search?kgmid=/g/11b66jrs60&hl=es-AR&q=Amistosos+internacionales",
+    "serpapi_knowledge_graph_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es-AR&kgmid=%2Fg%2F11b66jrs60&q=Amistosos+internacionales&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D",
+    "tabs": [
+      {
+        "text": "Partidos",
+        "si": "AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w==",
+        "link": "https://www.google.com/search?si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w==",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+      }
+    ]
+  },
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "Calendario de fútbol Amistosos 2026",
+      "link": "https://www.espn.com.ar/futbol/calendario/_/liga/fifa.friendly",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.espn.com.ar/futbol/calendario/_/liga/fifa.friendly&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECC4QAQ",
+      "displayed_link": "https://www.espn.com.ar › futbol › liga › fifa.friendly",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAWlBMVEXsHCTsGyPsDxrsFR7uQUf82tz70tTtKjHxYWb____96OnsBBTzf4P71NXrAA_2pKf5wML3r7L3q67ydHfrAADwUVbtLzb_9_fvSE384uP6y830gobyeHzwWFzD1SbZAAAAj0lEQVR4AcXSNQKEQAAEQdx93f7_zHOZiQjptGA9u7KcYssLrCQtqxprWtSi67EhQxwnwnlEXFbCbcmgYtqPf7soEHNJjWTZNjdz82pu5lqVuBNtaE5LaMmMfiFv033yvM3w2vq4jK-Kl_E2nYjvUkm40ZzrgjsZZ8JppG0OhF2B2DY1VtGceVlg-fkjuaY7LXoMIxMy1FEAAAAASUVORK5CYII.png",
+      "snippet": "Calendario de Amistosos internacionales ; MYA · v · Guam · 4:30 AM. Rizal Memorial Stadium, Manila, Filipinas ; ETH · v · MWI · 5:00 AM. Addis Ababa Stadium, ...",
+      "snippet_highlighted_words": [
+        "Calendario de Amistosos internacionales"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Calendario de Amistosos internacionales ; MYA · v · Guam · 4:30 AM. Rizal Memorial Stadium, Manila, Filipinas ; ETH · v · MWI · 5:00 AM. Addis Ababa Stadium, ...",
+          "source_info_link": "https://www.espn.com.ar/futbol/calendario/_/liga/fifa.friendly",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAWlBMVEXsHCTsGyPsDxrsFR7uQUf82tz70tTtKjHxYWb____96OnsBBTzf4P71NXrAA_2pKf5wML3r7L3q67ydHfrAADwUVbtLzb_9_fvSE384uP6y830gobyeHzwWFzD1SbZAAAAj0lEQVR4AcXSNQKEQAAEQdx93f7_zHOZiQjptGA9u7KcYssLrCQtqxprWtSi67EhQxwnwnlEXFbCbcmgYtqPf7soEHNJjWTZNjdz82pu5lqVuBNtaE5LaMmMfiFv033yvM3w2vq4jK-Kl_E2nYjvUkm40ZzrgjsZZ8JppG0OhF2B2DY1VtGceVlg-fkjuaY7LXoMIxMy1FEAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.espn.com.ar/futbol/calendario/_/liga/fifa.friendly&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.espn.com.ar%2Ffutbol%2Fcalendario%2F_%2Fliga%2Ffifa.friendly",
+      "source": "ESPN Deportes"
+    },
+    {
+      "position": 2,
+      "title": "Resultados en vivo de Amistosos Internacionales 2026, ...",
+      "link": "https://www.flashscore.com.ar/futbol/mundial/amistosos-internacionales/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.flashscore.com.ar/futbol/mundial/amistosos-internacionales/&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECCoQAQ",
+      "displayed_link": "https://www.flashscore.com.ar › futbol › mundial › ami...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAYFBMVEVHcEwAHigAHigAHigAHigAHigAHigAFCAABBUAAAZWYWWhpqi_wsSODjPDDj3cCkGdEzjw8vL____c3t__AEdmGDB7g4ZXGS6vtLZ1fIBtdXmHjZAyQEfO0NInNz49SU-mgqcQAAAAB3RSTlMANqzs_62qPQs-QAAAAOdJREFUeAF90wUCgzAMBVAkW_LbMgkTZHL_U-JuH-chVa-KH4S0SHjyvSZn2sx5aUv1aTe-F-xj4E3KwgLItFTeSDDWOcvRpc31RgPC3LVKjEeb65MGxEubmKilN9GAbGqJE4uRBsS9MgORaKABOa2tLumExn9miUN1eFfFYBGZolibf7j_vU1ymSBiVSsdZsnXztCpftEhC2RWoJe6H7g5_YOXBfrB3P_MwqIx8QIlV73D2J-kqrREq5oj0Vxgc1kgIbsDri6WCC2RGCRJnAxS42zgyaKzD4fJ4QA7HJpHg3pvOgR-BSU3PRT21Y37VAAAAABJRU5ErkJggg.png",
+      "snippet": "Partidos de hoy ; Croacia Sub-18. Noruega Sub-18. 22 ; Corea del Sur Sub-23. Emiratos Árabes Unidos Sub-23. 11 ; Tailandia Sub-23. Kirguistán Sub-23. 11.",
+      "snippet_highlighted_words": [
+        "Croacia Sub-18. Noruega Sub-18. 22"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Partidos de hoy ; Croacia Sub-18. Noruega Sub-18. 22 ; Corea del Sur Sub-23. Emiratos Árabes Unidos Sub-23. 11 ; Tailandia Sub-23. Kirguistán Sub-23. 11.",
+          "source_info_link": "https://www.flashscore.com.ar/futbol/mundial/amistosos-internacionales/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAYFBMVEVHcEwAHigAHigAHigAHigAHigAHigAFCAABBUAAAZWYWWhpqi_wsSODjPDDj3cCkGdEzjw8vL____c3t__AEdmGDB7g4ZXGS6vtLZ1fIBtdXmHjZAyQEfO0NInNz49SU-mgqcQAAAAB3RSTlMANqzs_62qPQs-QAAAAOdJREFUeAF90wUCgzAMBVAkW_LbMgkTZHL_U-JuH-chVa-KH4S0SHjyvSZn2sx5aUv1aTe-F-xj4E3KwgLItFTeSDDWOcvRpc31RgPC3LVKjEeb65MGxEubmKilN9GAbGqJE4uRBsS9MgORaKABOa2tLumExn9miUN1eFfFYBGZolibf7j_vU1ymSBiVSsdZsnXztCpftEhC2RWoJe6H7g5_YOXBfrB3P_MwqIx8QIlV73D2J-kqrREq5oj0Vxgc1kgIbsDri6WCC2RGCRJnAxS42zgyaKzD4fJ4QA7HJpHg3pvOgR-BSU3PRT21Y37VAAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.flashscore.com.ar/futbol/mundial/amistosos-internacionales/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.flashscore.com.ar%2Ffutbol%2Fmundial%2Famistosos-internacionales%2F",
+      "source": "Flashscore.com.ar"
+    },
+    {
+      "position": 3,
+      "title": "Amistosos Internacionales",
+      "link": "https://www.plus.fifa.com/es/showcase/amistosos-internacionales/817f28ea-e283-48ff-b44d-077e4bd14c76",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.plus.fifa.com/es/showcase/amistosos-internacionales/817f28ea-e283-48ff-b44d-077e4bd14c76&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECCsQAQ",
+      "displayed_link": "https://www.plus.fifa.com › showcase › amistosos-inter...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAZlBMVEUCEiwCDywCACkCDSwDkEMDvU0DukwDuEwCPjID61kD_18D_14D3FUDxlABACMCKzADfT4CdTwDq0kBACUCJy8Dl0QBAB8DzFED_2MCACgD-FwDsUoDikECaDoDhEADZjkCTzUD1FPb-xWKAAAAkUlEQVR4Ae2QhQGEMAxFjwjycW1x2H_Ic7cJePXGs9u44tAHDl9lTKLuHc_zXBXy-SoLAITAY48Q0EVIijhJs1yKsqrrJgJMaaF0Frbd8RUhr3uKwPmAbKRJ0d6FbXYWDhHF7UN4ddtYjFK0dl7qMrZPbrkNEABdh9Npj2e3Imj5Vkqtnncu4zq1Jv7XhKto4wARHwmqZJ8XjAAAAABJRU5ErkJggg.png",
+      "snippet": "Partidos completos - Amistosos Internacionales ; Nueva Zelanda vs Chile. FIFA Series 2026™ Nueva Zelanda ; Nueva Zelanda vs Finlandia. FIFA Series 2026™ Nueva ...",
+      "snippet_highlighted_words": [
+        "Amistosos Internacionales"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Partidos completos - Amistosos Internacionales ; Nueva Zelanda vs Chile. FIFA Series 2026™ Nueva Zelanda ; Nueva Zelanda vs Finlandia. FIFA Series 2026™ Nueva ...",
+          "source_info_link": "https://www.plus.fifa.com/es/showcase/amistosos-internacionales/817f28ea-e283-48ff-b44d-077e4bd14c76",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAZlBMVEUCEiwCDywCACkCDSwDkEMDvU0DukwDuEwCPjID61kD_18D_14D3FUDxlABACMCKzADfT4CdTwDq0kBACUCJy8Dl0QBAB8DzFED_2MCACgD-FwDsUoDikECaDoDhEADZjkCTzUD1FPb-xWKAAAAkUlEQVR4Ae2QhQGEMAxFjwjycW1x2H_Ic7cJePXGs9u44tAHDl9lTKLuHc_zXBXy-SoLAITAY48Q0EVIijhJs1yKsqrrJgJMaaF0Frbd8RUhr3uKwPmAbKRJ0d6FbXYWDhHF7UN4ddtYjFK0dl7qMrZPbrkNEABdh9Npj2e3Imj5Vkqtnncu4zq1Jv7XhKto4wARHwmqZJ8XjAAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.plus.fifa.com/es/showcase/amistosos-internacionales/817f28ea-e283-48ff-b44d-077e4bd14c76&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.plus.fifa.com%2Fes%2Fshowcase%2Famistosos-internacionales%2F817f28ea-e283-48ff-b44d-077e4bd14c76",
+      "source": "DAZN"
+    },
+    {
+      "position": 4,
+      "title": "Amistosos Internacionales 2026 » Calendario",
+      "link": "https://www.livefutbol.com/competition/co571/fifa-amistosos-internacionales/all-matches/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.livefutbol.com/competition/co571/fifa-amistosos-internacionales/all-matches/&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECDsQAQ",
+      "displayed_link": "https://www.livefutbol.com › competition › all-matches",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAfCAMAAACxiD--AAAAllBMVEX____63dz0trTvko_tfnnuhoLxoZ73ycf--PjjAADmLSDrbGbuiobpVE3qXljwmZXmMyjyqab_8PD41NPnOzH1u7nZ2dloaWpVVljs7OyIiYqqqqr76Oj--fnNzc5YWVpmZ2jDw8NPUFFiY2TqZmBbXF3i4uLoSkJfYGF2d3j2xMLoRz68vL2PkJDmOS-lpablHgs6PD5sTxa7AAABjElEQVR4AWzQB6KiMBRA0Wv32QFFYksAo0FhnP2v7mMNv5z0Xvim1e50u73-YMhfhh2R0bg36U5FZgN-mcsiCHmKurIM-SZcyopavF4niYJwFW-2eDuZ7rk7aGPSPaCyXPsZQznyktgTd6k1-Ya385m3tVY8OJvFLZ4C8TcqdMzTQV2EJwnwE-yBD-m_NsBLXMqTH7l2-NgnrqRx-eiVe9Zt8aZzIJI93tZWeJ0j0BYaSrfGa_8DgiUNN5fzouDyHwgWNBij1eusTD0nrIS7U0xNafP8iJs27kZwBVoSAmVidXWgdMaVoLaFccmNXpearFCFdc7k1uamVhS6nreNYRRQ60YHnSdpmeSmQT8231GUSlXauRhU4YznUuieIc201abkodJ-QnJiJwOgyvWhFfFUWm1dzbp8A9cZd1lFT3a8nE7pdlvGaXKgK0Pu4j0c_YynMqMnLbyxrGi6VYFENPVl1sLLDuMd3-1mcg5aeyC8dGLNH1qdkTwNqpK_hdHgMtihvmaoxoAfIAwAAHZrKE3iB-PHAAAAAElFTkSuQmCC.png",
+      "snippet": "... partido amistoso contra EEUU. Testspiele. 17.06.2024. Ecuador sufre para ganar a Honduras. Testspiele. 17.06.2024. Paraguay vence 1-0 a Panamá en último fogueo.",
+      "snippet_highlighted_words": [
+        "partido amistoso contra EEUU"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "... partido amistoso contra EEUU. Testspiele. 17.06.2024. Ecuador sufre para ganar a Honduras. Testspiele. 17.06.2024. Paraguay vence 1-0 a Panamá en último fogueo.",
+          "source_info_link": "https://www.livefutbol.com/competition/co571/fifa-amistosos-internacionales/all-matches/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAfCAMAAACxiD--AAAAllBMVEX____63dz0trTvko_tfnnuhoLxoZ73ycf--PjjAADmLSDrbGbuiobpVE3qXljwmZXmMyjyqab_8PD41NPnOzH1u7nZ2dloaWpVVljs7OyIiYqqqqr76Oj--fnNzc5YWVpmZ2jDw8NPUFFiY2TqZmBbXF3i4uLoSkJfYGF2d3j2xMLoRz68vL2PkJDmOS-lpablHgs6PD5sTxa7AAABjElEQVR4AWzQB6KiMBRA0Wv32QFFYksAo0FhnP2v7mMNv5z0Xvim1e50u73-YMhfhh2R0bg36U5FZgN-mcsiCHmKurIM-SZcyopavF4niYJwFW-2eDuZ7rk7aGPSPaCyXPsZQznyktgTd6k1-Ya385m3tVY8OJvFLZ4C8TcqdMzTQV2EJwnwE-yBD-m_NsBLXMqTH7l2-NgnrqRx-eiVe9Zt8aZzIJI93tZWeJ0j0BYaSrfGa_8DgiUNN5fzouDyHwgWNBij1eusTD0nrIS7U0xNafP8iJs27kZwBVoSAmVidXWgdMaVoLaFccmNXpearFCFdc7k1uamVhS6nreNYRRQ60YHnSdpmeSmQT8231GUSlXauRhU4YznUuieIc201abkodJ-QnJiJwOgyvWhFfFUWm1dzbp8A9cZd1lFT3a8nE7pdlvGaXKgK0Pu4j0c_YynMqMnLbyxrGi6VYFENPVl1sLLDuMd3-1mcg5aeyC8dGLNH1qdkTwNqpK_hdHgMtihvmaoxoAfIAwAAHZrKE3iB-PHAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.livefutbol.com/competition/co571/fifa-amistosos-internacionales/all-matches/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.livefutbol.com%2Fcompetition%2Fco571%2Ffifa-amistosos-internacionales%2Fall-matches%2F",
+      "source": "livefutbol.com"
+    },
+    {
+      "position": 5,
+      "title": "Amistosos en Vivo - marcadores y resultados Fútbol",
+      "link": "https://www.sportytrader.com/es/resultados-vivo/futbol/international/amistosos-411/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.sportytrader.com/es/resultados-vivo/futbol/international/amistosos-411/&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECEQQAQ",
+      "displayed_link": "https://www.sportytrader.com › ... › Fútbol en vivo",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAe1BMVEX______fz_t6__cV7_MwD_FAD_bFj_sKf_-ff_q6H_HwD_KwD_LwD_IQD_m47_WkH_QyL_8vD_Siz_xL3_AAD_wLj_ubD_xsD_29f_TTH_o5j_4t7_kIL_joH_iHn_g3T_n5T_emn_0s3_ZlH_7er_Pxn_lor_blv_YUrw-N7JAAAA-UlEQVR4AbXQBQ7DMAxAUa-1C3FcZhjT_S843sriPUX4w_BvK8NEIrRsByZcpVgjahbyxst8hT8ShIMYMPaw7ldLcICjrsWEWt7UW5J2m2pmz3jIsixN0ziOc_gqSJcrWFAJ1ZA2TdO27XqzhWLXdit3zADJi7BqwSWm3TduWK0AnmOPWgxYMyJ9b5QSWw687BUV4GtENr9LD4pJRMiEI5EDCh_x0F3pJMIs7mOlhiM9opxhImIL9s-VVMCP4zhhGOYB89rZCqKOulYm9KSeN6FHw2TfxYpwQK2hZ02Ddhl9YcLfxEkDI_WFhB-ErgVMhcbaNNf2Ef7tDmV2D9gj2MNFAAAAAElFTkSuQmCC.png",
+      "snippet": "Los partidos de Amistosos para ver en directo hoy en Internacional (Fútbol) ; 4 jun 2026, 6:00 a.m. · Maldivas Pakistán En Vivo ; 4 jun 2026, 7:00 a.m. · Camboya ...",
+      "snippet_highlighted_words": [
+        "Los partidos de Amistosos para ver en directo hoy en Internacional"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Los partidos de Amistosos para ver en directo hoy en Internacional (Fútbol) ; 4 jun 2026, 6:00 a.m. · Maldivas Pakistán En Vivo ; 4 jun 2026, 7:00 a.m. · Camboya ...",
+          "source_info_link": "https://www.sportytrader.com/es/resultados-vivo/futbol/international/amistosos-411/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAe1BMVEX______fz_t6__cV7_MwD_FAD_bFj_sKf_-ff_q6H_HwD_KwD_LwD_IQD_m47_WkH_QyL_8vD_Siz_xL3_AAD_wLj_ubD_xsD_29f_TTH_o5j_4t7_kIL_joH_iHn_g3T_n5T_emn_0s3_ZlH_7er_Pxn_lor_blv_YUrw-N7JAAAA-UlEQVR4AbXQBQ7DMAxAUa-1C3FcZhjT_S843sriPUX4w_BvK8NEIrRsByZcpVgjahbyxst8hT8ShIMYMPaw7ldLcICjrsWEWt7UW5J2m2pmz3jIsixN0ziOc_gqSJcrWFAJ1ZA2TdO27XqzhWLXdit3zADJi7BqwSWm3TduWK0AnmOPWgxYMyJ9b5QSWw687BUV4GtENr9LD4pJRMiEI5EDCh_x0F3pJMIs7mOlhiM9opxhImIL9s-VVMCP4zhhGOYB89rZCqKOulYm9KSeN6FHw2TfxYpwQK2hZ02Ddhl9YcLfxEkDI_WFhB-ErgVMhcbaNNf2Ef7tDmV2D9gj2MNFAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.sportytrader.com/es/resultados-vivo/futbol/international/amistosos-411/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.sportytrader.com%2Fes%2Fresultados-vivo%2Ffutbol%2Finternational%2Famistosos-411%2F",
+      "source": "SportyTrader"
+    },
+    {
+      "position": 6,
+      "title": "Amistosos Internacionales fútbol",
+      "link": "https://onefootball.com/es/competicion/amistosos-internacionales-24",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://onefootball.com/es/competicion/amistosos-internacionales-24&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECEgQAQ",
+      "displayed_link": "https://onefootball.com › competicion › amistosos-inter...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAgVBMVEXh_1fn_1nq_1rk_1iYrD83PCFARiMxNR_D3E1LVCYtMR4YFxoQDRgUEhnI408AABQAABdibi1ZZCsHABcaGhoAABaElDiwyEfr_1oAABG81Ep0gjPV8VPy_11tezGSpDyLnTooKh2rwkXb-FV7izVdaCyhtkLN6FBESySUpz0iIxwl7VqwAAABEElEQVR4AbWRV4LDIAwFLSkhBYhILDuu6f3-B1yx1WV_81xhYGjJ2wOoIYwZs8nUmNl8YYxZjiBZ551dsfdhjQOEm1Qkm-T65i31RivmJohYh86KzaDDcL3w7EWk3FYsktYdSE2p7TWct7torTpW2GcRufJQEKtbsGs9ZmngcrNCOkVrDh14zi-Xw6lBSvDq1Lqi3vI19NmsFPHLIvkvdNPBsz3o3xgWC7WWDWFzBxh2bKL10d5NyeGGfQjPaL2dWfvb8gZ969SrNbkEEaWhB-nOIm7TGi8xfO_t_iFo1SnOKqZsetaXVahnzpE5g11rVaYp6zHDgp0PfSud6sulnmsVTBbm0nSZ0t9dBERI3pgPumkUUUqIzcYAAAAASUVORK5CYII.png",
+      "snippet": "AMISTOSOS14h00 - Gibraltar x Islas Vírgenes Británicas - Disney+15h00 - RD Congo x Dinamarca - ESPN 4 y Disney+15h00 - Albania x Israel - Disney+15h45 - Países ...",
+      "snippet_highlighted_words": [
+        "AMISTOSOS14h00 - Gibraltar x Islas Vírgenes Británicas"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "AMISTOSOS14h00 - Gibraltar x Islas Vírgenes Británicas - Disney+15h00 - RD Congo x Dinamarca - ESPN 4 y Disney+15h00 - Albania x Israel - Disney+15h45 - Países ...",
+          "source_info_link": "https://onefootball.com/es/competicion/amistosos-internacionales-24",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAgVBMVEXh_1fn_1nq_1rk_1iYrD83PCFARiMxNR_D3E1LVCYtMR4YFxoQDRgUEhnI408AABQAABdibi1ZZCsHABcaGhoAABaElDiwyEfr_1oAABG81Ep0gjPV8VPy_11tezGSpDyLnTooKh2rwkXb-FV7izVdaCyhtkLN6FBESySUpz0iIxwl7VqwAAABEElEQVR4AbWRV4LDIAwFLSkhBYhILDuu6f3-B1yx1WV_81xhYGjJ2wOoIYwZs8nUmNl8YYxZjiBZ551dsfdhjQOEm1Qkm-T65i31RivmJohYh86KzaDDcL3w7EWk3FYsktYdSE2p7TWct7torTpW2GcRufJQEKtbsGs9ZmngcrNCOkVrDh14zi-Xw6lBSvDq1Lqi3vI19NmsFPHLIvkvdNPBsz3o3xgWC7WWDWFzBxh2bKL10d5NyeGGfQjPaL2dWfvb8gZ969SrNbkEEaWhB-nOIm7TGi8xfO_t_iFo1SnOKqZsetaXVahnzpE5g11rVaYp6zHDgp0PfSud6sulnmsVTBbm0nSZ0t9dBERI3pgPumkUUUqIzcYAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://onefootball.com/es/competicion/amistosos-internacionales-24&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fonefootball.com%2Fes%2Fcompeticion%2Famistosos-internacionales-24",
+      "source": "OneFootball"
+    },
+    {
+      "position": 7,
+      "title": "Amistosos Internacionales Próximos Partidos Calendario y ...",
+      "link": "https://scores24.live/es/soccer/l-international-int-friendly-games",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://scores24.live/es/soccer/l-international-int-friendly-games&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECEIQAQ",
+      "displayed_link": "https://scores24.live › Inicio › Fútbol › Mundial",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAgVBMVEX____6_Pnt8-v3-vbo8OWsyaJ4qmVkn0xyp16kxJjf6tuYvYtloE6Gsna0zqvC17uPuIHu9Ozh695so1aox57Q4MuAr2_L3cXS4c3f399ISEgAAABlZma2trbv7-9RUlI5Ojq-vr7T09MiIyNzdHR3d3iEhISioqLZ5tUYGRnJyclHyAtAAAABBklEQVR4Aa3QB47DIBAF0O86OHEF90mvrO9_wMUoclPU81zo8AV-w3FdD1_5QUiGiHbY8vYUJ2mWpXlMSYEVqaj8dDlpHFersVhITIqaGkw8JdZB6tif6nuSmwSqnnJSiY2MWsAK4gLoeuaDAxz5CEPlgBUmwIn5bEaBC2MUxbAcSgFcb-j4br4HRs0nhksZrCe_8OLudHgDmvRy0DnzGWB-v_gxD3p225vpHuOMnvO2ELkd--svfTcMw3EcDMiBFcUermzBsJlEAlg7u--sO6GZbzeJC6wJMVXduMZKbrJOGqq95VicAstRlU11sckAvyYVNVo3gSChsVXlZCUNvpJaSwe_8A9ZhxIrULIv9AAAAABJRU5ErkJggg.png",
+      "snippet": "Siente la emoción de la liga Amistosos Internacionales! Recibe las últimas noticias sobre equipos, tabla de torneo y partidos clave.",
+      "snippet_highlighted_words": [
+        "Amistosos Internacionales",
+        "partidos"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Siente la emoción de la liga Amistosos Internacionales! Recibe las últimas noticias sobre equipos, tabla de torneo y partidos clave.",
+          "source_info_link": "https://scores24.live/es/soccer/l-international-int-friendly-games",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAgVBMVEX____6_Pnt8-v3-vbo8OWsyaJ4qmVkn0xyp16kxJjf6tuYvYtloE6Gsna0zqvC17uPuIHu9Ozh695so1aox57Q4MuAr2_L3cXS4c3f399ISEgAAABlZma2trbv7-9RUlI5Ojq-vr7T09MiIyNzdHR3d3iEhISioqLZ5tUYGRnJyclHyAtAAAABBklEQVR4Aa3QB47DIBAF0O86OHEF90mvrO9_wMUoclPU81zo8AV-w3FdD1_5QUiGiHbY8vYUJ2mWpXlMSYEVqaj8dDlpHFersVhITIqaGkw8JdZB6tif6nuSmwSqnnJSiY2MWsAK4gLoeuaDAxz5CEPlgBUmwIn5bEaBC2MUxbAcSgFcb-j4br4HRs0nhksZrCe_8OLudHgDmvRy0DnzGWB-v_gxD3p225vpHuOMnvO2ELkd--svfTcMw3EcDMiBFcUermzBsJlEAlg7u--sO6GZbzeJC6wJMVXduMZKbrJOGqq95VicAstRlU11sckAvyYVNVo3gSChsVXlZCUNvpJaSwe_8A9ZhxIrULIv9AAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://scores24.live/es/soccer/l-international-int-friendly-games&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fscores24.live%2Fes%2Fsoccer%2Fl-international-int-friendly-games",
+      "source": "scores24.live"
+    },
+    {
+      "position": 8,
+      "title": "Amistosos Internacionales Fútbol",
+      "link": "https://www.instagram.com/popular/amistosos-internacionales-f%C3%BAtbol/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.instagram.com/popular/amistosos-internacionales-f%25C3%25BAtbol/&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECEYQAQ",
+      "displayed_link": "https://www.instagram.com › popular › amistosos-inter...",
+      "favicon": "https://serpapi.com/searches/6a21b76118dc9333a7e5d8ee/images/7Idv48jLhVDT8zm3FhlgV4QtY7yeTOzfOO9A9hq4CL8.png",
+      "snippet": "El fútbol, conocido como el \"deporte rey\", es la disciplina más popular ·‼️Amistosos preparatórios mundial 2026 selecciones de sudamerica!",
+      "snippet_highlighted_words": [
+        "Amistosos"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "El fútbol, conocido como el \"deporte rey\", es la disciplina más popular ·‼️\nAmistosos preparatórios mundial 2026 selecciones de sudamerica!",
+          "source_info_link": "https://www.instagram.com/popular/amistosos-internacionales-f%C3%BAtbol/",
+          "icon": "https://serpapi.com/searches/6a21b76118dc9333a7e5d8ee/images/7Idv48jLhVDT8zm3FhlgV9LPhKPcQ_UQjLLsxqpJ7vhkXTA82fSck7SL36z8m-76.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.instagram.com/popular/amistosos-internacionales-f%C3%BAtbol/&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.instagram.com%2Fpopular%2Famistosos-internacionales-f%25C3%25BAtbol%2F",
+      "source": "Instagram"
+    },
+    {
+      "position": 9,
+      "title": "Partido amistoso - Wikipedia, la enciclopedia libre",
+      "link": "https://es.wikipedia.org/wiki/Partido_amistoso",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://es.wikipedia.org/wiki/Partido_amistoso&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECEUQAQ",
+      "displayed_link": "https://es.wikipedia.org › wiki › Partido_amistoso",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAAnklEQVR4AeTNIQiDQABG4b-u17X1aF6PK3YEO9iMJqPVau82y4FgMezS0oVLhqsHtrcqeqzDXv3CEz_6L4yTtZM3dnHmPTtjzXZAXKYVo4agkU2GI2Lloc6JDez1-flswMu1EQZ3xlE7lK8eKDkjtwE-crBMV-wesKmCiisGGepZIfQJpMj9SNb2MYWrChjVkULuCyCfRvsdmBieyQQAsoDk_9ryhFMAAAAASUVORK5CYII.png",
+      "snippet": "Un partido amistoso es un evento deportivo que se organiza para decidir qué jugadores deben mantener para la siguiente temporada y, en el caso de algunos ...",
+      "snippet_highlighted_words": [
+        "partido"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Un partido amistoso es un evento deportivo que se organiza para decidir qué jugadores deben mantener para la siguiente temporada y, en el caso de algunos ...",
+          "source_info_link": "https://es.wikipedia.org/wiki/Partido_amistoso",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAAnklEQVR4AeTNIQiDQABG4b-u17X1aF6PK3YEO9iMJqPVau82y4FgMezS0oVLhqsHtrcqeqzDXv3CEz_6L4yTtZM3dnHmPTtjzXZAXKYVo4agkU2GI2Lloc6JDez1-flswMu1EQZ3xlE7lK8eKDkjtwE-crBMV-wesKmCiisGGepZIfQJpMj9SNb2MYWrChjVkULuCyCfRvsdmBieyQQAsoDk_9ryhFMAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://es.wikipedia.org/wiki/Partido_amistoso&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fes.wikipedia.org%2Fwiki%2FPartido_amistoso",
+      "source": "Wikipedia"
+    },
+    {
+      "position": 10,
+      "title": "Resultados de Amistosos internacionales - temporada 2026",
+      "link": "https://www.espn.com.ve/futbol/resultados/_/liga/fifa.friendly",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.espn.com.ve/futbol/resultados/_/liga/fifa.friendly&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQFnoECEMQAQ",
+      "displayed_link": "https://www.espn.com.ve › futbol › liga › fifa.friendly",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAWlBMVEXsHCTsGyPsDxrsFR7uQUf82tz70tTtKjHxYWb____96OnsBBTzf4P71NXrAA_2pKf5wML3r7L3q67ydHfrAADwUVbtLzb_9_fvSE384uP6y830gobyeHzwWFzD1SbZAAAAj0lEQVR4AcXSNQKEQAAEQdx93f7_zHOZiQjptGA9u7KcYssLrCQtqxprWtSi67EhQxwnwnlEXFbCbcmgYtqPf7soEHNJjWTZNjdz82pu5lqVuBNtaE5LaMmMfiFv033yvM3w2vq4jK-Kl_E2nYjvUkm40ZzrgjsZZ8JppG0OhF2B2DY1VtGceVlg-fkjuaY7LXoMIxMy1FEAAAAASUVORK5CYII.png",
+      "snippet": "Resultados en vivo de todas las grandes ligas de Amistosos internacionales en ESPN (VE). Incluye estadísticas, highlights, análisis de jugadas y cuotas ...",
+      "snippet_highlighted_words": [
+        "Resultados en vivo de todas las grandes ligas de Amistosos internacionales"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Resultados en vivo de todas las grandes ligas de Amistosos internacionales en ESPN (VE). Incluye estadísticas, highlights, análisis de jugadas y cuotas ...",
+          "source_info_link": "https://www.espn.com.ve/futbol/resultados/_/liga/fifa.friendly",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAWlBMVEXsHCTsGyPsDxrsFR7uQUf82tz70tTtKjHxYWb____96OnsBBTzf4P71NXrAA_2pKf5wML3r7L3q67ydHfrAADwUVbtLzb_9_fvSE384uP6y830gobyeHzwWFzD1SbZAAAAj0lEQVR4AcXSNQKEQAAEQdx93f7_zHOZiQjptGA9u7KcYssLrCQtqxprWtSi67EhQxwnwnlEXFbCbcmgYtqPf7soEHNJjWTZNjdz82pu5lqVuBNtaE5LaMmMfiFv033yvM3w2vq4jK-Kl_E2nYjvUkm40ZzrgjsZZ8JppG0OhF2B2DY1VtGceVlg-fkjuaY7LXoMIxMy1FEAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "es"
+        ],
+        "regions": [
+          "AR"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search?q=About+https://www.espn.com.ve/futbol/resultados/_/liga/fifa.friendly&tbm=ilp",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&q=About+https%3A%2F%2Fwww.espn.com.ve%2Ffutbol%2Fresultados%2F_%2Fliga%2Ffifa.friendly",
+      "source": "ESPN Venezuela"
+    }
+  ],
+  "related_searches": [
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos hoy en vivo",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+hoy+en+vivo&sa=X&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ1QJ6BAhLEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+hoy+en+vivo&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos internacionales masculinos",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+internacionales+masculinos&sa=X&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ1QJ6BAhUEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+internacionales+masculinos&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos selecciones hoy",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+selecciones+hoy&sa=X&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ1QJ6BAhXEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+selecciones+hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos Amistosos hoy de Clubes",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+Amistosos+hoy+de+Clubes&sa=X&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ1QJ6BAhZEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+Amistosos+hoy+de+Clubes&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos hoy Europa",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+hoy+Europa&sa=X&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ1QJ6BAhaEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+hoy+Europa&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+    },
+    {
+      "block_position": 1,
+      "query": "Amistosos internacionales FIFA",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Amistosos+internacionales+FIFA&sa=X&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ1QJ6BAhTEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+internacionales+FIFA&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+    },
+    {
+      "block_position": 1,
+      "query": "Amistosos internacionales FIFA resultados",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Amistosos+internacionales+FIFA+resultados&sa=X&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ1QJ6BAhMEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+internacionales+FIFA+resultados&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+    },
+    {
+      "block_position": 1,
+      "query": "Partidos amistosos hoy Argentina",
+      "link": "https://www.google.com/search?sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&q=Partidos+amistosos+hoy+Argentina&sa=X&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ1QJ6BAhNEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Partidos+amistosos+hoy+Argentina&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D"
+    }
+  ],
+  "pagination": {
+    "current": 1,
+    "next": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=YbchaprtPLCmruEP-NG4kQ8&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=10&sa=N&sstk=AU9db-AxcBG7orCMK2IpD1OzU5gxR02RZX7CeI3AGVVwt4AMUcDZ4nh34R2w8c6zQvqQRJyrzPpsiGmtVb4bGtQ7AXWU-UR3yqQ2VQ&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ8NMDegQINhAS",
+    "other_pages": {
+      "2": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=YbchaprtPLCmruEP-NG4kQ8&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=10&sa=N&sstk=AU9db-AxcBG7orCMK2IpD1OzU5gxR02RZX7CeI3AGVVwt4AMUcDZ4nh34R2w8c6zQvqQRJyrzPpsiGmtVb4bGtQ7AXWU-UR3yqQ2VQ&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ8tMDegQINhAE",
+      "3": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=YbchaprtPLCmruEP-NG4kQ8&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=20&sa=N&sstk=AU9db-AxcBG7orCMK2IpD1OzU5gxR02RZX7CeI3AGVVwt4AMUcDZ4nh34R2w8c6zQvqQRJyrzPpsiGmtVb4bGtQ7AXWU-UR3yqQ2VQ&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ8tMDegQINhAG",
+      "4": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=YbchaprtPLCmruEP-NG4kQ8&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=30&sa=N&sstk=AU9db-AxcBG7orCMK2IpD1OzU5gxR02RZX7CeI3AGVVwt4AMUcDZ4nh34R2w8c6zQvqQRJyrzPpsiGmtVb4bGtQ7AXWU-UR3yqQ2VQ&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ8tMDegQINhAI",
+      "5": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=YbchaprtPLCmruEP-NG4kQ8&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=40&sa=N&sstk=AU9db-AxcBG7orCMK2IpD1OzU5gxR02RZX7CeI3AGVVwt4AMUcDZ4nh34R2w8c6zQvqQRJyrzPpsiGmtVb4bGtQ7AXWU-UR3yqQ2VQ&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ8tMDegQINhAK",
+      "6": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=YbchaprtPLCmruEP-NG4kQ8&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=50&sa=N&sstk=AU9db-AxcBG7orCMK2IpD1OzU5gxR02RZX7CeI3AGVVwt4AMUcDZ4nh34R2w8c6zQvqQRJyrzPpsiGmtVb4bGtQ7AXWU-UR3yqQ2VQ&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ8tMDegQINhAM",
+      "7": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=YbchaprtPLCmruEP-NG4kQ8&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=60&sa=N&sstk=AU9db-AxcBG7orCMK2IpD1OzU5gxR02RZX7CeI3AGVVwt4AMUcDZ4nh34R2w8c6zQvqQRJyrzPpsiGmtVb4bGtQ7AXWU-UR3yqQ2VQ&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ8tMDegQINhAO",
+      "8": "https://www.google.com/search?q=Amistosos+Internacionales+Hoy&sca_esv=4d7802fe5fbf4b73&gl=ar&hl=es&ei=YbchaprtPLCmruEP-NG4kQ8&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=70&sa=N&sstk=AU9db-AxcBG7orCMK2IpD1OzU5gxR02RZX7CeI3AGVVwt4AMUcDZ4nh34R2w8c6zQvqQRJyrzPpsiGmtVb4bGtQ7AXWU-UR3yqQ2VQ&ved=2ahUKEwjaoczDj-6UAxUwkysGHfgoLvIQ8tMDegQINhAQ"
+    }
+  },
+  "serpapi_pagination": {
+    "current": 1,
+    "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=10",
+    "next": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=10",
+    "other_pages": {
+      "2": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=10",
+      "3": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=20",
+      "4": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=30",
+      "5": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=40",
+      "6": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=50",
+      "7": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=60",
+      "8": "https://serpapi.com/search.json?device=desktop&engine=google&gl=ar&google_domain=google.com&hl=es&q=Amistosos+Internacionales+Hoy&si=AL3DRZGZ2vwK6UBPF13OpsdyzVxaN6Frqc7KM1Wv9CjAqfP7aFROfL377Ab1oyZjUNj8DvoKWpUUe9_zyHQz7FQ4kz-129CeEL_MX5u-qi0UjZTuNu2caZO-xdtfOy9vGWuHFTTJUaZQ_OdQqxJIPz7ivsgLJ3afGU84iKCZ3KamGEtTAHoNKBWj7jWi4mSImOMhtkK2pSZKhUiwm-lGdXronQaWIFCG6mBuHVGYaw8pJIPw5Kn2JwirG5KAIq2efxnNRdpt9DNET8Hy-eeilQixbb3euiNw4w%3D%3D&start=70"
+    }
+  }
+}

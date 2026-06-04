@@ -150,7 +150,7 @@
 
     .event-admin-details summary {
         cursor: pointer;
-        color: var(--text-muted);
+        color: #ccc;
         font-size: 0.74rem;
         font-weight: 850;
     }
@@ -192,6 +192,9 @@
             <button @click="fetchESPN($event.target)" style="cursor:pointer; font-weight:800; background: #CC0000; color: #fff; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                 🔴 Desde Scoreboard ESPN
             </button>
+            <button @click="openOddsModal()" style="cursor:pointer; font-weight:800; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; border: none; border-radius: 6px; padding: 0.6rem 1.2rem; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                ⚡ Sincronizar Odds API
+            </button>
         </div>
     </div>
 
@@ -217,7 +220,7 @@
                 <div class="glass-card" style="padding: 1rem; position: relative;">
                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
                         <span x-text="ev.league_name"></span>
-                        <span x-text="new Date((ev.start_time || '').replace(' ', 'T')).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })"></span>
+                        <span x-text="ev.match_date_label || (ev.start_time ? ((ev.start_time || '').slice(11) === '00:00:00' ? new Date((ev.start_time || '').replace(' ', 'T')).toLocaleDateString('es-AR', { dateStyle: 'short' }) + ' (A confirmar)' : new Date((ev.start_time || '').replace(' ', 'T')).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })) : 'Fecha no disponible')"></span>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 1rem;">
                         <span x-text="ev.home_team"></span>
@@ -312,6 +315,125 @@
                 </details>
             </div>
             <div style="padding:1rem; overflow-y:auto; flex:1;" x-html="eventsHtml"></div>
+        </div>
+    </div>
+
+    <!-- Modal Sincronización Odds API -->
+    <div x-show="showOddsModal" 
+         style="position: fixed; inset: 0; background: rgba(5, 7, 16, 0.85); backdrop-filter: blur(12px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 2rem;"
+         x-transition
+         x-cloak>
+        <div class="glass-card" 
+             style="width: 100%; max-width: 900px; max-height: 85vh; display: flex; flex-direction: column; padding: 1.5rem 2rem; border-radius: 16px; border: 1px solid var(--border); background: rgba(17, 24, 39, 0.95); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); overflow: hidden;"
+             @click.away="showOddsModal = false">
+            
+            <!-- Encabezado -->
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <div>
+                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 800; color: #fff;">Sincronización Odds API</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.2rem;">Administra qué deportes e importaciones quieres activar o cancelar.</p>
+                </div>
+                <button @click="showOddsModal = false" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.5rem; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">&times;</button>
+            </div>
+
+            <!-- Filtro de Búsqueda -->
+            <div style="margin-bottom: 1.2rem; display: flex; gap: 0.8rem; align-items: center;">
+                <div style="position: relative; flex: 1;">
+                    <span style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.9rem;">🔍</span>
+                    <input type="text" 
+                           x-model="oddsSearchQuery" 
+                           placeholder="Filtrar por liga o deporte..." 
+                           style="width: 100%; padding: 0.65rem 1rem 0.65rem 2.2rem; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 0.88rem; outline: none; transition: border-color 0.2s;"
+                           onfocus="this.style.borderColor='var(--primary)'"
+                           onblur="this.style.borderColor='var(--border)'">
+                </div>
+                <button @click="loadOddsSports()" 
+                        style="cursor: pointer; background: var(--border); color: #fff; border: none; padding: 0.65rem 1.2rem; border-radius: 8px; font-weight: 700; display: flex; align-items: center; gap: 0.4rem;"
+                        x-show="!oddsSportsLoading">
+                    🔄 Recargar
+                </button>
+            </div>
+
+            <!-- Listado de Deportes -->
+            <div style="flex: 1; overflow-y: auto; padding-right: 0.5rem; display: flex; flex-direction: column; gap: 1.5rem;" class="custom-scroll">
+                
+                <!-- Loading State -->
+                <div x-show="oddsSportsLoading" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 0;">
+                    <div style="border: 3px solid rgba(255,255,255,0.05); border-top: 3px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite;"></div>
+                    <span style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.9rem;">Consultando The Odds API...</span>
+                </div>
+
+                <!-- Empty State -->
+                <div x-show="!oddsSportsLoading && getFilteredOddsSports().length === 0" style="text-align: center; padding: 3rem 0; color: var(--text-muted);">
+                    No se encontraron deportes o ligas para la búsqueda.
+                </div>
+
+                <!-- Agrupación por Deportes -->
+                <template x-for="(groupSports, groupName) in getGroupedOddsSports()" :key="groupName">
+                    <div>
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 800; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(34, 211, 238, 0.1); padding-bottom: 0.35rem;" x-text="groupName"></h4>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+                            <template x-for="sport in groupSports" :key="sport.key">
+                                <div class="sport-row" 
+                                     style="display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 1.2rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; transition: background 0.2s;"
+                                     onmouseover="this.style.background='rgba(255,255,255,0.04)'"
+                                     onmouseout="this.style.background='rgba(255,255,255,0.02)'">
+                                    
+                                    <!-- Info del Deporte -->
+                                    <div style="flex: 1; min-width: 0; padding-right: 1.5rem;">
+                                        <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                                            <span style="font-weight: 700; color: #fff; font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" x-text="sport.title"></span>
+                                            
+                                            <!-- Badge de Estado -->
+                                            <span x-show="sport.status === 'active'" 
+                                                  style="font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 9999px; background: rgba(52, 211, 153, 0.15); color: #34d399;">
+                                                Registrado / Activo
+                                            </span>
+                                            <span x-show="sport.status === 'inactive'" 
+                                                  style="font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 9999px; background: rgba(244, 63, 94, 0.15); color: #fb7185;">
+                                                Cancelado / Inactivo
+                                            </span>
+                                            <span x-show="sport.status === 'unregistered'" 
+                                                  style="font-size: 0.68rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 9999px; background: rgba(255,255,255,0.05); color: var(--text-secondary);">
+                                                No Registrado
+                                            </span>
+                                        </div>
+                                        <span style="font-family: monospace; font-size: 0.72rem; color: var(--text-muted);" x-text="sport.key"></span>
+                                    </div>
+
+                                    <!-- Acciones Aceptar / Cancelar -->
+                                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                        <!-- Botón Aceptar -->
+                                        <button @click="acceptOddsSport(sport.key)" 
+                                                :disabled="oddsSyncingKey !== null"
+                                                style="cursor: pointer; font-size: 0.78rem; font-weight: 800; padding: 0.45rem 1rem; border-radius: 6px; border: 1px solid rgba(52, 211, 153, 0.3); background: rgba(52, 211, 153, 0.08); color: #34d399; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s;"
+                                                :style="sport.status === 'active' ? 'opacity:0.45; border-color:transparent; background:transparent; color:#6b7280; cursor:default;' : ''"
+                                                onmouseover="if(this.style.opacity !== '0.45') { this.style.background='rgba(52, 211, 153, 0.18)'; }"
+                                                onmouseout="if(this.style.opacity !== '0.45') { this.style.background='rgba(52, 211, 153, 0.08)'; }">
+                                            <span x-show="oddsSyncingKey === sport.key">⏳</span>
+                                            <span x-show="oddsSyncingKey !== sport.key">✓</span>
+                                            Aceptar
+                                        </button>
+
+                                        <!-- Botón Cancelar -->
+                                        <button @click="cancelOddsSport(sport.key, sport.title)" 
+                                                :disabled="oddsSyncingKey !== null"
+                                                style="cursor: pointer; font-size: 0.78rem; font-weight: 800; padding: 0.45rem 1rem; border-radius: 6px; border: 1px solid rgba(244, 63, 94, 0.3); background: rgba(244, 63, 94, 0.08); color: #fb7185; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s;"
+                                                :style="(sport.status === 'inactive' || sport.status === 'unregistered') ? 'opacity:0.45; border-color:transparent; background:transparent; color:#6b7280; cursor:default;' : ''"
+                                                onmouseover="if(this.style.opacity !== '0.45') { this.style.background='rgba(244, 63, 94, 0.18)'; }"
+                                                onmouseout="if(this.style.opacity !== '0.45') { this.style.background='rgba(244, 63, 94, 0.08)'; }">
+                                            <span x-show="oddsSyncingKey === sport.key">⏳</span>
+                                            <span x-show="oddsSyncingKey !== sport.key">✕</span>
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
 </div>
