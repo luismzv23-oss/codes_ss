@@ -217,12 +217,27 @@
                 <div class="glass-card" style="padding: 1rem; position: relative;">
                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
                         <span x-text="ev.league_name"></span>
-                        <span x-text="new Date(ev.start_time).toLocaleString()"></span>
+                        <span x-text="new Date((ev.start_time || '').replace(' ', 'T')).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })"></span>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 1rem;">
                         <span x-text="ev.home_team"></span>
                         <span style="color: var(--text-muted); font-size: 0.8rem;">vs</span>
                         <span x-text="ev.away_team"></span>
+                    </div>
+                    <div x-show="ev.stage || ev.group_name" style="font-size:0.76rem;color:var(--text-secondary);margin-top:-0.45rem;margin-bottom:0.65rem;display:flex;gap:0.45rem;align-items:center;min-height:1rem;">
+                        <span x-show="ev.stage" x-text="ev.stage"></span>
+                        <span x-show="ev.stage && ev.group_name" style="color:var(--text-muted);">&middot;</span>
+                        <span x-show="ev.group_name" x-text="ev.group_name"></span>
+                    </div>
+                    <div style="font-size:0.76rem;color:var(--text-muted);margin-bottom:0.85rem;min-height:1rem;">
+                        <template x-if="ev.venue">
+                            <a :href="ev.venue_url || ('https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(ev.venue + ' estadio fachada'))" target="_blank" rel="noopener" style="color:#93c5fd;text-decoration:none;font-weight:700;">
+                                <span x-text="'Estadio: ' + ev.venue"></span>
+                            </a>
+                        </template>
+                        <template x-if="!ev.venue">
+                            <span>Estadio por confirmar</span>
+                        </template>
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
                         <button @click="approveStaged(ev.id)" style="flex: 1; cursor:pointer; background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 4px; padding: 0.4rem; font-weight: 700;">Aprobar</button>

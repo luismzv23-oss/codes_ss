@@ -142,6 +142,7 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->post('jobs/fetch-odds', 'Dashboard::triggerFetchOdds');
     $routes->post('jobs/settle', 'Dashboard::triggerSettleBets');
     $routes->post('jobs/start-websocket', 'Dashboard::triggerStartWebSocket');
+    $routes->post('jobs/trigger-b2b-mock', 'Dashboard::triggerB2BMock');
 });
 
 $routes->get('run-migrations-public', function() {

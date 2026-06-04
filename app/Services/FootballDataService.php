@@ -107,6 +107,8 @@ class FootballDataService
                     'winner'     => $match['score']['winner'] ?? null, // HOME, AWAY, DRAW
                     'competition' => $match['competition']['name'] ?? '',
                     'stage'      => $match['stage'] ?? '',
+                    'group'      => $match['group'] ?? '',
+                    'venue'      => $match['venue'] ?? '',
                 ];
             }
 
@@ -316,6 +318,10 @@ class FootballDataService
                 'home_team'      => $match['homeTeam'],
                 'away_team'      => $match['awayTeam'],
                 'start_time'     => date('Y-m-d H:i:s', strtotime($match['kickoffTime'])),
+                'stage'          => $match['stage'] ?: null,
+                'group_name'     => $match['group'] ?: null,
+                'venue'          => $match['venue'] ?: null,
+                'venue_url'      => !empty($match['venue']) ? 'https://www.google.com/search?tbm=isch&q=' . rawurlencode($match['venue'] . ' estadio fachada') : null,
                 'odds_data'      => json_encode($oddsData),
                 'status'         => 'pending_review',
                 'created_by'     => $reviewedBy ?? 1

@@ -3446,6 +3446,9 @@ class Dashboard extends BaseController
 
         foreach ($staged as &$e) {
             $e['odds_data'] = json_decode($e['odds_data'], true);
+            if (empty($e['venue_url']) && !empty($e['venue'])) {
+                $e['venue_url'] = 'https://www.google.com/search?tbm=isch&q=' . rawurlencode($e['venue'] . ' estadio fachada');
+            }
         }
 
         return $this->response->setJSON($staged);
@@ -3741,6 +3744,26 @@ class Dashboard extends BaseController
             }
 
             return $this->response->setJSON(['status' => 'success', 'message' => 'WebSocket Server inicializado en segundo plano (Puerto 3000).']);
+        } catch (\Exception $e) {
+            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function triggerB2BMock()
+    {
+        if (session()->get('role_id') != 1) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        
+        try {
+            $path = ROOTPATH;
+            $command = "cd " . escapeshellarg($path) . " && python b2b_publisher.py";
+            
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $output = shell_exec('cmd /c "' . $command . '" 2>&1');
+            } else {
+                $output = shell_exec($command . ' 2>&1');
+            }
+
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Simulación AMQP enviada vía Python. Revisa la terminal del consumidor.']);
         } catch (\Exception $e) {
             return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
         }

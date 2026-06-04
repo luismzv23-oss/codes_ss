@@ -328,15 +328,24 @@ class EventLoaderService
         
         if (!$existingEvent) {
             $eventId = $eventModel->insert([
-                'league_id'  => $leagueId,
-                'home_team'  => $stagedEvent['home_team'],
-                'away_team'  => $stagedEvent['away_team'],
-                'start_time' => $stagedEvent['start_time'],
-                'status'     => 'pending',
-                'settled'    => 0
+                'league_id'   => $leagueId,
+                'home_team'   => $stagedEvent['home_team'],
+                'away_team'   => $stagedEvent['away_team'],
+                'start_time'  => $stagedEvent['start_time'],
+                'stage'       => $stagedEvent['stage'] ?? null,
+                'group_name'  => $stagedEvent['group_name'] ?? null,
+                'venue'       => $stagedEvent['venue'] ?? null,
+                'status'      => 'pending',
+                'settled'     => 0
             ]);
         } else {
             $eventId = $existingEvent['id'];
+            $eventModel->update($eventId, [
+                'start_time'  => $stagedEvent['start_time'],
+                'stage'       => ($stagedEvent['stage'] ?? null) ?: ($existingEvent['stage'] ?? null),
+                'group_name'  => ($stagedEvent['group_name'] ?? null) ?: ($existingEvent['group_name'] ?? null),
+                'venue'       => ($stagedEvent['venue'] ?? null) ?: ($existingEvent['venue'] ?? null),
+            ]);
         }
 
         // 4. Create Markets and Odds from staged_event's odds_data
@@ -750,6 +759,11 @@ class EventLoaderService
                 if (!$startTime || strtotime($translatedStr) === false) {
                     $startTime = date('Y-m-d H:i:s', strtotime('+1 day'));
                 }
+                $stage = mb_substr($this->serpApiText($match['stage'] ?? $match['round'] ?? $match['phase'] ?? null, ''), 0, 80);
+                $groupName = mb_substr($this->extractGroupName($match, $leagueName), 0, 50);
+                $venue = mb_substr($this->extractVenueName($match), 0, 150);
+                $venueUrl = $this->buildVenueSearchUrl($venue, $home, $away);
+                $startTime = $this->parseSerpApiStartTime($match, $query);
 
                 $markets = [];
                 $markets[] = [
@@ -773,6 +787,10 @@ class EventLoaderService
                         'home_team'      => $home,
                         'away_team'      => $away,
                         'start_time'     => $startTime,
+                        'stage'          => $stage ?: null,
+                        'group_name'     => $groupName ?: null,
+                        'venue'          => $venue ?: null,
+                        'venue_url'      => $venueUrl,
                         'odds_data'      => $oddsJson,
                         'status'         => 'pending_review',
                         'reviewed_by'    => null,
@@ -792,6 +810,10 @@ class EventLoaderService
                     'home_team'      => $home,
                     'away_team'      => $away,
                     'start_time'     => $startTime,
+                    'stage'          => $stage ?: null,
+                    'group_name'     => $groupName ?: null,
+                    'venue'          => $venue ?: null,
+                    'venue_url'      => $venueUrl,
                     'odds_data'      => $oddsJson,
                     'status'         => 'pending_review',
                     'event_id'       => $existingEvent ? (int) $existingEvent['id'] : null,
@@ -892,6 +914,92 @@ class EventLoaderService
         }
 
         return $fallback;
+    }
+
+    private function parseSerpApiStartTime(array $match, string $query = ''): string
+    {
+        foreach (['start_time', 'startTime', 'datetime', 'date_time', 'utcDate'] as $key) {
+            $candidate = $this->serpApiText($match[$key] ?? null, '');
+            if ($candidate !== '') {
+                $timestamp = strtotime($this->translateSerpApiDate($candidate));
+                if ($timestamp !== false) {
+                    return date('Y-m-d H:i:s', $timestamp);
+                }
+            }
+        }
+
+        $dateStr = $this->serpApiText($match['date'] ?? null, '');
+        $timeStr = $this->serpApiText($match['time'] ?? null, '');
+        if ($timeStr === '' || preg_match('/en vivo|live|fin|final/i', $timeStr)) {
+            $timeStr = '00:00';
+        }
+
+        $dateStr = $dateStr !== '' ? $dateStr : $this->extractDateFromSearchQuery($query);
+        $translated = $this->translateSerpApiDate(trim($dateStr . ' ' . $timeStr));
+
+        if (!preg_match('/\d{4}/', $translated)) {
+            $translated .= ' ' . date('Y');
+        }
+
+        $timestamp = strtotime($translated);
+        if ($timestamp === false) {
+            $timestamp = strtotime(date('Y-m-d') . ' 00:00:00');
+        }
+
+        return date('Y-m-d H:i:s', $timestamp);
+    }
+
+    private function translateSerpApiDate(string $value): string
+    {
+        $spanishMonths = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sep.', 'oct.', 'nov.', 'dic.', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic', ' de '];
+        $englishMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', ' '];
+        $spanishDays = ['lun.', 'mar.', 'mie.', 'miÃ©.', 'jue.', 'vie.', 'sab.', 'sÃ¡b.', 'dom.', 'lun', 'mar', 'mie', 'miÃ©', 'jue', 'vie', 'sab', 'sÃ¡b', 'dom'];
+        $englishDays = ['Mon', 'Tue', 'Wed', 'Wed', 'Thu', 'Fri', 'Sat', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Wed', 'Thu', 'Fri', 'Sat', 'Sat', 'Sun'];
+
+        $value = str_ireplace($spanishMonths, $englishMonths, $value);
+        $value = str_ireplace($spanishDays, $englishDays, $value);
+        $value = str_ireplace(['Hoy', 'MaÃ±ana', 'Manana', 'Ayer'], ['Today', 'Tomorrow', 'Tomorrow', 'Yesterday'], $value);
+        return str_ireplace(['a. m.', 'p. m.', 'a.m.', 'p.m.'], ['AM', 'PM', 'AM', 'PM'], $value);
+    }
+
+    private function extractDateFromSearchQuery(string $query): string
+    {
+        if (preg_match('/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/', $query, $matches)) {
+            return $matches[1] . '/' . $matches[2] . '/' . $matches[3];
+        }
+
+        return date('Y-m-d');
+    }
+
+    private function extractGroupName(array $match, string $leagueName = ''): string
+    {
+        $text = $this->serpApiText($match['group'] ?? $match['group_name'] ?? $match['stage'] ?? $match['round'] ?? $match['phase'] ?? $leagueName, '');
+        if (preg_match('/grupo\s+([A-Z0-9]+)/iu', $text, $matches)) {
+            return 'Grupo ' . strtoupper($matches[1]);
+        }
+        if (preg_match('/group\s+([A-Z0-9]+)/iu', $text, $matches)) {
+            return 'Grupo ' . strtoupper($matches[1]);
+        }
+
+        return '';
+    }
+
+    private function extractVenueName(array $match): string
+    {
+        return $this->serpApiText(
+            $match['venue']['name'] ?? $match['venue']['fullName'] ?? $match['venue'] ?? $match['stadium']['name'] ?? $match['stadium'] ?? $match['location'] ?? null,
+            ''
+        );
+    }
+
+    private function buildVenueSearchUrl(string $venue, string $home = '', string $away = ''): ?string
+    {
+        if (trim($venue) === '') {
+            return null;
+        }
+
+        $query = trim($venue . ' estadio fachada ' . $home . ' ' . $away);
+        return 'https://www.google.com/search?tbm=isch&q=' . rawurlencode($query);
     }
 
     private function findDuplicateEvent(string $homeTeam, string $awayTeam, string $startTime): ?array
@@ -1037,6 +1145,10 @@ class EventLoaderService
                 if (!$home || !$away) continue;
 
                 $startTime = date('Y-m-d H:i:s', strtotime($event['date'] ?? date('c')));
+                $competition = $event['competitions'][0] ?? [];
+                $venue = mb_substr($this->serpApiText($competition['venue']['fullName'] ?? $competition['venue']['displayName'] ?? $competition['venue']['name'] ?? $event['venue']['fullName'] ?? $event['venue']['displayName'] ?? null, ''), 0, 150);
+                $stage = mb_substr($this->serpApiText($event['season']['name'] ?? $event['season']['slug'] ?? $event['week']['text'] ?? null, ''), 0, 80);
+                $venueUrl = $this->buildVenueSearchUrl($venue, $home, $away);
 
                 // Prevenir duplicados
                 if ($this->isDuplicate($home, $away, $startTime)) {
@@ -1053,6 +1165,7 @@ class EventLoaderService
                 } elseif (!empty($event['competitions'][0]['notes'][0]['headline'])) {
                     $leagueName = $event['competitions'][0]['notes'][0]['headline'];
                 }
+                $groupName = mb_substr($this->extractGroupName($event, $leagueName), 0, 50);
 
                 $markets = [];
                 $markets[] = [
@@ -1073,6 +1186,10 @@ class EventLoaderService
                     'home_team'      => mb_substr($home, 0, 100),
                     'away_team'      => mb_substr($away, 0, 100),
                     'start_time'     => $startTime,
+                    'stage'          => $stage ?: null,
+                    'group_name'     => $groupName ?: null,
+                    'venue'          => $venue ?: null,
+                    'venue_url'      => $venueUrl,
                     'odds_data'      => json_encode($markets),
                     'status'         => 'pending_review'
                 ]);

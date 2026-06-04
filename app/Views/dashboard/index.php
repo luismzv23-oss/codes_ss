@@ -199,6 +199,11 @@
                         <i data-lucide="radio" style="width:16px;height:16px;color:#d946ef;"></i>
                         Iniciar WebSocket Server
                     </button>
+                    <button class="btn btn-ghost" style="width:100%; justify-content:flex-start; display:flex; align-items:center; gap:0.6rem; text-align:left; color: #eab308;"
+                        @click="triggerJob('/dashboard/jobs/trigger-b2b-mock', $event.currentTarget)">
+                        <i data-lucide="zap" style="width:16px;height:16px;color:#eab308;"></i>
+                        Simular Cuota B2B (Python)
+                    </button>
                 </div>
             </div>
         </div>

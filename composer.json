@@ -18,7 +18,9 @@
         "guzzlehttp/guzzle": "^7.5",
         "mercadopago/dx-php": "^2.0",
         "paragonie/random_compat": "^9.99",
+        "php-amqplib/php-amqplib": "^3.5",
         "phpmailer/phpmailer": "^6.8",
+        "predis/predis": "^2.2",
         "twilio/sdk": "^8.0"
     },
     "require-dev": {
