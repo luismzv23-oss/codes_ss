@@ -78,6 +78,9 @@
                         <td style="padding: 0.75rem 1.25rem; color: var(--text-secondary);"><?= esc($createdAt) ?></td>
                         <td style="padding: 0.75rem 1.25rem; text-align:right;">
                             <div style="display:flex;justify-content:flex-end;gap:0.35rem;flex-wrap:wrap;">
+                                <button type="button" class="btn btn-ghost" style="padding:0.35rem 0.55rem;font-size:0.72rem;" @click="selectedUser = <?= esc(json_encode($user), 'html') ?>; showDetailsModal = true; $nextTick(() => lucide.createIcons());">
+                                    <i data-lucide="eye" style="width:13px;height:13px;"></i> Ver Datos
+                                </button>
                                 <?php if ($isLocked): ?>
                                     <button class="btn btn-ghost" style="padding:0.35rem 0.55rem;font-size:0.72rem;" onclick="unlockUser(<?= (int) $user['id'] ?>, this)">
                                         <i data-lucide="unlock" style="width:13px;height:13px;"></i> Desbloquear
@@ -102,7 +105,7 @@
     };
 ?>
 
-<div style="animation: fadeSlide 0.4s ease-out;" x-data="{ search: '', activeTab: 'external', showModal: false, toast: '' }" x-init="$watch('search', () => filterUserRows())">
+<div style="animation: fadeSlide 0.4s ease-out;" x-data="{ search: '', activeTab: 'external', showModal: false, toast: '', selectedUser: null, showDetailsModal: false }" x-init="$watch('search', () => filterUserRows())">
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem;">
         <div>
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 800;">Gestion de Usuarios</h1>
@@ -172,6 +175,83 @@
                 <div class="modal-actions">
                     <button class="btn btn-ghost" @click="showModal = false">Cancelar</button>
                     <button class="btn btn-primary" @click="showModal = false">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template x-if="showDetailsModal && selectedUser">
+        <div class="modal-backdrop" @click.self="showDetailsModal = false" x-transition>
+            <div class="modal-box" x-transition.scale.90 style="max-width: 600px; padding: 1.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.25rem;">
+                    <h3 style="margin: 0; font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+                        <i data-lucide="user" style="width: 20px; height: 20px; color: var(--accent-cyan);"></i>
+                        Datos del Apostador
+                    </h3>
+                    <button class="btn btn-ghost" style="padding: 0.35rem; min-width: auto;" @click="showDetailsModal = false">
+                        <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+                    </button>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.25rem;">
+                    <img :src="'https://ui-avatars.com/api/?name=' + encodeURIComponent(selectedUser.username) + '&background=' + (selectedUser.role_id == 1 ? '6366f1' : '22d3ee') + '&color=fff&size=96&bold=true'" style="width: 48px; height: 48px; border-radius: 12px;" alt="">
+                    <div>
+                        <div style="font-weight: 800; font-size: 1.1rem; color: var(--text-primary);" x-text="selectedUser.username"></div>
+                        <div style="font-size: 0.78rem; color: var(--text-muted);">
+                            <span>ID de Usuario: #</span><span x-text="selectedUser.id"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Email</div>
+                        <div style="font-weight: 600; font-size: 0.88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" x-text="selectedUser.email || '-'"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Teléfono</div>
+                        <div style="font-weight: 600; font-size: 0.88rem;" x-text="selectedUser.phone || '-'"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Nacionalidad / País</div>
+                        <div style="font-weight: 600; font-size: 0.88rem;" x-text="selectedUser.country || '-'"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Fec. Nacimiento</div>
+                        <div style="font-weight: 600; font-size: 0.88rem;" x-text="selectedUser.birthdate || '-'"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Identificación / Documento</div>
+                        <div style="font-weight: 600; font-size: 0.88rem;" x-text="(selectedUser.document_type ? selectedUser.document_type.toUpperCase() : 'DNI') + ': ' + (selectedUser.document_number || '-')"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Estado KYC</div>
+                        <div>
+                            <span style="font-size: 0.72rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 4px;"
+                                  :style="selectedUser.kyc_status === 'approved' ? 'background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);' : (selectedUser.kyc_status === 'pending' ? 'background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);' : 'background: rgba(239, 68, 68, 0.15); color: var(--accent-rose);')"
+                                  x-text="selectedUser.kyc_status === 'approved' ? 'Aprobado' : (selectedUser.kyc_status === 'pending' ? 'Pendiente' : 'No Iniciado')"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Saldo Disponible</div>
+                        <div style="font-weight: 800; font-size: 1rem; color: var(--accent-emerald);" x-text="'$' + parseFloat(selectedUser.balance || 0).toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2})"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Último Login</div>
+                        <div style="font-weight: 600; font-size: 0.82rem; color: var(--text-secondary);" x-text="selectedUser.last_login_at || '-'"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">IP Último Login</div>
+                        <div style="font-weight: 600; font-size: 0.82rem; color: var(--text-secondary);" x-text="selectedUser.last_login_ip || '-'"></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Fecha de Alta</div>
+                        <div style="font-weight: 600; font-size: 0.82rem; color: var(--text-secondary);" x-text="selectedUser.created_at || '-'"></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 1rem;">
+                    <button class="btn btn-primary" @click="showDetailsModal = false">Cerrar</button>
                 </div>
             </div>
         </div>

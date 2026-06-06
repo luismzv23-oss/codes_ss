@@ -1279,4 +1279,56 @@ class Sportsbook extends BaseController
 
         return redirect()->to('/sportsbook/kyc')->with('success', 'Verificacion enviada. Queda pendiente de revision.');
     }
+
+    public function transactions()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/auth/login');
+        }
+
+        $userId = session()->get('user_id');
+        $walletModel = new \App\Models\WalletModel();
+        $wallet = $walletModel->where('user_id', $userId)->first();
+        $walletBalance = $wallet ? (float)$wallet['balance'] : 0.00;
+
+        $db = \Config\Database::connect();
+
+        $type = (string) ($this->request->getGet('type') ?? 'all');
+        $page = max(1, (int) ($this->request->getGet('page') ?? 1));
+        $perPage = 15;
+        $offset = ($page - 1) * $perPage;
+
+        $allowedTypes = ['all', 'deposit', 'withdrawal', 'bet_placed', 'bet_won', 'bet_void', 'cashout'];
+        if (!in_array($type, $allowedTypes, true)) {
+            $type = 'all';
+        }
+
+        $base = $db->table('transactions t')
+            ->select('t.*')
+            ->join('wallets w', 'w.id = t.wallet_id')
+            ->where('w.user_id', $userId);
+
+        if ($type !== 'all') {
+            $base->where('t.type', $type);
+        }
+
+        $totalTransactions = (clone $base)->countAllResults(false);
+        
+        $transactions = $base
+            ->orderBy('t.created_at', 'DESC')
+            ->orderBy('t.id', 'DESC')
+            ->limit($perPage, $offset)
+            ->get()
+            ->getResultArray();
+
+        return view('sportsbook/transactions', [
+            'title'             => 'Mis Transacciones - Codex SS',
+            'walletBalance'     => $walletBalance,
+            'transactions'      => $transactions,
+            'selectedType'      => $type,
+            'currentPage'       => $page,
+            'totalPages'        => max(1, (int) ceil($totalTransactions / $perPage)),
+            'totalTransactions' => $totalTransactions,
+        ]);
+    }
 }

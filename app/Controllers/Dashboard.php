@@ -626,8 +626,15 @@ class Dashboard extends BaseController
                 u.is_active,
                 u.created_at,
                 u.last_login_at,
+                u.last_login_ip,
                 u.locked_until,
                 u.failed_login_attempts,
+                u.phone,
+                u.country,
+                u.birthdate,
+                u.document_type,
+                u.document_number,
+                u.kyc_status,
                 r.name as role_name,
                 COALESCE(w.balance, 0) as balance,
                 COALESCE((
@@ -2980,13 +2987,32 @@ class Dashboard extends BaseController
             ]);
         }
 
+        $withdrawalRequestId = null;
+        if ($type === 'withdrawal') {
+            $withdrawalRequestModel = new \App\Models\WithdrawalRequestModel();
+            $withdrawalRequestId = $withdrawalRequestModel->insert([
+                'user_id' => $userId,
+                'wallet_id' => (int) $wallet['id'],
+                'amount' => $amount,
+                'target_account' => $targetAccount !== '' ? $targetAccount : 'Caja Interna (Manual)',
+                'account_holder' => $user['username'],
+                'account_document' => $user['document_number'] ?? 'N/A',
+                'own_account_confirmed' => 1,
+                'status' => 'approved',
+                'user_note' => 'Retiro por Caja Manual',
+                'admin_note' => $description !== '' ? $description : 'Retiro manual de administrador',
+                'processed_by' => (int) session()->get('user_id'),
+                'processed_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
+
         $walletModel->update((int) $wallet['id'], ['balance' => $newBalance]);
         $transactionModel->insert([
             'wallet_id' => (int) $wallet['id'],
             'type' => $type,
             'amount' => $signedAmount,
             'balance_after' => $newBalance,
-            'reference_id' => null,
+            'reference_id' => $withdrawalRequestId,
             'description' => $description !== '' ? $description : ($type === 'deposit' ? 'Recarga manual de administrador' : 'Retiro manual de administrador'),
             'commission' => $commission,
             'target_account' => $targetAccount !== '' ? $targetAccount : null,

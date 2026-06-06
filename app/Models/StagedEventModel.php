@@ -21,6 +21,8 @@ class StagedEventModel extends Model
         'group_name',
         'home_team',
         'away_team',
+        'score_home',
+        'score_away',
         'start_time',
         'venue',
         'venue_url',

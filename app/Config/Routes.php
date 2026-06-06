@@ -33,6 +33,7 @@ $routes->post('sportsbook/deposit', 'Sportsbook::deposit');
 $routes->get('sportsbook/kyc', 'Sportsbook::kyc');
 $routes->post('sportsbook/kyc/submit', 'Sportsbook::submitKyc');
 $routes->post('sportsbook/withdrawal-request', 'Sportsbook::withdrawalRequest');
+$routes->get('sportsbook/transactions', 'Sportsbook::transactions');
 $routes->get('checkout', 'Checkout::index');
 $routes->get('checkout/success', 'Checkout::success');
 $routes->get('checkout/check-status', 'Checkout::checkStatus');

@@ -127,7 +127,7 @@ class CashOutService
 
             // 3. Registrar transacción
             $this->db->table('transactions')->insert([
-                'user_id' => $userId,
+                'wallet_id' => $wallet['id'],
                 'type' => 'cash_out',
                 'amount' => $cashOutValue,
                 'balance_after' => $newBalance,

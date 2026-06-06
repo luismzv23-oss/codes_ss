@@ -352,6 +352,14 @@ class EventLoaderService
                                     ->where('league_id', $leagueId)
                                     ->first();
         
+        $eventStatus = 'pending';
+        $scoreHome = isset($stagedEvent['score_home']) && is_numeric($stagedEvent['score_home']) ? (int)$stagedEvent['score_home'] : null;
+        $scoreAway = isset($stagedEvent['score_away']) && is_numeric($stagedEvent['score_away']) ? (int)$stagedEvent['score_away'] : null;
+
+        if ($scoreHome !== null && $scoreAway !== null) {
+            $eventStatus = 'finished';
+        }
+
         if (!$existingEvent) {
             $eventId = $eventModel->insert([
                 'league_id'   => $leagueId,
@@ -361,17 +369,25 @@ class EventLoaderService
                 'stage'       => $stagedEvent['stage'] ?? null,
                 'group_name'  => $stagedEvent['group_name'] ?? null,
                 'venue'       => $stagedEvent['venue'] ?? null,
-                'status'      => 'pending',
+                'status'      => $eventStatus,
+                'score_home'  => $scoreHome,
+                'score_away'  => $scoreAway,
                 'settled'     => 0
             ]);
         } else {
             $eventId = $existingEvent['id'];
-            $eventModel->update($eventId, [
+            $updateData = [
                 'start_time'  => $stagedEvent['start_time'],
                 'stage'       => ($stagedEvent['stage'] ?? null) ?: ($existingEvent['stage'] ?? null),
                 'group_name'  => ($stagedEvent['group_name'] ?? null) ?: ($existingEvent['group_name'] ?? null),
                 'venue'       => ($stagedEvent['venue'] ?? null) ?: ($existingEvent['venue'] ?? null),
-            ]);
+            ];
+            if ($scoreHome !== null && $scoreAway !== null) {
+                $updateData['status'] = $eventStatus;
+                $updateData['score_home'] = $scoreHome;
+                $updateData['score_away'] = $scoreAway;
+            }
+            $eventModel->update($eventId, $updateData);
         }
 
         // 4. Create Markets and Odds from staged_event's odds_data
@@ -830,39 +846,21 @@ class EventLoaderService
 
                 $home = mb_substr($home, 0, 200);
                 $away = mb_substr($away, 0, 200);
-                
-                $startTimeStr = $dateStr !== '' ? ($dateStr . ' ' . $timeStr) : $timeStr;
-                
-                // Translate Spanish dates & terms to English for strtotime()
-                $spanishMonths = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sep.', 'oct.', 'nov.', 'dic.', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic', ' de '];
-                $englishMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', ' '];
-                $spanishDays = ['lun.', 'mar.', 'mié.', 'jue.', 'vie.', 'sáb.', 'dom.', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
-                $englishDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
-                $translatedStr = str_ireplace($spanishMonths, $englishMonths, $startTimeStr);
-                $translatedStr = str_ireplace($spanishDays, $englishDays, $translatedStr);
-                $translatedStr = str_ireplace(['Hoy', 'Mañana', 'Ayer', 'En vivo', 'Fin'], ['Today', 'Tomorrow', 'Yesterday', 'now', 'Yesterday'], $translatedStr);
-                
-                // Append year if missing and it's a specific date
-                $year = date('Y');
-                if (!preg_match('/\b(Today|Tomorrow|Yesterday|now)\b/i', $translatedStr)) {
-                     if (!preg_match('/\d{4}/', $translatedStr)) {
-                         $translatedStr = trim($translatedStr) . ' ' . $year;
-                     }
-                }
-                
-                // Replace a. m. / p. m. with AM / PM
-                $translatedStr = str_ireplace(['a. m.', 'p. m.', 'a.m.', 'p.m.'], ['AM', 'PM', 'AM', 'PM'], $translatedStr);
-
-                $startTime = date('Y-m-d H:i:s', strtotime($translatedStr));
-                if (!$startTime || strtotime($translatedStr) === false) {
-                    $startTime = date('Y-m-d H:i:s', strtotime('+1 day'));
-                }
+                $startTime = $this->parseSerpApiStartTime($match, $query);
                 $stage = mb_substr($this->serpApiText($match['stage'] ?? $match['round'] ?? $match['phase'] ?? null, ''), 0, 80);
                 $groupName = mb_substr($this->extractGroupName($match, $leagueName), 0, 50);
                 $venue = mb_substr($this->extractVenueName($match), 0, 150);
                 $venueUrl = $this->buildVenueSearchUrl($venue, $home, $away);
-                $startTime = $this->parseSerpApiStartTime($match, $query);
+
+                // Extract scores if match is live or finished
+                $scoreHome = null;
+                $scoreAway = null;
+                if (isset($match['teams'][0]['score']) && is_numeric($match['teams'][0]['score'])) {
+                    $scoreHome = (int)$match['teams'][0]['score'];
+                }
+                if (isset($match['teams'][1]['score']) && is_numeric($match['teams'][1]['score'])) {
+                    $scoreAway = (int)$match['teams'][1]['score'];
+                }
 
                 $markets = [];
                 $markets[] = [
@@ -885,6 +883,8 @@ class EventLoaderService
                         'league_country' => $country,
                         'home_team'      => $home,
                         'away_team'      => $away,
+                        'score_home'     => $scoreHome,
+                        'score_away'     => $scoreAway,
                         'start_time'     => $startTime,
                         'stage'          => $stage ?: null,
                         'group_name'     => $groupName ?: null,
@@ -908,6 +908,8 @@ class EventLoaderService
                     'league_country' => $country,
                     'home_team'      => $home,
                     'away_team'      => $away,
+                    'score_home'     => $scoreHome,
+                    'score_away'     => $scoreAway,
                     'start_time'     => $startTime,
                     'stage'          => $stage ?: null,
                     'group_name'     => $groupName ?: null,
@@ -1227,10 +1229,10 @@ class EventLoaderService
 
         $dateStr = $dateStr !== '' ? $dateStr : $this->extractDateFromSearchQuery($query);
 
-        // Preprocess Spanish date formats like "Mar 2-6" -> "YYYY-MM-DD"
-        if (preg_match('/\b(lun|mar|mié|mie|jue|vie|sáb|sab|dom)\.?\s+(\d{1,2})[-|\/](\d{1,2})\b/i', $dateStr, $m)) {
-            $day = (int)$m[2];
-            $month = (int)$m[3];
+        // Preprocess Spanish date formats like "Mar 2-6", "2-6" or "2/6" -> "YYYY-MM-DD"
+        if (preg_match('/\b(?:lun|mar|mié|mie|jue|vie|sáb|sab|dom)?\.?\s*(\d{1,2})[-|\/](\d{1,2})\b/i', $dateStr, $m)) {
+            $day = (int)$m[1];
+            $month = (int)$m[2];
             $year = date('Y');
             $dateStr = "{$year}-{$month}-{$day}";
         }
@@ -1265,7 +1267,10 @@ class EventLoaderService
     private function extractDateFromSearchQuery(string $query): string
     {
         if (preg_match('/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/', $query, $matches)) {
-            return $matches[1] . '/' . $matches[2] . '/' . $matches[3];
+            $day = (int)$matches[1];
+            $month = (int)$matches[2];
+            $year = (int)$matches[3];
+            return "{$year}-{$month}-{$day}";
         }
 
         // Match Spanish formats like "3 de junio de 2026", "3 de junio 2026", "3 de junio"

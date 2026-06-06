@@ -24,6 +24,8 @@ class MarketSettlementService
             $status = match ($type) {
                 '1x2', 'h2h', 'moneyline' => $this->settle1x2($selection, $event, $homeScore, $awayScore),
                 'totals', 'over_under', 'total_goals', 'total_points' => $this->settleTotals($selection, $homeScore + $awayScore),
+                'team_totals', 'team_totals_home' => $this->settleTotals($selection, $homeScore),
+                'team_totals_away' => $this->settleTotals($selection, $awayScore),
                 'btts', 'both_teams_to_score' => $this->settleBtts($selection, $homeScore, $awayScore),
                 'double_chance' => $this->settleDoubleChance($selection, $homeScore, $awayScore),
                 'handicap', 'spread' => $this->settleHandicap($selection, $event, $homeScore, $awayScore),
@@ -71,8 +73,8 @@ class MarketSettlementService
             return 'void';
         }
 
-        $isOver = str_starts_with($normalized, 'over') || str_contains($normalized, 'mas') || str_contains($normalized, 'mas de');
-        $isUnder = str_starts_with($normalized, 'under') || str_contains($normalized, 'menos') || str_contains($normalized, 'menos de');
+        $isOver = str_contains($normalized, 'over') || str_contains($normalized, 'mas') || str_contains($normalized, 'mas de');
+        $isUnder = str_contains($normalized, 'under') || str_contains($normalized, 'menos') || str_contains($normalized, 'menos de');
 
         if ($isOver) {
             return $total > $line ? 'won' : 'lost';
@@ -115,23 +117,19 @@ class MarketSettlementService
 
     private function settleHandicap(string $selection, array $event, int $homeScore, int $awayScore): string
     {
-        $normalized = $this->normalize($selection);
-        $line = $this->extractSignedLine($selection);
-
-        if ($line === null) {
+        if (! preg_match('/^(.*?)\s*([+-]?\d+(?:[.,]\d+)?)$/', $selection, $matches)) {
             return 'void';
         }
 
-        $isHome = $this->isHomeSelection($normalized, $event);
-        $isAway = $this->isAwaySelection($normalized, $event);
+        $teamPart = trim($matches[1]);
+        $line = (float) str_replace(',', '.', $matches[2]);
+        $normalizedTeam = $this->normalize($teamPart);
 
-        if (! $isHome && ! $isAway) {
-            if (str_contains($normalized, '1') || str_contains($normalized, 'local') || str_contains($normalized, 'home')) {
-                $isHome = true;
-            } elseif (str_contains($normalized, '2') || str_contains($normalized, 'visitante') || str_contains($normalized, 'away')) {
-                $isAway = true;
-            }
-        }
+        $isHome = in_array($normalizedTeam, ['1', 'local', 'home'], true)
+            || $normalizedTeam === $this->normalize((string) ($event['home_team'] ?? ''));
+
+        $isAway = in_array($normalizedTeam, ['2', 'visitante', 'away'], true)
+            || $normalizedTeam === $this->normalize((string) ($event['away_team'] ?? ''));
 
         if (! $isHome && ! $isAway) {
             return 'void';

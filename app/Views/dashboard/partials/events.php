@@ -224,7 +224,12 @@
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 1rem;">
                         <span x-text="ev.home_team"></span>
-                        <span style="color: var(--text-muted); font-size: 0.8rem;">vs</span>
+                        <template x-if="ev.score_home !== null && ev.score_away !== null">
+                            <span style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.9rem;" x-text="ev.score_home + ' - ' + ev.score_away"></span>
+                        </template>
+                        <template x-if="ev.score_home === null || ev.score_away === null">
+                            <span style="color: var(--text-muted); font-size: 0.8rem;">vs</span>
+                        </template>
                         <span x-text="ev.away_team"></span>
                     </div>
                     <div x-show="ev.stage || ev.group_name" style="font-size:0.76rem;color:var(--text-secondary);margin-top:-0.45rem;margin-bottom:0.65rem;display:flex;gap:0.45rem;align-items:center;min-height:1rem;">

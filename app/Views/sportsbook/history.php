@@ -287,7 +287,13 @@
                     if(!confirm('¿Estás seguro de cerrar esta apuesta por ' + this.money(this.value) + '?')) return;
                     this.loading = true;
                     try {
-                        const res = await fetch('/sportsbook/cashout/' + this.slipId, { method: 'POST' });
+                        const res = await fetch('/sportsbook/cashout/' + this.slipId, {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                            }
+                        });
                         const data = await res.json();
                         if(data.status === 'success') {
                             alert('Cash Out procesado. Nuevo saldo: ' + this.money(data.new_balance));

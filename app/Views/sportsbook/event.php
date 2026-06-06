@@ -1120,6 +1120,10 @@
                     <i data-lucide="history" style="width:16px;height:16px;"></i>
                     Mis Apuestas
                 </a>
+                <a href="/sportsbook/transactions" class="nav-link">
+                    <i data-lucide="receipt" style="width:16px;height:16px;"></i>
+                    Transacciones
+                </a>
                 <a href="/sportsbook/kyc" class="nav-link">
                     <i data-lucide="id-card" style="width:16px;height:16px;"></i>
                     KYC
