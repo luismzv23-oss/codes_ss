@@ -8,6 +8,7 @@ use Doctrine\Persistence\Mapping\MappingException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
+use function array_merge;
 use function array_unique;
 use function assert;
 use function is_dir;
@@ -22,8 +23,6 @@ use const DIRECTORY_SEPARATOR;
  *
  * This behavior is independent of the actual content of the file. It just detects
  * the file which is responsible for the given class name.
- *
- * @final since 4.2
  */
 class DefaultFileLocator implements FileLocator
 {
@@ -32,7 +31,14 @@ class DefaultFileLocator implements FileLocator
      *
      * @var array<int, string>
      */
-    protected array $paths = [];
+    protected $paths = [];
+
+    /**
+     * The file extension of mapping documents.
+     *
+     * @var string|null
+     */
+    protected $fileExtension;
 
     /**
      * Initializes a new FileDriver that looks in the given path(s) for mapping
@@ -43,19 +49,22 @@ class DefaultFileLocator implements FileLocator
      * @param string|null               $fileExtension The file extension of mapping documents,
      *                                                 usually prefixed with a dot.
      */
-    public function __construct(string|array $paths, protected string|null $fileExtension = null)
+    public function __construct($paths, ?string $fileExtension = null)
     {
         $this->addPaths((array) $paths);
+        $this->fileExtension = $fileExtension;
     }
 
     /**
      * Appends lookup paths to metadata driver.
      *
      * @param array<int, string> $paths
+     *
+     * @return void
      */
-    public function addPaths(array $paths): void
+    public function addPaths(array $paths)
     {
-        $this->paths = array_unique([...$this->paths, ...$paths]);
+        $this->paths = array_unique(array_merge($this->paths, $paths));
     }
 
     /**
@@ -63,13 +72,17 @@ class DefaultFileLocator implements FileLocator
      *
      * @return array<int, string>
      */
-    public function getPaths(): array
+    public function getPaths()
     {
         return $this->paths;
     }
 
-    /** Gets the file extension used to look for mapping files under. */
-    public function getFileExtension(): string|null
+    /**
+     * Gets the file extension used to look for mapping files under.
+     *
+     * @return string|null
+     */
+    public function getFileExtension()
     {
         return $this->fileExtension;
     }
@@ -78,13 +91,18 @@ class DefaultFileLocator implements FileLocator
      * Sets the file extension used to look for mapping files under.
      *
      * @param string|null $fileExtension The file extension to set.
+     *
+     * @return void
      */
-    public function setFileExtension(string|null $fileExtension): void
+    public function setFileExtension(?string $fileExtension)
     {
         $this->fileExtension = $fileExtension;
     }
 
-    public function findMappingFile(string $className): string
+    /**
+     * {@inheritDoc}
+     */
+    public function findMappingFile(string $className)
     {
         $fileName = str_replace('\\', '.', $className) . $this->fileExtension;
 
@@ -101,7 +119,7 @@ class DefaultFileLocator implements FileLocator
     /**
      * {@inheritDoc}
      */
-    public function getAllClassNames(string $globalBasename): array
+    public function getAllClassNames(string $globalBasename)
     {
         if ($this->paths === []) {
             return [];
@@ -116,7 +134,7 @@ class DefaultFileLocator implements FileLocator
 
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($path),
-                RecursiveIteratorIterator::LEAVES_ONLY,
+                RecursiveIteratorIterator::LEAVES_ONLY
             );
 
             foreach ($iterator as $file) {
@@ -138,7 +156,10 @@ class DefaultFileLocator implements FileLocator
         return $classes;
     }
 
-    public function fileExists(string $className): bool
+    /**
+     * {@inheritDoc}
+     */
+    public function fileExists(string $className)
     {
         $fileName = str_replace('\\', '.', $className) . $this->fileExtension;
 

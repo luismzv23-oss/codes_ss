@@ -5,52 +5,69 @@ declare(strict_types=1);
 namespace Doctrine\Persistence\Mapping\Driver;
 
 use Doctrine\Persistence\Mapping\MappingException;
+use FilesystemIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RecursiveRegexIterator;
+use ReflectionClass;
+use RegexIterator;
 
-use function array_filter;
 use function array_merge;
 use function array_unique;
-use function array_values;
+use function assert;
+use function get_declared_classes;
+use function in_array;
+use function is_dir;
+use function preg_match;
+use function preg_quote;
+use function realpath;
+use function str_replace;
+use function strpos;
 
 /**
  * The ColocatedMappingDriver reads the mapping metadata located near the code.
  */
 trait ColocatedMappingDriver
 {
-    private ClassLocator|null $classLocator = null;
-
     /**
-     * The directory paths where to look for mapping files.
+     * The paths where to look for mapping files.
      *
      * @var array<int, string>
      */
-    protected array $paths = [];
+    protected $paths = [];
 
     /**
      * The paths excluded from path where to look for mapping files.
      *
      * @var array<int, string>
      */
-    protected array $excludePaths = [];
-
-    /** The file extension of mapping documents. */
-    protected string $fileExtension = '.php';
+    protected $excludePaths = [];
 
     /**
-     * Cache for {@see getAllClassNames()}.
+     * The file extension of mapping documents.
+     *
+     * @var string
+     */
+    protected $fileExtension = '.php';
+
+    /**
+     * Cache for getAllClassNames().
      *
      * @var array<int, string>|null
      * @phpstan-var list<class-string>|null
      */
-    protected array|null $classNames = null;
+    protected $classNames;
 
     /**
      * Appends lookup paths to metadata driver.
      *
      * @param array<int, string> $paths
+     *
+     * @return void
      */
-    public function addPaths(array $paths): void
+    public function addPaths(array $paths)
     {
-        $this->paths = array_unique([...$this->paths, ...$paths]);
+        $this->paths = array_unique(array_merge($this->paths, $paths));
     }
 
     /**
@@ -58,17 +75,19 @@ trait ColocatedMappingDriver
      *
      * @return array<int, string>
      */
-    public function getPaths(): array
+    public function getPaths()
     {
         return $this->paths;
     }
 
     /**
-     * Append exclude lookup paths to a metadata driver.
+     * Append exclude lookup paths to metadata driver.
      *
      * @param string[] $paths
+     *
+     * @return void
      */
-    public function addExcludePaths(array $paths): void
+    public function addExcludePaths(array $paths)
     {
         $this->excludePaths = array_unique(array_merge($this->excludePaths, $paths));
     }
@@ -78,19 +97,27 @@ trait ColocatedMappingDriver
      *
      * @return array<int, string>
      */
-    public function getExcludePaths(): array
+    public function getExcludePaths()
     {
         return $this->excludePaths;
     }
 
-    /** Gets the file extension used to look for mapping files under. */
-    public function getFileExtension(): string
+    /**
+     * Gets the file extension used to look for mapping files under.
+     *
+     * @return string
+     */
+    public function getFileExtension()
     {
         return $this->fileExtension;
     }
 
-    /** Sets the file extension used to look for mapping files under. */
-    public function setFileExtension(string $fileExtension): void
+    /**
+     * Sets the file extension used to look for mapping files under.
+     *
+     * @return void
+     */
+    public function setFileExtension(string $fileExtension)
     {
         $this->fileExtension = $fileExtension;
     }
@@ -102,8 +129,10 @@ trait ColocatedMappingDriver
      * classes, that is entities and mapped superclasses, should have their metadata loaded.
      *
      * @phpstan-param class-string $className
+     *
+     * @return bool
      */
-    abstract public function isTransient(string $className): bool;
+    abstract public function isTransient(string $className);
 
     /**
      * Gets the names of all mapped classes known to this driver.
@@ -111,28 +140,73 @@ trait ColocatedMappingDriver
      * @return string[] The names of all mapped classes known to this driver.
      * @phpstan-return list<class-string>
      */
-    public function getAllClassNames(): array
+    public function getAllClassNames()
     {
         if ($this->classNames !== null) {
             return $this->classNames;
         }
 
-        if ($this->paths === [] && $this->classLocator === null) {
+        if ($this->paths === []) {
             throw MappingException::pathRequiredForDriver(static::class);
         }
 
-        $classNames = $this->classLocator?->getClassNames() ?? [];
+        $classes       = [];
+        $includedFiles = [];
 
-        if ($this->paths !== []) {
-            $classNames = array_unique([
-                ...FileClassLocator::createFromDirectories($this->paths, $this->excludePaths, $this->fileExtension)->getClassNames(),
-                ...$classNames,
-            ]);
+        foreach ($this->paths as $path) {
+            if (! is_dir($path)) {
+                throw MappingException::fileMappingDriversRequireConfiguredDirectoryPath($path);
+            }
+
+            $iterator = new RegexIterator(
+                new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+                    RecursiveIteratorIterator::LEAVES_ONLY
+                ),
+                '/^.+' . preg_quote($this->fileExtension) . '$/i',
+                RecursiveRegexIterator::GET_MATCH
+            );
+
+            foreach ($iterator as $file) {
+                $sourceFile = $file[0];
+
+                if (preg_match('(^phar:)i', $sourceFile) === 0) {
+                    $sourceFile = realpath($sourceFile);
+                }
+
+                foreach ($this->excludePaths as $excludePath) {
+                    $realExcludePath = realpath($excludePath);
+                    assert($realExcludePath !== false);
+                    $exclude = str_replace('\\', '/', $realExcludePath);
+                    $current = str_replace('\\', '/', $sourceFile);
+
+                    if (strpos($current, $exclude) !== false) {
+                        continue 2;
+                    }
+                }
+
+                require_once $sourceFile;
+
+                $includedFiles[] = $sourceFile;
+            }
         }
 
-        return $this->classNames = array_values(array_filter(
-            $classNames,
-            fn (string $className): bool => ! $this->isTransient($className),
-        ));
+        $declared = get_declared_classes();
+
+        foreach ($declared as $className) {
+            $rc = new ReflectionClass($className);
+
+            $sourceFile = $rc->getFileName();
+
+            if (! in_array($sourceFile, $includedFiles, true) || $this->isTransient($className)) {
+                continue;
+            }
+
+            $classes[] = $className;
+        }
+
+        $this->classNames = $classes;
+
+        return $classes;
     }
 }

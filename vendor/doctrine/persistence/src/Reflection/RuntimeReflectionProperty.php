@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Doctrine\Persistence\Reflection;
 
+use Doctrine\Common\Proxy\Proxy as CommonProxy;
 use Doctrine\Persistence\Proxy;
 use ReflectionProperty;
+use ReturnTypeWillChange;
 
 use function ltrim;
 use function method_exists;
@@ -15,12 +17,11 @@ use function method_exists;
  *
  * Avoids triggering lazy loading if the provided object
  * is a {@see \Doctrine\Persistence\Proxy}.
- *
- * @phpstan-sealed TypedNoDefaultReflectionProperty
  */
 class RuntimeReflectionProperty extends ReflectionProperty
 {
-    private readonly string $key;
+    /** @var string */
+    private $key;
 
     /** @param class-string $class */
     public function __construct(string $class, string $name)
@@ -30,7 +31,13 @@ class RuntimeReflectionProperty extends ReflectionProperty
         $this->key = $this->isPrivate() ? "\0" . ltrim($class, '\\') . "\0" . $name : ($this->isProtected() ? "\0*\0" . $name : $name);
     }
 
-    public function getValue(object|null $object = null): mixed
+    /**
+     * {@inheritDoc}
+     *
+     * @return mixed
+     */
+    #[ReturnTypeWillChange]
+    public function getValue($object = null)
     {
         if ($object === null) {
             return parent::getValue($object);
@@ -43,11 +50,26 @@ class RuntimeReflectionProperty extends ReflectionProperty
      * {@inheritDoc}
      *
      * @param object|null $object
+     * @param mixed       $value
+     *
+     * @return void
      */
-    public function setValue(mixed $object, mixed $value = null): void
+    #[ReturnTypeWillChange]
+    public function setValue($object, $value = null)
     {
         if (! ($object instanceof Proxy && ! $object->__isInitialized())) {
             parent::setValue($object, $value);
+
+            return;
+        }
+
+        if ($object instanceof CommonProxy) {
+            $originalInitializer = $object->__getInitializer();
+            $object->__setInitializer(null);
+
+            parent::setValue($object, $value);
+
+            $object->__setInitializer($originalInitializer);
 
             return;
         }
