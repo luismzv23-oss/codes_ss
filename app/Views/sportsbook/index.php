@@ -1257,6 +1257,21 @@
             .search-box {
                 width: 100%;
             }
+
+            .user-nav .nav-link, 
+            .user-nav .user-badge,
+            .user-nav .btn-login,
+            .user-nav .btn-register {
+                display: none !important;
+            }
+
+            .mobile-account-menu {
+                display: block !important;
+            }
+        }
+
+        .mobile-account-menu {
+            display: none;
         }
     </style>
 </head>
@@ -1330,6 +1345,52 @@
         
         <!-- Left Column: Navigation -->
         <aside class="left-col" :class="isLeftColOpen ? 'open' : ''">
+            <!-- Mobile Account Section (only visible < 1024px) -->
+            <div class="mobile-account-menu" style="border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <div class="nav-title">Mi Cuenta</div>
+                <?php if(session()->get('isLoggedIn')): ?>
+                    <a href="/sportsbook/profile" class="sport-item">
+                        <i data-lucide="user" class="nav-icon" style="width:16px;height:16px;"></i>
+                        <span>Perfil (<?= esc(session()->get('username')) ?>)</span>
+                    </a>
+                    <?php if ((int) session()->get('role_id') === 1): ?>
+                        <a href="/dashboard/overview" class="sport-item" style="color: var(--primary);">
+                            <i data-lucide="layout-dashboard" class="nav-icon" style="width:16px;height:16px;color: var(--primary);"></i>
+                            <span style="font-weight: 700;">Dashboard Admin</span>
+                        </a>
+                    <?php endif; ?>
+                    <a href="/sportsbook/history" class="sport-item">
+                        <i data-lucide="history" class="nav-icon" style="width:16px;height:16px;"></i>
+                        <span>Mis Apuestas</span>
+                    </a>
+                    <a href="/sportsbook/transactions" class="sport-item">
+                        <i data-lucide="receipt" class="nav-icon" style="width:16px;height:16px;"></i>
+                        <span>Transacciones</span>
+                    </a>
+                    <a href="/sportsbook/kyc" class="sport-item">
+                        <i data-lucide="id-card" class="nav-icon" style="width:16px;height:16px;"></i>
+                        <span>KYC</span>
+                    </a>
+                    <a href="/sportsbook/responsible-limits" class="sport-item">
+                        <i data-lucide="shield-check" class="nav-icon" style="width:16px;height:16px;"></i>
+                        <span>Límites</span>
+                    </a>
+                    <a href="/auth/logout" class="sport-item" style="color: var(--danger);">
+                        <i data-lucide="log-out" class="nav-icon" style="width:16px;height:16px;color: var(--danger);"></i>
+                        <span>Cerrar sesión</span>
+                    </a>
+                <?php else: ?>
+                    <a href="/auth/login" class="sport-item">
+                        <i data-lucide="log-in" class="nav-icon" style="width:16px;height:16px;"></i>
+                        <span>Iniciar Sesión</span>
+                    </a>
+                    <a href="/auth/register" class="sport-item" style="background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.2); color: var(--primary);">
+                        <i data-lucide="user-plus" class="nav-icon" style="width:16px;height:16px;color: var(--primary);"></i>
+                        <span style="font-weight: 700;">Regístrate</span>
+                    </a>
+                <?php endif; ?>
+            </div>
+
             <a href="/" style="text-decoration: none; color: var(--text-main);">
                 <div class="sport-item <?= empty($selectedSportId) && empty($selectedLeagueId) ? 'active' : '' ?>">
                     <i data-lucide="globe" class="nav-icon" style="width:16px;height:16px;"></i>

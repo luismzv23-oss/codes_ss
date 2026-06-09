@@ -86,7 +86,9 @@
         .pagination { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin-top: 1.5rem; color: var(--text-muted); font-weight: 800; }
         
         @media (max-width: 760px) {
-            .topbar, .page-head, .filters { align-items: flex-start; flex-direction: column; }
+            .topbar { align-items: flex-start; flex-direction: column; height: auto !important; padding: 0.85rem 1.25rem !important; gap: 0.5rem; }
+            .user-nav { justify-content: flex-start; width: 100%; }
+            .page-head, .filters { align-items: flex-start; flex-direction: column; }
             table, thead, tbody, th, td, tr { display: block; }
             th { display: none; }
             td { position: relative; padding-left: 45%; border-bottom: 1px solid var(--border); text-align: right; }

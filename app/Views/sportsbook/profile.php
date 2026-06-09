@@ -24,6 +24,11 @@
         .info-group { background: rgba(0,0,0,0.2); padding: 0.75rem; border-radius: 0.5rem; border: 1px dashed rgba(255,255,255,0.1); margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.2rem; }
         .info-label { font-size: 0.7rem; color: #64748b; text-transform: uppercase; font-weight: 800; }
         .info-val { font-size: 0.95rem; font-weight: 600; color: #e2e8f0; }
+        .responsive-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) {
+            .topbar { height:auto; min-height:64px; flex-direction:column; align-items:flex-start; gap:0.5rem; padding: 0.85rem 1.25rem; }
+            .responsive-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -43,7 +48,7 @@
             <h1>Mi Perfil</h1>
             <p>Visualiza y actualiza tus datos personales de la cuenta.</p>
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; margin-bottom: 2rem;">
+            <div class="responsive-grid" style="margin-top: 1.5rem; margin-bottom: 2rem;">
                 <div class="info-group">
                     <span class="info-label">Usuario</span>
                     <span class="info-val"><?= esc($user['username']) ?></span>
@@ -65,7 +70,7 @@
             <form method="post" action="/sportsbook/profile/update">
                 <?= csrf_field() ?>
                 
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="responsive-grid">
                     <div>
                         <label>Teléfono</label>
                         <input type="tel" name="phone" value="<?= esc(old('phone', $user['phone'] ?? '')) ?>" placeholder="+54 9 11 1234-5678">

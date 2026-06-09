@@ -103,7 +103,7 @@
                     this.isMobile = mobileQuery.matches;
 
                     const saved = localStorage.getItem('codex_ss_admin_sidebar');
-                    this.sidebarOpen = saved === null ? !this.isMobile : saved === 'open';
+                    this.sidebarOpen = this.isMobile ? false : (saved === null ? true : saved === 'open');
                     Alpine.store('app').sidebar = this.sidebarOpen;
 
                     mobileQuery.addEventListener('change', (event) => {
@@ -1483,6 +1483,7 @@
             .sidebar.mobile-open { transform: translateX(0); }
             .main-wrapper { margin-left: 0 !important; }
             .sidebar.collapsed { opacity: 0; transform: translateX(calc((var(--sidebar-w) + 18px) * -1)); }
+            .sidebar-close-mobile { display: block !important; }
         }
     </style>
 </head>
@@ -1490,9 +1491,14 @@
 
     <!-- ═══ SIDEBAR ═══ -->
     <aside class="sidebar" :class="{ 'collapsed': !sidebarOpen, 'mobile-open': sidebarOpen && isMobile }" id="sidebar">
-        <div class="sidebar-brand">
-            <div class="logo">CS</div>
-            <span>Codex SS</span>
+        <div class="sidebar-brand" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="logo">CS</div>
+                <span>Codex SS</span>
+            </div>
+            <button @click="closeSidebar()" class="sidebar-close-mobile" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; display: none;" aria-label="Cerrar menú">
+                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+            </button>
         </div>
 
         <nav class="sidebar-nav">

@@ -101,7 +101,9 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         @media (max-width: 760px) {
-            .topbar, .page-head, .ticket-header { align-items: flex-start; flex-direction: column; }
+            .topbar { align-items: flex-start; flex-direction: column; height: auto !important; padding: 0.85rem 1.25rem !important; gap: 0.5rem; }
+            .user-nav { justify-content: flex-start; width: 100%; }
+            .page-head, .ticket-header { align-items: flex-start; flex-direction: column; }
             .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .selection-item, .ticket-footer { grid-template-columns: 1fr; }
             .odd-info { text-align: left; min-width: 0; }

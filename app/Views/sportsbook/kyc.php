@@ -36,6 +36,10 @@
         .alert { padding:.8rem 1rem; border-radius:.65rem; margin-bottom:1rem; font-weight:800; }
         .ok { background:rgba(34,197,94,.12); color:#86efac; }
         .bad { background:rgba(251,113,133,.12); color:#fda4af; }
+        @media (max-width: 600px) {
+            .topbar { height:auto; min-height:64px; flex-direction:column; align-items:flex-start; gap:0.5rem; padding: 0.85rem 1.25rem; }
+            .kyc-header-row { flex-direction: column; align-items: flex-start; gap: 0.75rem !important; }
+        }
     </style>
 </head>
 <body>
@@ -51,7 +55,7 @@
             <div class="alert bad"><?= esc(session()->getFlashdata('error')) ?></div>
         <?php endif; ?>
         <section class="card">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
+            <div class="kyc-header-row" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
                 <div>
                     <h1>Verificacion KYC</h1>
                     <p>Valida tu identidad para habilitar retiros y operaciones sensibles.</p>
