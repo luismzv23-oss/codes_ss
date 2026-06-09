@@ -5,10 +5,75 @@
 
     $renderTable = static function (array $users, string $emptyText): void {
 ?>
+    <style>
+        .users-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.85rem;
+            margin-bottom: 1rem;
+        }
+        .users-filters-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 768px) {
+            .users-stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .users-filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .users-filters-row button {
+                width: 100%;
+            }
+            .users-responsive-table thead {
+                display: none !important;
+            }
+            .users-responsive-table, 
+            .users-responsive-table tbody, 
+            .users-responsive-table tr, 
+            .users-responsive-table td {
+                display: block !important;
+                width: 100% !important;
+            }
+            .users-responsive-table tr {
+                margin-bottom: 1rem;
+                border: 1px solid var(--border);
+                border-radius: 0.75rem;
+                background: rgba(255, 255, 255, 0.02);
+                padding: 0.75rem;
+            }
+            .users-responsive-table td {
+                text-align: right !important;
+                padding: 0.55rem 0.75rem !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+            }
+            .users-responsive-table td:last-child {
+                border-bottom: none;
+            }
+            .users-responsive-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--text-muted);
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                text-align: left;
+                margin-right: 1rem;
+            }
+            .users-responsive-table td > div {
+                justify-content: flex-end !important;
+            }
+        }
+    </style>
     <?php if (empty($users)): ?>
         <div style="padding:2rem;text-align:center;color:var(--text-muted);"><?= esc($emptyText) ?></div>
     <?php else: ?>
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+        <table class="users-responsive-table" style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
             <thead>
                 <tr style="border-bottom: 1px solid var(--border);">
                     <th style="padding: 0.85rem 1.25rem; text-align:left; color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase;">Usuario</th>
@@ -48,7 +113,7 @@
                         style="border-bottom: 1px solid var(--border); transition: background 0.15s;"
                         onmouseover="this.style.background='var(--surface-hover)'"
                         onmouseout="this.style.background='transparent'">
-                        <td style="padding: 0.75rem 1.25rem;">
+                        <td data-label="Usuario" style="padding: 0.75rem 1.25rem;">
                             <div style="display: flex; align-items: center; gap: 0.65rem;">
                                 <img src="https://ui-avatars.com/api/?name=<?= urlencode($username) ?>&background=<?= ltrim($roleColor, '#') ?>&color=fff&size=64&bold=true" style="width:32px;height:32px;border-radius:8px;" alt="">
                                 <div>
@@ -57,16 +122,16 @@
                                 </div>
                             </div>
                         </td>
-                        <td style="padding: 0.75rem 1.25rem; color: var(--text-secondary);"><?= esc($user['email'] ?? '-') ?></td>
-                        <td style="padding: 0.75rem 1.25rem;">
+                        <td data-label="Email" style="padding: 0.75rem 1.25rem; color: var(--text-secondary);"><?= esc($user['email'] ?? '-') ?></td>
+                        <td data-label="Rol" style="padding: 0.75rem 1.25rem;">
                             <span style="font-size: 0.7rem; font-weight: 700; color: <?= $roleColor ?>; background: <?= $roleColor ?>18; padding: 0.2rem 0.6rem; border-radius: 9999px;"><?= esc($isInternal ? 'Admin interno' : 'Apostador') ?></span>
                         </td>
-                        <td style="padding: 0.75rem 1.25rem; text-align:right; font-weight:800;">$<?= number_format($balance, 2, ',', '.') ?></td>
-                        <td style="padding: 0.75rem 1.25rem; text-align:right;">
+                        <td data-label="Saldo" style="padding: 0.75rem 1.25rem; text-align:right; font-weight:800;">$<?= number_format($balance, 2, ',', '.') ?></td>
+                        <td data-label="Riesgo" style="padding: 0.75rem 1.25rem; text-align:right;">
                             <div style="font-weight:800;color:<?= $pendingExposure > 0 ? 'var(--accent-amber)' : 'var(--text-secondary)' ?>;">$<?= number_format($pendingExposure, 2, ',', '.') ?></div>
                             <div style="font-size:0.72rem;color:var(--text-muted);"><?= $pendingTickets ?> pendientes / <?= $totalTickets ?> tickets</div>
                         </td>
-                        <td style="padding: 0.75rem 1.25rem;">
+                        <td data-label="Estado" style="padding: 0.75rem 1.25rem;">
                             <span style="font-size: 0.7rem; font-weight: 700; color: <?= $statusColor ?>; display:flex;align-items:center;gap:0.3rem;">
                                 <span style="width:6px;height:6px;border-radius:50%;background:<?= $statusColor ?>;"></span>
                                 <?= $statusText ?>
@@ -75,8 +140,8 @@
                                 <div style="font-size:0.68rem;color:var(--text-muted);margin-top:0.15rem;"><?= esc($lockedLabel) ?></div>
                             <?php endif; ?>
                         </td>
-                        <td style="padding: 0.75rem 1.25rem; color: var(--text-secondary);"><?= esc($createdAt) ?></td>
-                        <td style="padding: 0.75rem 1.25rem; text-align:right;">
+                        <td data-label="Alta" style="padding: 0.75rem 1.25rem; color: var(--text-secondary);"><?= esc($createdAt) ?></td>
+                        <td data-label="Acciones" style="padding: 0.75rem 1.25rem; text-align:right;">
                             <div style="display:flex;justify-content:flex-end;gap:0.35rem;flex-wrap:wrap;">
                                 <button type="button" class="btn btn-ghost" style="padding:0.35rem 0.55rem;font-size:0.72rem;" @click="selectedUser = <?= esc(json_encode($user), 'html') ?>; showDetailsModal = true; $nextTick(() => lucide.createIcons());">
                                     <i data-lucide="eye" style="width:13px;height:13px;"></i> Ver Datos
@@ -116,7 +181,7 @@
         </button>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.85rem;margin-bottom:1rem;">
+    <div class="users-stats-grid">
         <div class="glass-card" style="padding:1rem;">
             <div style="font-size:0.72rem;color:var(--text-muted);font-weight:800;text-transform:uppercase;">Total usuarios</div>
             <div style="font-family:Outfit,sans-serif;font-size:1.6rem;font-weight:900;margin-top:0.25rem;"><?= (int) $totalUsers ?></div>
@@ -131,7 +196,7 @@
         </div>
     </div>
 
-    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+    <div class="users-filters-row">
         <button class="btn" @click="activeTab = 'internal'; setTimeout(filterUserRows, 0)"
                 :class="activeTab === 'internal' ? 'btn-primary' : 'btn-ghost'"
                 style="display:flex;align-items:center;gap:0.45rem;">

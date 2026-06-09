@@ -1,4 +1,16 @@
 <div style="animation: fadeSlide 0.4s ease-out;">
+    <style>
+        .rankings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 768px) {
+            .rankings-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
     <?php $medals = ['#1', '#2', '#3']; ?>
     <div style="margin-bottom: 1.75rem;">
         <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 800;">Rankings & Estadísticas</h1>
@@ -6,7 +18,7 @@
     </div>
 
     <!-- Ranking Cards Row -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+    <div class="rankings-grid" style="margin-bottom: 1.5rem;">
 
         <!-- Top Apostadores -->
         <div class="glass-card" style="padding: 0; overflow: hidden;">
@@ -78,7 +90,7 @@
     </div>
 
     <!-- Hot Events + Cache Stats -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div class="rankings-grid">
 
         <!-- Hot Events -->
         <div class="glass-card" style="padding: 0; overflow: hidden;">

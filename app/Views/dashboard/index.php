@@ -2,10 +2,52 @@
 
 <?= $this->section('content') ?>
 <?php if (($activePage ?? 'overview') === 'overview'): ?>
+<style>
+    .dashboard-header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.75rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .dashboard-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .dashboard-bottom-grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 1rem;
+    }
+    
+    @media (max-width: 1024px) {
+        .dashboard-stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .dashboard-bottom-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    @media (max-width: 600px) {
+        .dashboard-header-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .dashboard-header-row > div {
+            width: 100%;
+        }
+        .dashboard-stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 <div style="animation: fadeSlide 0.4s ease-out;">
 
     <!-- Page Header -->
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem;">
+    <div class="dashboard-header-row">
         <div>
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.25rem;">
                 Bienvenido, <?= esc(session()->get('username') ?? 'Usuario') ?> 👋
@@ -23,7 +65,7 @@
     </div>
 
     <!-- Stats Grid -->
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+    <div class="dashboard-stats-grid">
 
         <!-- Stat: Revenue -->
         <div class="glass-card" x-data="{ count: 0 }" x-init="let target = <?= (int)($totalRevenue ?? 0) ?>;
@@ -103,7 +145,7 @@
     </div>
 
     <!-- Bottom Grid: Activity + Quick Stats -->
-    <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 1rem;">
+    <div class="dashboard-bottom-grid">
 
         <!-- Activity Feed -->
         <div class="glass-card">

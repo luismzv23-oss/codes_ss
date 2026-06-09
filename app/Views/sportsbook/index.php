@@ -1270,6 +1270,32 @@
             }
         }
 
+        @media (max-width: 768px) {
+            .event-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+                padding: 1rem 1.25rem;
+            }
+            .event-info {
+                width: 100%;
+            }
+            .odds-container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+                width: 100%;
+            }
+            .odd-btn {
+                min-width: 0;
+                width: 100%;
+            }
+            .odds-unavailable {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+
         .mobile-account-menu {
             display: none;
         }

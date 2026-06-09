@@ -167,6 +167,28 @@
             min-width: 0;
         }
     }
+
+    #leagues-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+    .league-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 160px;
+    }
+    @media (max-width: 1024px) {
+        #leagues-container {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+    @media (max-width: 768px) {
+        #leagues-container {
+            grid-template-columns: 1fr !important;
+        }
+    }
 </style>
 
 <div style="animation: fadeSlide 0.4s ease-out;" x-data="eventsManager()">
@@ -261,31 +283,33 @@
         <p style="color: var(--text-muted); font-size: 0.9rem;">Seleccione una liga o torneo para administrar sus partidos.</p>
     </div>
     
-    <div id="leagues-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+    <div id="leagues-container">
         <?php foreach ($leagues as $l): ?>
         <?php $isActive = $l['active'] == 1; ?>
         <?php $statusColor = $isActive ? 'var(--success)' : 'var(--danger)'; ?>
         <?php $statusText = $isActive ? 'Activo' : 'Inactivo'; ?>
         <div class="glass-card league-card" data-id="<?= $l['id'] ?>" draggable="true" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)" style="cursor: move; position: relative;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'" @click="if(!event.target.closest('button')) openLeague(<?= $l['id'] ?>, '<?= esc($l['name'], 'js') ?>')">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
-                <span style="font-size:1.5rem;"><?= esc($l['sport_icon']) ?></span>
-                <div style="display:flex;gap:0.5rem;align-items:center;">
+            <div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+                    <span style="font-size:1.5rem;"><?= esc($l['sport_icon']) ?></span>
                     <span style="font-size:0.65rem;font-weight:600;color:var(--text-main);background:rgba(255,255,255,0.1);padding:0.2rem 0.5rem;border-radius:9999px;">
                         <?= $l['event_count'] ?> partidos
                     </span>
-                    <button onclick="editLeagueAction(<?= $l['id'] ?>, '<?= esc($l['name'], 'js') ?>', this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:#60a5fa; background:rgba(96,165,250,0.18); padding:0.2rem 0.5rem; border-radius:9999px; border:none;">
-                        ✏️ Editar
-                    </button>
-                    <button onclick="deleteLeagueAction(<?= $l['id'] ?>, this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:#ef4444; background:rgba(239,68,68,0.18); padding:0.2rem 0.5rem; border-radius:9999px; border:none;">
-                        🗑️ Eliminar
-                    </button>
-                    <button onclick="toggleLeague(<?= $l['id'] ?>, this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:<?= $statusColor ?>; background:<?= $statusColor ?>18; padding:0.2rem 0.5rem; border-radius:9999px; border:none;">
-                        <?= $statusText ?>
-                    </button>
                 </div>
+                <h4 style="font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;"><?= esc($l['name']) ?></h4>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.5rem;"><?= esc($l['country'] ?? 'Internacional') ?></p>
             </div>
-            <h4 style="font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;"><?= esc($l['name']) ?></h4>
-            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.5rem;"><?= esc($l['country'] ?? 'Internacional') ?></p>
+            <div style="display:flex;gap:0.4rem;align-items:center;margin-top:0.75rem;flex-wrap:wrap;">
+                <button onclick="editLeagueAction(<?= $l['id'] ?>, '<?= esc($l['name'], 'js') ?>', this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:#60a5fa; background:rgba(96,165,250,0.18); padding:0.3rem 0.6rem; border-radius:6px; border:none; flex: 1; text-align: center;">
+                    ✏️ Editar
+                </button>
+                <button onclick="deleteLeagueAction(<?= $l['id'] ?>, this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:#ef4444; background:rgba(239,68,68,0.18); padding:0.3rem 0.6rem; border-radius:6px; border:none; flex: 1; text-align: center;">
+                    🗑️ Eliminar
+                </button>
+                <button onclick="toggleLeague(<?= $l['id'] ?>, this)" style="cursor:pointer; font-size:0.65rem; font-weight:850; color:<?= $statusColor ?>; background:<?= $statusColor ?>18; padding:0.3rem 0.6rem; border-radius:6px; border:none; flex: 1; text-align: center;">
+                    <?= $statusText ?>
+                </button>
+            </div>
         </div>
         <?php endforeach; ?>
     </div>
