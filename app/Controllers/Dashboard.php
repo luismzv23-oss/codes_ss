@@ -1231,8 +1231,8 @@ class Dashboard extends BaseController
 
         $eventModel = new \App\Models\EventModel();
         $events = $eventModel->where('league_id', $leagueId)
-            ->orderBy('match_number', 'ASC')
             ->orderBy('start_time', 'ASC')
+            ->orderBy('match_number', 'ASC')
             ->findAll();
 
         $html = '';
@@ -3468,7 +3468,7 @@ class Dashboard extends BaseController
         }
 
         $model = new \App\Models\StagedEventModel();
-        $staged = $model->where('status', 'pending_review')->orderBy('created_at', 'DESC')->findAll();
+        $staged = $model->where('status', 'pending_review')->orderBy('start_time', 'ASC')->orderBy('id', 'ASC')->findAll();
         $loader = new \App\Services\EventLoaderService();
 
         foreach ($staged as &$e) {

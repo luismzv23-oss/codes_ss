@@ -55,6 +55,7 @@ class Sportsbook extends BaseController
         $events = (new EventModel())
             ->where('league_id', (int) $league['id'])
             ->whereIn('status', ['pending', 'live'])
+            ->orderBy('start_time', 'ASC')
             ->findAll();
 
         foreach ($events as $event) {
@@ -230,7 +231,7 @@ class Sportsbook extends BaseController
         }
 
         if ($activeTab === 'populares') {
-            $eventQuery->orderBy('e.league_id', 'ASC')->orderBy('e.start_time', 'ASC');
+            $eventQuery->orderBy('e.start_time', 'ASC')->orderBy('e.league_id', 'ASC');
         } else {
             $eventQuery->orderBy('e.start_time', 'ASC');
         }
