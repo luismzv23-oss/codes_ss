@@ -317,7 +317,7 @@ class FootballDataService
                 'league_country' => 'Internacional',
                 'home_team'      => $match['homeTeam'],
                 'away_team'      => $match['awayTeam'],
-                'start_time'     => date('Y-m-d H:i:s', strtotime($match['kickoffTime'])),
+                'start_time'     => (new \DateTime($match['kickoffTime'], new \DateTimeZone('UTC')))->setTimezone(new \DateTimeZone('America/Argentina/Buenos_Aires'))->format('Y-m-d H:i:s'),
                 'stage'          => $match['stage'] ?: null,
                 'group_name'     => $match['group'] ?: null,
                 'venue'          => $match['venue'] ?: null,

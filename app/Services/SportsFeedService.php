@@ -350,7 +350,7 @@ class SportsFeedService
                 ];
             }
 
-            $startTime = date('Y-m-d H:i:s', strtotime($event['commence_time'] ?? 'now'));
+            $startTime = (new \DateTime($event['commence_time'] ?? 'now', new \DateTimeZone('UTC')))->setTimezone(new \DateTimeZone('America/Argentina/Buenos_Aires'))->format('Y-m-d H:i:s');
 
             $mappedSports[$sportSlug]['leagues'][$leagueIndex]['events'][] = [
                 'home_team' => $event['home_team'],

@@ -66,7 +66,7 @@ class FetchFixtures extends BaseCommand
                     'away_team'      => $teams['away']['name'],
                     // start_time en UTC convertido a zona local o guardado en UTC según config
                     // La API devuelve timezone local o UTC dependiendo del parámetro.
-                    'start_time'     => date('Y-m-d H:i:s', $f['timestamp']),
+                    'start_time'     => (new \DateTime())->setTimestamp((int)$f['timestamp'])->setTimezone(new \DateTimeZone('America/Argentina/Buenos_Aires'))->format('Y-m-d H:i:s'),
                     'status'         => 'pending',
                     'updated_at'     => date('Y-m-d H:i:s')
                 ];

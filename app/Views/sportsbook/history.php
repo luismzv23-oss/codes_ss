@@ -191,16 +191,7 @@
                                 <i data-lucide="file-down" style="width:15px;height:15px;"></i> PDF 80mm
                             </a>
                             
-                            <?php if ($slip['status'] === 'pending'): ?>
-                                <div x-data="cashOutComponent(<?= $slip['id'] ?>)" x-init="startPolling()" style="display:inline-block;">
-                                    <template x-if="value > 0">
-                                        <button @click="doCashOut()" class="btn btn-primary" style="background:var(--cyan); border-color:var(--cyan);" :disabled="loading">
-                                            <i data-lucide="coins" style="width:15px;height:15px;" :class="loading ? 'spin' : ''"></i>
-                                            <span x-text="loading ? 'Procesando...' : 'Cash Out: ' + money(value)"></span>
-                                        </button>
-                                    </template>
-                                </div>
-                            <?php endif; ?>
+
 
                             <span class="status-badge <?= $statusClass($slip['status']) ?>"><?= esc($statusText($slip['status'])) ?></span>
                         </div>
@@ -261,56 +252,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         lucide.createIcons();
-        function cashOutComponent(slipId) {
-            return {
-                slipId: slipId,
-                value: 0,
-                loading: false,
-                pollInterval: null,
-                money: function(val) { return parseFloat(val).toFixed(2) + ' K'; },
-                async checkQuote() {
-                    try {
-                        const res = await fetch('/sportsbook/cashout/quote/' + this.slipId);
-                        const data = await res.json();
-                        if (data.status === 'success' && data.value > 0) {
-                            this.value = data.value;
-                        } else {
-                            this.value = 0;
-                        }
-                    } catch(e) {
-                        // silent fail
-                    }
-                },
-                startPolling() {
-                    this.checkQuote();
-                    this.pollInterval = setInterval(() => this.checkQuote(), 8000);
-                },
-                async doCashOut() {
-                    if(!confirm('¿Estás seguro de cerrar esta apuesta por ' + this.money(this.value) + '?')) return;
-                    this.loading = true;
-                    try {
-                        const res = await fetch('/sportsbook/cashout/' + this.slipId, {
-                            method: 'POST',
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
-                            }
-                        });
-                        const data = await res.json();
-                        if(data.status === 'success') {
-                            alert('Cash Out procesado. Nuevo saldo: ' + this.money(data.new_balance));
-                            window.location.reload();
-                        } else {
-                            alert(data.message);
-                            this.loading = false;
-                        }
-                    } catch(e) {
-                        alert('Error de conexión.');
-                        this.loading = false;
-                    }
-                }
-            }
-        }
+
     </script>
 </body>
 </html>

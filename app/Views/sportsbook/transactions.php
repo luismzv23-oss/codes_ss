@@ -125,8 +125,7 @@
                         'deposit' => 'Depósitos', 
                         'withdrawal' => 'Retiros', 
                         'bet_placed' => 'Apuestas', 
-                        'bet_won' => 'Premios',
-                        'cashout' => 'Cierres (Cash Out)'
+                        'bet_won' => 'Premios'
                     ];
                 ?>
                 <?php foreach ($tabOptions as $value => $label): ?>

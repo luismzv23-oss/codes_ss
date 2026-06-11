@@ -659,7 +659,7 @@ class EventLoaderService
                         continue;
                     }
 
-                    $startTime = date('Y-m-d H:i:s', strtotime($utcDate));
+                    $startTime = $this->convertToAppTimezone($utcDate, 'UTC');
 
                     if ($this->isDuplicate($home, $away, $startTime)) {
                         $duplicatesSkipped++;
@@ -1034,21 +1034,7 @@ class EventLoaderService
 
     private function parseImportedStartTime($value): ?string
     {
-        if (!is_scalar($value)) {
-            return null;
-        }
-
-        $value = trim((string) $value);
-        if ($value === '') {
-            return null;
-        }
-
-        $timestamp = strtotime($value);
-        if ($timestamp === false) {
-            return null;
-        }
-
-        return date('Y-m-d H:i:s', $timestamp);
+        return $this->convertToAppTimezone($value, 'UTC');
     }
 
     private function findEspnEventMetadata(string $sportKey, string $home, string $away, string $startTime): array
@@ -1094,7 +1080,7 @@ class EventLoaderService
                 $parsedDate = strtotime($eventDate);
 
                 return [
-                    'start_time' => $parsedDate !== false ? date('Y-m-d H:i:s', $parsedDate) : null,
+                    'start_time' => $this->convertToAppTimezone($eventDate, 'UTC'),
                     'stage' => $this->serpApiText($event['season']['name'] ?? $event['week']['text'] ?? null, ''),
                     'group_name' => $this->extractGroupName($event),
                     'venue' => $venue,
@@ -1214,9 +1200,16 @@ class EventLoaderService
         foreach (['start_time', 'startTime', 'datetime', 'date_time', 'utcDate'] as $key) {
             $candidate = $this->serpApiText($match[$key] ?? null, '');
             if ($candidate !== '') {
-                $timestamp = strtotime($this->translateSerpApiDate($candidate));
-                if ($timestamp !== false) {
-                    return date('Y-m-d H:i:s', $timestamp);
+                try {
+                    $translated = $this->translateSerpApiDate($candidate);
+                    $dt = new \DateTime($translated);
+                    $dt->setTimezone(new \DateTimeZone('America/Argentina/Buenos_Aires'));
+                    return $dt->format('Y-m-d H:i:s');
+                } catch (\Exception $e) {
+                    $res = $this->convertToAppTimezone($this->translateSerpApiDate($candidate));
+                    if ($res !== null) {
+                        return $res;
+                    }
                 }
             }
         }
@@ -1243,12 +1236,18 @@ class EventLoaderService
             $translated .= ' ' . date('Y');
         }
 
-        $timestamp = strtotime($translated);
-        if ($timestamp === false) {
-            $timestamp = strtotime(date('Y-m-d') . ' 00:00:00');
+        try {
+            $dt = new \DateTime($translated);
+            $dt->setTimezone(new \DateTimeZone('America/Argentina/Buenos_Aires'));
+            return $dt->format('Y-m-d H:i:s');
+        } catch (\Exception $e) {
+            $timestamp = strtotime($translated);
+            if ($timestamp === false) {
+                $dt = new \DateTime('today 00:00:00', new \DateTimeZone('America/Argentina/Buenos_Aires'));
+                return $dt->format('Y-m-d H:i:s');
+            }
+            return $this->convertToAppTimezone($timestamp);
         }
-
-        return date('Y-m-d H:i:s', $timestamp);
     }
 
     private function translateSerpApiDate(string $value): string
@@ -1465,7 +1464,7 @@ class EventLoaderService
 
                 if (!$home || !$away) continue;
 
-                $startTime = date('Y-m-d H:i:s', strtotime($event['date'] ?? date('c')));
+                $startTime = $this->convertToAppTimezone($event['date'] ?? date('c'), 'UTC');
                 $competition = $event['competitions'][0] ?? [];
                 $venue = mb_substr($this->serpApiText($competition['venue']['fullName'] ?? $competition['venue']['displayName'] ?? $competition['venue']['name'] ?? $event['venue']['fullName'] ?? $event['venue']['displayName'] ?? null, ''), 0, 150);
                 $stage = mb_substr($this->serpApiText($event['season']['name'] ?? $event['season']['slug'] ?? $event['week']['text'] ?? null, ''), 0, 80);
@@ -1531,5 +1530,32 @@ class EventLoaderService
             'total_staged'       => $totalStaged,
             'duplicates_skipped' => $duplicatesSkipped
         ];
+    }
+
+    /**
+     * Normalizes and converts an external date string or timestamp to the application's timezone
+     */
+    private function convertToAppTimezone($value, string $defaultSrcTimezone = 'UTC'): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        try {
+            if (is_numeric($value)) {
+                $dt = new \DateTime();
+                $dt->setTimestamp((int)$value);
+            } else {
+                $tz = new \DateTimeZone($defaultSrcTimezone);
+                $dt = new \DateTime((string)$value, $tz);
+            }
+
+            $appTz = config('App')->appTimezone ?? 'America/Argentina/Buenos_Aires';
+            $dt->setTimezone(new \DateTimeZone($appTz));
+            return $dt->format('Y-m-d H:i:s');
+        } catch (\Exception $e) {
+            log_message('error', 'Error en convertToAppTimezone con valor (' . $value . '): ' . $e->getMessage());
+            return null;
+        }
     }
 }

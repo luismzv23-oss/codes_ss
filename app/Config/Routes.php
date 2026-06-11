@@ -27,8 +27,6 @@ $routes->post('sportsbook/responsible-limits', 'Sportsbook::saveResponsibleLimit
 $routes->get('sportsbook/profile', 'Sportsbook::profile');
 $routes->post('sportsbook/profile/update', 'Sportsbook::updateProfile');
 $routes->post('sportsbook/self-exclusion', 'Sportsbook::selfExclusion');
-$routes->get('sportsbook/cashout/quote/(:num)', 'Sportsbook::cashOutQuote/$1');
-$routes->post('sportsbook/cashout/(:num)', 'Sportsbook::cashOut/$1');
 $routes->post('sportsbook/deposit', 'Sportsbook::deposit');
 $routes->get('sportsbook/kyc', 'Sportsbook::kyc');
 $routes->post('sportsbook/kyc/submit', 'Sportsbook::submitKyc');

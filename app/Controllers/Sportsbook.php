@@ -765,59 +765,7 @@ class Sportsbook extends BaseController
         ]);
     }
 
-    public function cashOutQuote($slipId)
-    {
-        if (!session()->get('isLoggedIn')) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Debes iniciar sesion.']);
-        }
 
-        $userId = (int) session()->get('user_id');
-        $cashOutService = new \App\Services\CashOutService();
-        $value = $cashOutService->calculateCashOutValue($slipId);
-
-        if ($value === null) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Cash-out no disponible.']);
-        }
-
-        return $this->response->setJSON(['status' => 'success', 'value' => $value]);
-    }
-
-    public function cashOut($slipId)
-    {
-        if (!session()->get('isLoggedIn')) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Debes iniciar sesion.']);
-        }
-
-        $userId = (int) session()->get('user_id');
-        $compliance = (new \App\Services\ComplianceService())->validateUserCanOperate($userId, 'cashout');
-        if (! $compliance['allowed']) {
-            return $this->response->setJSON(['status' => 'error', 'message' => $compliance['message']]);
-        }
-
-        try {
-            $cashOutService = new \App\Services\CashOutService();
-            $value = $cashOutService->executeCashOut($slipId, $userId);
-
-            // Fetch new balance to return
-            $db = \Config\Database::connect();
-            $wallet = $db->table('wallets')->where('user_id', $userId)->get()->getRowArray();
-
-            \App\Libraries\AuditLogger::log($userId, 'ticket_cashed_out', 'bet_slip', (int) $slipId, ['status' => 'cashed_out'], [
-                'cashout_value' => $value,
-                'balance' => $wallet['balance'],
-            ]);
-
-            return $this->response->setJSON([
-                'status' => 'success',
-                'message' => 'Cash-out procesado correctamente.',
-                'cashout_value' => $value,
-                'new_balance' => $wallet['balance'],
-            ]);
-
-        } catch (\Exception $e) {
-            return $this->response->setJSON(['status' => 'error', 'message' => $e->getMessage()]);
-        }
-    }
 
     public function ticket($slipId)
     {
