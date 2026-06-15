@@ -847,6 +847,50 @@
         }
     };
 
+    window.cancelEventAction = async function(e, id, btn) {
+        e.preventDefault();
+        if (!confirm('¿Está seguro de anular este partido? Esta acción es definitiva y anulará todas las apuestas asociadas.')) return;
+
+        try {
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Anulando...';
+
+            const response = await fetch('/dashboard/events/cancel/' + id, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    '<?= csrf_header() ?>': '<?= csrf_hash() ?>'
+                }
+            });
+
+            if (!response.ok) {
+                const text = await response.text();
+                alert('ERROR DEL SERVIDOR (' + response.status + '): ' + text.substring(0, 100));
+                btn.disabled = false;
+                btn.innerText = originalText;
+                return;
+            }
+
+            const result = await response.json();
+
+            if (result.status !== 'success') {
+                alert('ERROR DE LÓGICA: ' + (result.message || 'Error desconocido'));
+                btn.disabled = false;
+                btn.innerText = originalText;
+                return;
+            }
+
+            // Éxito:
+            const container = btn.closest('.event-admin-score')?.parentElement || btn.closest('div');
+            container.innerHTML = `<div style="font-size:0.82rem;font-weight:900;color:var(--accent-rose);background:rgba(251,113,133,0.12);border-radius:8px;padding:0.48rem 0.65rem;">Anulado</div>`;
+        } catch (err) {
+            alert('ERROR FATAL JAVASCRIPT: ' + err.message);
+            btn.disabled = false;
+            btn.innerText = 'Anular';
+        }
+    };
+
     async function syncLiveScoreEvent(id, btn) {
         const original = btn.innerText;
         btn.disabled = true;
@@ -1901,6 +1945,32 @@
                 alert('ERROR: ' + err.message);
                 btn.disabled = false;
                 btn.innerText = 'Fijar Marcador';
+            }
+        };
+
+        window.cancelEventAction = async function(e, id, btn) {
+            e.preventDefault();
+            if (!confirm('¿Está seguro de anular este partido? Esta acción es definitiva y anulará todas las apuestas asociadas.')) return;
+
+            try {
+                const originalText = btn.innerText;
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerText = 'Anulando...';
+                }
+
+                // Reutilizamos postDashboardAction que maneja CSRF automáticamente
+                const data = await postDashboardAction('/dashboard/events/cancel/' + id);
+                
+                // Éxito:
+                const container = btn.closest('.event-admin-score')?.parentElement || btn.closest('div');
+                container.innerHTML = `<div style="font-size:0.82rem;font-weight:900;color:var(--accent-rose);background:rgba(251,113,133,0.12);border-radius:8px;padding:0.48rem 0.65rem;">Anulado</div>`;
+            } catch (err) {
+                alert('ERROR: ' + err.message);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = 'Anular';
+                }
             }
         };
 

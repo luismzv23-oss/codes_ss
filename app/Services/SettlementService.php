@@ -23,6 +23,14 @@ class SettlementService
             $this->settleEvent($event);
         }
 
+        $cancelledEvents = $eventModel->where('status', 'cancelled')
+            ->where('settled', 0)
+            ->findAll();
+
+        foreach ($cancelledEvents as $cancelledEvent) {
+            $this->settleCancelledEvent($cancelledEvent);
+        }
+
         $bracketResult = (new WorldCupBracketService())->advanceKnockoutRoundsIfReady();
         log_message(
             'info',
@@ -101,6 +109,87 @@ class SettlementService
         }
 
         log_message('info', 'Evento ID ' . $event['id'] . ' liquidado con marcador real.');
+        return true;
+    }
+
+    public function settleCancelledEvent(array $event): bool
+    {
+        $db = \Config\Database::connect();
+        $marketModel = new MarketModel();
+        $oddModel = new OddModel();
+        $betSelectionModel = new BetSelectionModel();
+        $eventModel = new EventModel();
+
+        $db->transStart();
+
+        // 1. Obtener todos los mercados del evento
+        $markets = $marketModel->where('event_id', $event['id'])->findAll();
+        $marketIds = array_column($markets, 'id');
+
+        if (!empty($marketIds)) {
+            // 2. Actualizar todas las cuotas de estos mercados a status = 'void' y active = 0
+            $db->table('odds')
+                ->whereIn('market_id', $marketIds)
+                ->update([
+                    'status' => 'void',
+                    'active' => 0,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+
+            // 3. Cerrar todos los mercados
+            $db->table('markets')
+                ->whereIn('id', $marketIds)
+                ->update([
+                    'status' => 'closed',
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]);
+
+            // 4. Obtener los IDs de las cuotas de estos mercados
+            $odds = $db->table('odds')
+                ->select('id')
+                ->whereIn('market_id', $marketIds)
+                ->get()
+                ->getResultArray();
+            $oddIds = array_column($odds, 'id');
+
+            if (!empty($oddIds)) {
+                // 5. Actualizar a 'lost' todas las selecciones pendientes asociadas
+                $selections = $betSelectionModel
+                    ->whereIn('odd_id', $oddIds)
+                    ->where('status', 'pending')
+                    ->findAll();
+
+                $affectedSlipIds = [];
+                foreach ($selections as $selection) {
+                    $betSelectionModel->update($selection['id'], [
+                        'status' => 'lost',
+                        'updated_at' => date('Y-m-d H:i:s')
+                    ]);
+                    $affectedSlipIds[(int) $selection['bet_slip_id']] = true;
+                }
+
+                // 6. Liquidar cada boleto afectado
+                foreach (array_keys($affectedSlipIds) as $slipId) {
+                    $this->settleSlip((int) $slipId);
+                }
+            }
+        }
+
+        // 7. Marcar el evento como liquidado (settled = 1)
+        $eventModel->update($event['id'], [
+            'settled' => 1,
+            'status' => 'cancelled',
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            log_message('error', 'Error liquidando por anulacion el evento ID ' . $event['id']);
+            return false;
+        }
+
+        log_message('info', 'Evento ID ' . $event['id'] . ' liquidado por anulacion.');
         return true;
     }
 

@@ -1371,7 +1371,9 @@ class Dashboard extends BaseController
                         <div style='display:flex;flex-wrap:wrap;gap:0.32rem;'>{$oddButtons}</div>
                     </div>";
             }
-            if ($e['status'] === 'finished' && $scoreHome !== '' && $scoreAway !== '') {
+            if ($e['status'] === 'cancelled') {
+                $finishControls = "<div style='font-size:0.82rem;font-weight:900;color:var(--accent-rose);background:rgba(251,113,133,0.12);border-radius:8px;padding:0.48rem 0.65rem;'>Anulado</div>";
+            } elseif ($e['status'] === 'finished' && $scoreHome !== '' && $scoreAway !== '') {
                 // Partido finalizado CON marcador real obtenido de la API
                 $finishControls = "<div style='font-size:0.82rem;font-weight:900;color:var(--success);background:rgba(34,197,94,0.12);border-radius:8px;padding:0.48rem 0.65rem;'>Finalizado {$scoreHome}-{$scoreAway}</div>";
             } else {
@@ -1387,6 +1389,7 @@ class Dashboard extends BaseController
                             <span style='color:var(--text-muted);font-weight:800;'>-</span>
                             <input id='score-away-{$eventId}' type='number' min='0' value='{$scoreAway}'>
                             <button type='button' onclick='window.doFinishEvent(event, {$eventId}, this)' style='cursor:pointer;font-size:0.72rem;font-weight:900;color:#fff;background:var(--primary);padding:0.38rem 0.58rem;border-radius:5px;border:none;'>{$btnText}</button>
+                            <button type='button' onclick='window.cancelEventAction(event, {$eventId}, this)' style='cursor:pointer;font-size:0.72rem;font-weight:900;color:#fff;background:var(--accent-rose);padding:0.38rem 0.58rem;border-radius:5px;border:none;margin-left:0.25rem;'>Anular</button>
                         </div>
                     </div>";
             }
@@ -2028,6 +2031,54 @@ class Dashboard extends BaseController
             'message' => $settled ? 'Partido finalizado y apuestas liquidadas.' : 'Partido finalizado. Liquidacion pendiente.',
             'bracket_completed' => $bracket['completed'],
             'bracket_message' => $bracket['reason'],
+        ]);
+    }
+
+    public function cancelEvent($id)
+    {
+        if (session()->get('role_id') != 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado'])->setStatusCode(403);
+        }
+
+        $eventModel = new \App\Models\EventModel();
+        $event = $eventModel->find($id);
+
+        if (!$event) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Evento no encontrado'])->setStatusCode(404);
+        }
+
+        if ($event['status'] === 'finished' && (int) ($event['settled'] ?? 0) === 1) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No se puede anular un partido ya liquidado.'])->setStatusCode(422);
+        }
+
+        $eventModel->update($id, [
+            'status' => 'cancelled',
+            'settled' => 0,
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        AuditLogger::log(
+            (int) session()->get('user_id'),
+            'event_cancelled',
+            'event',
+            (int) $id,
+            [
+                'status' => $event['status'] ?? null,
+            ],
+            [
+                'status' => 'cancelled',
+            ]
+        );
+
+        $updatedEvent = $eventModel->find($id);
+        $settled = false;
+        if ($updatedEvent) {
+            $settled = (new \App\Services\SettlementService())->settleCancelledEvent($updatedEvent);
+        }
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => $settled ? 'Partido anulado y apuestas liquidadas.' : 'Partido anulado. Liquidacion pendiente.',
         ]);
     }
 

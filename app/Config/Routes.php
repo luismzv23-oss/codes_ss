@@ -88,6 +88,7 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->post('events/sync-live/(:num)', 'Dashboard::syncLiveScoreEvent/$1');
     $routes->post('events/link-api-fixture/(:num)', 'Dashboard::linkApiFixture/$1');
     $routes->post('events/toggle/(:num)', 'Dashboard::toggleEventStatus/$1');
+    $routes->post('events/cancel/(:num)', 'Dashboard::cancelEvent/$1');
     $routes->post('events/delete/(:num)', 'Dashboard::deleteEvent/$1');
     $routes->post('leagues/update/(:num)', 'Dashboard::updateLeague/$1');
     $routes->post('leagues/delete/(:num)', 'Dashboard::deleteLeague/$1');
