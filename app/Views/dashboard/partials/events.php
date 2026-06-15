@@ -244,15 +244,21 @@
                         <span x-text="ev.league_name"></span>
                         <span x-text="ev.match_date_label || (ev.start_time ? ((ev.start_time || '').slice(11) === '00:00:00' ? new Date((ev.start_time || '').replace(' ', 'T')).toLocaleDateString('es-AR', { dateStyle: 'short' }) + ' (A confirmar)' : new Date((ev.start_time || '').replace(' ', 'T')).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })) : 'Fecha no disponible')"></span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 1rem;">
-                        <span x-text="ev.home_team"></span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 800; margin-bottom: 1rem; gap: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.55rem; min-width: 0; flex: 1;">
+                            <span x-html="ev.home_flag_markup" style="display: inline-flex; align-items: center; flex-shrink: 0;"></span>
+                            <span x-text="ev.home_team" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span>
+                        </div>
                         <template x-if="ev.score_home !== null && ev.score_away !== null">
-                            <span style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.9rem;" x-text="ev.score_home + ' - ' + ev.score_away"></span>
+                            <span style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.9rem; flex-shrink: 0;" x-text="ev.score_home + ' - ' + ev.score_away"></span>
                         </template>
                         <template x-if="ev.score_home === null || ev.score_away === null">
-                            <span style="color: var(--text-muted); font-size: 0.8rem;">vs</span>
+                            <span style="color: var(--text-muted); font-size: 0.8rem; flex-shrink: 0; margin: 0 0.25rem;">vs</span>
                         </template>
-                        <span x-text="ev.away_team"></span>
+                        <div style="display: flex; align-items: center; gap: 0.55rem; min-width: 0; flex: 1; justify-content: flex-end; text-align: right;">
+                            <span x-text="ev.away_team" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"></span>
+                            <span x-html="ev.away_flag_markup" style="display: inline-flex; align-items: center; flex-shrink: 0;"></span>
+                        </div>
                     </div>
                     <div x-show="ev.stage || ev.group_name" style="font-size:0.76rem;color:var(--text-secondary);margin-top:-0.45rem;margin-bottom:0.65rem;display:flex;gap:0.45rem;align-items:center;min-height:1rem;">
                         <span x-show="ev.stage" x-text="ev.stage"></span>

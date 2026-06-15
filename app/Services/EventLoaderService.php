@@ -23,7 +23,11 @@ class EventLoaderService
             return [];
         }
 
-        return $this->enrichEventMetadataFromFreeFeeds($sportKey, $home, $away, $startTime);
+        $metadata = $this->enrichEventMetadataFromFreeFeeds($sportKey, $home, $away, $startTime);
+        $metadata['home_flag'] = $this->getFlagForTeam($home);
+        $metadata['away_flag'] = $this->getFlagForTeam($away);
+
+        return $metadata;
     }
 
     /**
@@ -276,7 +280,9 @@ class EventLoaderService
                         'league_name'    => $leagueName,
                         'league_country' => $country,
                         'home_team'      => $home,
+                        'home_flag'      => $this->getFlagForTeam($home),
                         'away_team'      => $away,
+                        'away_flag'      => $this->getFlagForTeam($away),
                         'start_time'     => $startTime,
                         'stage'          => $metadata['stage'] ?? null,
                         'group_name'     => $metadata['group_name'] ?? null,
@@ -360,11 +366,16 @@ class EventLoaderService
             $eventStatus = 'finished';
         }
 
+        $homeFlag = ($stagedEvent['home_flag'] ?? null) ?: $this->getFlagForTeam($stagedEvent['home_team']);
+        $awayFlag = ($stagedEvent['away_flag'] ?? null) ?: $this->getFlagForTeam($stagedEvent['away_team']);
+
         if (!$existingEvent) {
             $eventId = $eventModel->insert([
                 'league_id'   => $leagueId,
                 'home_team'   => $stagedEvent['home_team'],
+                'home_flag'   => $homeFlag,
                 'away_team'   => $stagedEvent['away_team'],
+                'away_flag'   => $awayFlag,
                 'start_time'  => $stagedEvent['start_time'],
                 'stage'       => $stagedEvent['stage'] ?? null,
                 'group_name'  => $stagedEvent['group_name'] ?? null,
@@ -382,6 +393,12 @@ class EventLoaderService
                 'group_name'  => ($stagedEvent['group_name'] ?? null) ?: ($existingEvent['group_name'] ?? null),
                 'venue'       => ($stagedEvent['venue'] ?? null) ?: ($existingEvent['venue'] ?? null),
             ];
+            if (empty($existingEvent['home_flag']) && !empty($homeFlag)) {
+                $updateData['home_flag'] = $homeFlag;
+            }
+            if (empty($existingEvent['away_flag']) && !empty($awayFlag)) {
+                $updateData['away_flag'] = $awayFlag;
+            }
             if ($scoreHome !== null && $scoreAway !== null) {
                 $updateData['status'] = $eventStatus;
                 $updateData['score_home'] = $scoreHome;
@@ -684,7 +701,9 @@ class EventLoaderService
                         'league_name'    => $leagueName,
                         'league_country' => $country,
                         'home_team'      => $home,
+                        'home_flag'      => $this->getFlagForTeam($home),
                         'away_team'      => $away,
+                        'away_flag'      => $this->getFlagForTeam($away),
                         'start_time'     => $startTime,
                         'odds_data'      => json_encode($markets),
                         'status'         => 'pending_review'
@@ -875,6 +894,9 @@ class EventLoaderService
 
                 $oddsJson = json_encode($markets);
                 $existingStaged = $this->findDuplicateStaged($home, $away, $startTime);
+                $homeFlag = $this->getFlagForTeam($home);
+                $awayFlag = $this->getFlagForTeam($away);
+
                 if ($existingStaged) {
                     $stagedEventModel->update((int) $existingStaged['id'], [
                         'batch_id'       => $batchId,
@@ -882,7 +904,9 @@ class EventLoaderService
                         'league_name'    => $leagueName,
                         'league_country' => $country,
                         'home_team'      => $home,
+                        'home_flag'      => $homeFlag,
                         'away_team'      => $away,
+                        'away_flag'      => $awayFlag,
                         'score_home'     => $scoreHome,
                         'score_away'     => $scoreAway,
                         'start_time'     => $startTime,
@@ -907,7 +931,9 @@ class EventLoaderService
                     'league_name'    => $leagueName,
                     'league_country' => $country,
                     'home_team'      => $home,
+                    'home_flag'      => $homeFlag,
                     'away_team'      => $away,
+                    'away_flag'      => $awayFlag,
                     'score_home'     => $scoreHome,
                     'score_away'     => $scoreAway,
                     'start_time'     => $startTime,
@@ -1127,21 +1153,43 @@ class EventLoaderService
 
     private function teamsMatch(string $expected, string $actual): bool
     {
-        $expected = $this->normalizeTeamName($expected);
-        $actual = $this->normalizeTeamName($actual);
+        $expectedNorm = $this->normalizeTeamName($expected);
+        $actualNorm = $this->normalizeTeamName($actual);
 
-        if ($expected === '' || $actual === '') {
+        if ($expectedNorm === '' || $actualNorm === '') {
             return false;
         }
 
-        return $expected === $actual || str_contains($actual, $expected) || str_contains($expected, $actual);
+        if ($expectedNorm === $actualNorm || str_contains($actualNorm, $expectedNorm) || str_contains($expectedNorm, $actualNorm)) {
+            return true;
+        }
+
+        $expectedCode = $this->getFlagForTeam($expected);
+        $actualCode = $this->getFlagForTeam($actual);
+        if ($expectedCode !== null && $actualCode !== null && $expectedCode === $actualCode) {
+            return true;
+        }
+
+        $expectedEng = $this->translateCountryToEnglish($expected);
+        $actualEng = $this->translateCountryToEnglish($actual);
+        if ($expectedEng !== '' && $actualEng !== '' && ($expectedEng === $actualEng || str_contains($actualEng, $expectedEng) || str_contains($expectedEng, $actualEng))) {
+            return true;
+        }
+
+        return false;
     }
 
     private function normalizeTeamName(string $team): string
     {
+        $team = str_ireplace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'Ñ'],
+            ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u', 'u', 'n'],
+            $team
+        );
         $team = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $team) ?: $team;
         $team = strtolower($team);
-        $team = preg_replace('/\b(fc|cf|sc|club|de|la|el|the)\b/', ' ', $team) ?? $team;
+        $team = str_replace(["'", '`', '~', '^'], '', $team);
+        $team = preg_replace('/\b(seleccion de futbol de|seleccion de|deportiva|fc|cf|sc|club|de|la|el|the)\b/i', ' ', $team) ?? $team;
         $team = preg_replace('/[^a-z0-9]+/', ' ', $team) ?? $team;
         return trim(preg_replace('/\s+/', ' ', $team) ?? $team);
     }
@@ -1216,8 +1264,13 @@ class EventLoaderService
 
         $dateStr = $this->serpApiText($match['date'] ?? null, '');
         $timeStr = $this->serpApiText($match['time'] ?? null, '');
-        if ($timeStr === '' || preg_match('/en vivo|live|fin|final/i', $timeStr)) {
-            $timeStr = '00:00';
+        
+        if (str_contains($dateStr, ':')) {
+            $timeStr = '';
+        } else {
+            if ($timeStr === '' || preg_match('/en vivo|live|fin|final/i', $timeStr)) {
+                $timeStr = '00:00';
+            }
         }
 
         $dateStr = $dateStr !== '' ? $dateStr : $this->extractDateFromSearchQuery($query);
@@ -1252,14 +1305,13 @@ class EventLoaderService
 
     private function translateSerpApiDate(string $value): string
     {
+        $value = preg_replace('/^\b(?:lun|mar|mié|mie|miÃ©|jue|vie|sáb|sab|sÃ¡b|dom)\b\.?,?\s*/i', '', $value) ?? $value;
+
         $spanishMonths = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sep.', 'oct.', 'nov.', 'dic.', 'ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic', ' de '];
         $englishMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', ' '];
-        $spanishDays = ['lun.', 'mar.', 'mie.', 'miÃ©.', 'jue.', 'vie.', 'sab.', 'sÃ¡b.', 'dom.', 'lun', 'mar', 'mie', 'miÃ©', 'jue', 'vie', 'sab', 'sÃ¡b', 'dom'];
-        $englishDays = ['Mon', 'Tue', 'Wed', 'Wed', 'Thu', 'Fri', 'Sat', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Wed', 'Thu', 'Fri', 'Sat', 'Sat', 'Sun'];
 
-        $value = str_ireplace($spanishDays, $englishDays, $value);
         $value = str_ireplace($spanishMonths, $englishMonths, $value);
-        $value = str_ireplace(['Hoy', 'MaÃ±ana', 'Manana', 'Ayer'], ['Today', 'Tomorrow', 'Tomorrow', 'Yesterday'], $value);
+        $value = str_ireplace(['Hoy', 'Mañan', 'Maña', 'Mañan.', 'Mañ.', 'Mañan', 'Mañan', 'Mañ', 'MaÃ±ana', 'Mañana', 'Manana', 'Ayer'], ['Today', 'Tomorrow', 'Tomorrow', 'Tomorrow', 'Tomorrow', 'Tomorrow', 'Tomorrow', 'Tomorrow', 'Tomorrow', 'Tomorrow', 'Tomorrow', 'Yesterday'], $value);
         return str_ireplace(['a. m.', 'p. m.', 'a.m.', 'p.m.'], ['AM', 'PM', 'AM', 'PM'], $value);
     }
 
@@ -1307,7 +1359,7 @@ class EventLoaderService
     private function extractVenueName(array $match): string
     {
         return $this->serpApiText(
-            $match['venue']['name'] ?? $match['venue']['fullName'] ?? $match['venue'] ?? $match['stadium']['name'] ?? $match['stadium'] ?? $match['location'] ?? null,
+            $match['venue']['name'] ?? $match['venue']['fullName'] ?? $match['venue'] ?? $match['stadium']['name'] ?? $match['stadium'] ?? $match['location'] ?? $match['lugar'] ?? null,
             ''
         );
     }
@@ -1504,7 +1556,9 @@ class EventLoaderService
                     'league_name'    => mb_substr($leagueName, 0, 100),
                     'league_country' => 'Mundo',
                     'home_team'      => mb_substr($home, 0, 100),
+                    'home_flag'      => $this->getFlagForTeam($home),
                     'away_team'      => mb_substr($away, 0, 100),
+                    'away_flag'      => $this->getFlagForTeam($away),
                     'start_time'     => $startTime,
                     'stage'          => $stage ?: null,
                     'group_name'     => $groupName ?: null,
@@ -1557,5 +1611,106 @@ class EventLoaderService
             log_message('error', 'Error en convertToAppTimezone con valor (' . $value . '): ' . $e->getMessage());
             return null;
         }
+    }
+
+    public function getFlagForTeam(string $teamName): ?string
+    {
+        $normalized = $this->normalizeTeamName($teamName);
+        
+        $flags = [
+            'afganistan' => 'af', 'albania' => 'al', 'alemania' => 'de', 'andorra' => 'ad',
+            'angola' => 'ao', 'arabia saudita' => 'sa', 'argelia' => 'dz', 'argentina' => 'ar',
+            'armenia' => 'am', 'australia' => 'au', 'austria' => 'at', 'azerbaiyan' => 'az',
+            'bahamas' => 'bs', 'bangladesh' => 'bd', 'barein' => 'bh', 'belgica' => 'be',
+            'belice' => 'bz', 'benin' => 'bj', 'bermudas' => 'bm', 'bielorrusia' => 'by',
+            'bolivia' => 'bo', 'bosnia y herzegovina' => 'ba', 'bosnia' => 'ba', 'botsuana' => 'bw',
+            'brasil' => 'br', 'brunei' => 'bn', 'bulgaria' => 'bg', 'burkina faso' => 'bf',
+            'burundi' => 'bi', 'cabo verde' => 'cv', 'camboya' => 'kh', 'camerun' => 'cm',
+            'canada' => 'ca', 'catar' => 'qa', 'qatar' => 'qa', 'chad' => 'td', 'chile' => 'cl',
+            'china' => 'cn', 'chipre' => 'cy', 'colombia' => 'co', 'comoras' => 'km',
+            'corea del sur' => 'kr', 'corea' => 'kr', 'costa de marfil' => 'ci', 'costa rica' => 'cr',
+            'croacia' => 'hr', 'cuba' => 'cu', 'curazao' => 'cw', 'dinamarca' => 'dk',
+            'ecuador' => 'ec', 'egipto' => 'eg', 'el salvador' => 'sv', 'emiratos arabes unidos' => 'ae',
+            'eritrea' => 'er', 'escocia' => 'gb-sct', 'eslovaquia' => 'sk', 'eslovenia' => 'si',
+            'espana' => 'es', 'estados unidos' => 'us', 'usa' => 'us', 'estonia' => 'ee',
+            'etiopia' => 'et', 'filipinas' => 'ph', 'finlandia' => 'fi', 'fiyi' => 'fj',
+            'francia' => 'fr', 'gabon' => 'ga', 'gambia' => 'gm', 'georgia' => 'ge',
+            'ghana' => 'gh', 'gibraltar' => 'gi', 'granada' => 'gd', 'grecia' => 'gr',
+            'guam' => 'gu', 'guatemala' => 'gt', 'guinea' => 'gn', 'guinea ecuatorial' => 'gq',
+            'guinea bisau' => 'gw', 'guyana' => 'gy', 'haiti' => 'ht', 'honduras' => 'hn',
+            'hong kong' => 'hk', 'hungria' => 'hu', 'india' => 'in', 'indonesia' => 'id',
+            'inglaterra' => 'gb-eng', 'irak' => 'iq', 'iraq' => 'iq', 'iran' => 'ir',
+            'irlanda' => 'ie', 'irlanda del norte' => 'gb-nir', 'isla de man' => 'im',
+            'islandia' => 'is', 'islas caiman' => 'ky', 'islas cook' => 'ck', 'islas feroe' => 'fo',
+            'islas malvinas' => 'fk', 'islas salomon' => 'sb', 'islas turcas y caicos' => 'tc',
+            'islas virgenes britanicas' => 'vg', 'islas virgenes de los estados unidos' => 'vi',
+            'isreal' => 'il', 'israel' => 'il', 'italia' => 'it', 'jamaica' => 'jm',
+            'japon' => 'jp', 'jordania' => 'jo', 'kazajistan' => 'kz', 'kenia' => 'ke',
+            'kirguistan' => 'kg', 'kiribati' => 'ki', 'kosovo' => 'xk', 'kuwait' => 'kw',
+            'laos' => 'la', 'lesoto' => 'ls', 'letonia' => 'lv', 'libano' => 'lb',
+            'liberia' => 'lr', 'libia' => 'ly', 'liechtenstein' => 'li', 'lituania' => 'lt',
+            'luxemburgo' => 'lu', 'macao' => 'mo', 'macedonia del norte' => 'mk', 'madagascar' => 'mg',
+            'malasia' => 'my', 'malaui' => 'mw', 'maldivas' => 'mv', 'mali' => 'ml',
+            'malta' => 'mt', 'marruecos' => 'ma', 'mauricio' => 'mu', 'mauritania' => 'mr',
+            'mexico' => 'mx', 'micronesia' => 'fm', 'moldavia' => 'md', 'monaco' => 'mc',
+            'mongolia' => 'mn', 'montenegro' => 'me', 'mozambique' => 'mz', 'birmania' => 'mm',
+            'namibia' => 'na', 'nauru' => 'nr', 'nepal' => 'np', 'nicaragua' => 'ni',
+            'niger' => 'ne', 'nigeria' => 'ng', 'noruega' => 'no', 'nueva caledonia' => 'nc',
+            'nueva zelanda' => 'nz', 'oman' => 'om', 'paises bajos' => 'nl', 'holanda' => 'nl',
+            'pakistan' => 'pk', 'palaos' => 'pw', 'palestina' => 'ps', 'panama' => 'pa',
+            'papua nueva guinea' => 'pg', 'paraguay' => 'py', 'peru' => 'pe', 'polinesia francesa' => 'pf',
+            'polonia' => 'pl', 'portugal' => 'pt', 'puerto rico' => 'pr', 'republica centroafricana' => 'cf',
+            'republica checa' => 'cz', 'chequia' => 'cz', 'republica del congo' => 'cg',
+            'rd congo' => 'cd', 'republica dominicana' => 'do', 'ruanda' => 'rw', 'rumania' => 'ro',
+            'rusia' => 'ru', 'samoa' => 'ws', 'samoa americana' => 'as', 'san cristobal y nieves' => 'kn',
+            'san marino' => 'sm', 'san vicente y las granadinas' => 'vc', 'santa lucia' => 'lc',
+            'santo tome y principe' => 'st', 'senegal' => 'sn', 'serbia' => 'rs', 'seychelles' => 'sc',
+            'sierra leona' => 'sl', 'singapur' => 'sg', 'siria' => 'sy', 'somalia' => 'so',
+            'sri lanka' => 'lk', 'sudafrica' => 'za', 'sudan' => 'sd', 'sudan del sur' => 'ss',
+            'suecia' => 'se', 'suiza' => 'ch', 'surinam' => 'sr', 'suazilandia' => 'sz',
+            'tayikistan' => 'tj', 'tailandia' => 'th', 'taiwan' => 'tw', 'tanzania' => 'tz',
+            'timor oriental' => 'tl', 'togo' => 'tg', 'tonga' => 'to', 'trinidad y tobago' => 'tt',
+            'tunez' => 'tn', 'turquia' => 'tr', 'turkmenistan' => 'tm', 'tuvalu' => 'tv',
+            'ucrania' => 'ua', 'uganda' => 'ug', 'uruguay' => 'uy', 'uzbekistan' => 'uz',
+            'vanuatu' => 'vu', 'venezuela' => 've', 'vietnam' => 'vn', 'yemen' => 'ye',
+            'yibuti' => 'dj', 'zambia' => 'zm', 'zimbabue' => 'zw', 'zanzibar' => 'tz'
+        ];
+
+        if (isset($flags[$normalized])) {
+            return $flags[$normalized];
+        }
+
+        foreach ($flags as $name => $code) {
+            if (str_contains($normalized, $name) || str_contains($name, $normalized)) {
+                return $code;
+            }
+        }
+
+        return null;
+    }
+
+    private function translateCountryToEnglish(string $name): string
+    {
+        $translations = [
+            'alemania' => 'germany', 'argelia' => 'algeria', 'arabia saudita' => 'saudi arabia',
+            'belgica' => 'belgium', 'bosnia y herzegovina' => 'bosnia', 'brasil' => 'brazil',
+            'cabo verde' => 'cape verde', 'camerun' => 'cameroon', 'catar' => 'qatar',
+            'chequia' => 'czechia', 'republica checa' => 'czech republic',
+            'costa de marfil' => 'cote d\'ivoire', 'croacia' => 'croatia', 'dinamarca' => 'denmark',
+            'escocia' => 'scotland', 'espana' => 'spain', 'estados unidos' => 'usa',
+            'ee.uu.' => 'usa', 'eeuu' => 'usa', 'finlandia' => 'finland', 'francia' => 'france',
+            'gales' => 'wales', 'grecia' => 'greece', 'haiti' => 'haiti', 'hungria' => 'hungary',
+            'inglaterra' => 'england', 'irlanda' => 'ireland', 'irlanda del norte' => 'northern ireland',
+            'islandia' => 'iceland', 'islas feroe' => 'faroe islands', 'japon' => 'japan',
+            'letonia' => 'latvia', 'libano' => 'lebanon', 'marruecos' => 'morocco',
+            'noruega' => 'norway', 'nueva zelanda' => 'new zealand', 'paises bajos' => 'netherlands',
+            'holanda' => 'netherlands', 'polonia' => 'poland', 'republica centroafricana' => 'central african republic',
+            'rd congo' => 'dr congo', 'rusia' => 'russia', 'suecia' => 'sweden',
+            'suiza' => 'switzerland', 'sudafrica' => 'south africa', 'tailandia' => 'thailand',
+            'tunez' => 'tunisia', 'turquia' => 'turkey', 'ucrania' => 'ukraine', 'uzbekistan' => 'uzbekistan',
+        ];
+
+        $norm = $this->normalizeTeamName($name);
+        return $translations[$norm] ?? $norm;
     }
 }

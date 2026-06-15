@@ -121,11 +121,14 @@ class Dashboard extends BaseController
         }
 
         $styles = [
+            'ad' => 'linear-gradient(90deg, #10069f 0 33%, #fed100 33% 66%, #d50032 66%)',
+            'af' => 'linear-gradient(90deg, #000 0 33%, #bf0000 33% 66%, #007a3d 66%)',
             'ar' => 'linear-gradient(#74acdf 0 33%, #fff 33% 66%, #74acdf 66%)',
             'at' => 'linear-gradient(#ed2939 0 33%, #fff 33% 66%, #ed2939 66%)',
             'au' => 'linear-gradient(#012169,#012169)',
             'az' => 'linear-gradient(#00b5e2 0 33%,#ef3340 33% 66%,#509e2f 66%)',
             'ba' => 'linear-gradient(135deg,#002395 0 72%,#fecb00 72%)',
+            'bd' => 'radial-gradient(circle at 45% 50%,#f42a41 0 32%,transparent 33%),#006a4e',
             'be' => 'linear-gradient(90deg,#000 0 33%,#fae042 33% 66%,#ed2939 66%)',
             'bo' => 'linear-gradient(#d52b1e 0 33%,#f9e300 33% 66%,#007934 66%)',
             'br' => 'linear-gradient(135deg,#009b3a 0 100%)',
@@ -148,8 +151,10 @@ class Dashboard extends BaseController
             'eu' => 'radial-gradient(circle at 50% 50%,#fbbf24 0 7%,transparent 8%),#1d4ed8',
             'fr' => 'linear-gradient(90deg,#0055a4 0 33%,#fff 33% 66%,#ef4135 66%)',
             'gb-eng' => 'linear-gradient(90deg,transparent 0 42%,#ce1124 42% 58%,transparent 58%),linear-gradient(transparent 0 38%,#ce1124 38% 62%,transparent 62%),#fff',
+            'gb-nir' => 'linear-gradient(90deg,transparent 0 42%,#ce1124 42% 58%,transparent 58%),linear-gradient(transparent 0 38%,#ce1124 38% 62%,transparent 62%),#fff',
             'gb-sct' => 'linear-gradient(35deg,transparent 0 42%,#fff 42% 58%,transparent 58%),linear-gradient(145deg,transparent 0 42%,#fff 42% 58%,transparent 58%),#0065bd',
             'gh' => 'linear-gradient(#ce1126 0 33%,#fcd116 33% 66%,#006b3f 66%)',
+            'gn' => 'linear-gradient(90deg,#e51d28 0 33%,#fecb00 33% 66%,#009460 66%)',
             'gr' => 'repeating-linear-gradient(#0d5eaf 0 11%,#fff 11% 22%)',
             'ht' => 'linear-gradient(#00209f 0 50%,#d21034 50%)',
             'iq' => 'linear-gradient(#ce1126 0 33%,#fff 33% 66%,#000 66%)',
@@ -158,9 +163,11 @@ class Dashboard extends BaseController
             'jo' => 'linear-gradient(145deg,#ce1126 0 36%,transparent 36%),linear-gradient(#000 0 33%,#fff 33% 66%,#007a3d 66%)',
             'jp' => 'radial-gradient(circle at 50% 50%,#bc002d 0 28%,transparent 29%),#fff',
             'kr' => 'radial-gradient(circle at 50% 50%,#cd2e3a 0 22%,#0047a0 23% 34%,transparent 35%),#fff',
+            'li' => 'linear-gradient(#00209f 0 50%,#d11225 50%)',
             'kz' => 'linear-gradient(#00afca,#00afca)',
             'ma' => 'linear-gradient(#c1272d,#c1272d)',
             'mc' => 'linear-gradient(#ce1126 0 50%,#fff 50%)',
+            'ml' => 'linear-gradient(90deg,#14b53a 0 33%,#fcd116 33% 66%,#ce1126 66%)',
             'mx' => 'linear-gradient(90deg,#006847 0 33%,#fff 33% 66%,#ce1126 66%)',
             'nl' => 'linear-gradient(#ae1c28 0 33%,#fff 33% 66%,#21468b 66%)',
             'no' => 'linear-gradient(90deg,transparent 0 28%,#fff 28% 36%,#00205b 36% 48%,#fff 48% 56%,transparent 56%),linear-gradient(transparent 0 34%,#fff 34% 43%,#00205b 43% 57%,#fff 57% 66%,transparent 66%),#ba0c2f',
@@ -172,6 +179,7 @@ class Dashboard extends BaseController
             'qa' => 'linear-gradient(90deg,#fff 0 28%,#8a1538 28%)',
             'sa' => 'linear-gradient(#006c35,#006c35)',
             'se' => 'linear-gradient(90deg,transparent 0 30%,#fecc00 30% 42%,transparent 42%),linear-gradient(transparent 0 40%,#fecc00 40% 58%,transparent 58%),#006aa7',
+            'si' => 'linear-gradient(#fff 0 33%,#002fbe 33% 66%,#e51717 66%)',
             'sn' => 'linear-gradient(90deg,#00853f 0 33%,#fdef42 33% 66%,#e31b23 66%)',
             'tn' => 'radial-gradient(circle at 50% 50%,#fff 0 28%,transparent 29%),#e70013',
             'tr' => 'radial-gradient(circle at 43% 50%,#fff 0 22%,transparent 23%),radial-gradient(circle at 48% 50%,#e30a17 0 18%,transparent 19%),#e30a17',
@@ -3523,10 +3531,22 @@ class Dashboard extends BaseController
         $loader = new \App\Services\EventLoaderService();
 
         foreach ($staged as &$e) {
+            $homeFlag = ($e['home_flag'] ?? null) ?: $loader->getFlagForTeam($e['home_team']);
+            $awayFlag = ($e['away_flag'] ?? null) ?: $loader->getFlagForTeam($e['away_team']);
+            $updates = [];
+
+            if (empty($e['home_flag']) && !empty($homeFlag)) {
+                $updates['home_flag'] = $homeFlag;
+                $e['home_flag'] = $homeFlag;
+            }
+            if (empty($e['away_flag']) && !empty($awayFlag)) {
+                $updates['away_flag'] = $awayFlag;
+                $e['away_flag'] = $awayFlag;
+            }
+
             $needsMetadata = empty($e['venue']) || substr((string) ($e['start_time'] ?? ''), 11) === '00:00:00';
             if ($needsMetadata) {
                 $metadata = $loader->enrichStagedEventMetadata($e);
-                $updates = [];
                 foreach (['start_time', 'stage', 'group_name', 'venue', 'venue_url'] as $field) {
                     if (!empty($metadata[$field]) && empty($e[$field])) {
                         $updates[$field] = $metadata[$field];
@@ -3537,15 +3557,23 @@ class Dashboard extends BaseController
                     $updates['start_time'] = $metadata['start_time'];
                     $e['start_time'] = $metadata['start_time'];
                 }
-                if ($updates !== []) {
-                    $model->update((int) $e['id'], $updates);
-                }
             }
+
+            if ($updates !== []) {
+                $model->update((int) $e['id'], $updates);
+            }
+
+            $e['home_flag_markup'] = $this->flagMarkup($e['home_flag'] ?? null);
+            $e['away_flag_markup'] = $this->flagMarkup($e['away_flag'] ?? null);
+
             $timestamp = strtotime((string) ($e['start_time'] ?? ''));
             $hasRealTime = substr((string) ($e['start_time'] ?? ''), 11) !== '00:00:00';
+            $isFinished = isset($e['score_home']) && is_numeric($e['score_home']) && isset($e['score_away']) && is_numeric($e['score_away']);
+
             $e['match_date_label'] = $timestamp !== false
-                ? ($hasRealTime ? date('d/m/Y H:i', $timestamp) : date('d/m/Y', $timestamp) . ' (A confirmar)')
+                ? (($hasRealTime || $isFinished) ? date('d/m/Y H:i', $timestamp) : date('d/m/Y', $timestamp) . ' (A confirmar)')
                 : 'Fecha no disponible';
+
             $e['odds_data'] = json_decode($e['odds_data'], true);
             if (empty($e['venue_url']) && !empty($e['venue'])) {
                 $e['venue_url'] = 'https://www.google.com/search?tbm=isch&q=' . rawurlencode($e['venue'] . ' estadio fachada');
