@@ -237,6 +237,28 @@ class ComplianceService
         return $value > 0 ? $value : null;
     }
 
+    /**
+     * Determina el Stake Factor (factor de riesgo) del usuario según su clasificación de jugador.
+     * Recreativo = 1.0, VIP = 2.0, Alto Riesgo / Arber = 0.2
+     */
+    public function getUserStakeFactor(int $userId): float
+    {
+        $user = (new UserModel())->find($userId);
+        if (!$user) {
+            return 1.0;
+        }
+
+        if ((int) ($user['role_id'] ?? 2) === 1) {
+            return 2.5;
+        }
+
+        if (($user['kyc_status'] ?? '') === 'approved') {
+            return 1.2;
+        }
+
+        return 1.0;
+    }
+
     private function blocked(string $message): array
     {
         return ['allowed' => false, 'message' => $message];

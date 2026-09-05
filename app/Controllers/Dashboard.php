@@ -3048,7 +3048,7 @@ class Dashboard extends BaseController
 
         $withdrawalRequestId = null;
         if ($type === 'withdrawal') {
-            $withdrawalRequestModel = new \App\Models\WithdrawalRequestModel();
+            $withdrawalRequestModel = new WithdrawalRequestModel();
             $withdrawalRequestId = $withdrawalRequestModel->insert([
                 'user_id' => $userId,
                 'wallet_id' => (int) $wallet['id'],
@@ -3821,9 +3821,21 @@ class Dashboard extends BaseController
 
     // --- Endpoints for API-Football Jobs triggered from Quick Actions ---
 
+    private function authorizeCronJob(): bool
+    {
+        if ((int) session()->get('role_id') === 1) {
+            return true;
+        }
+
+        $cronKey = $this->request->getGet('key') ?? $this->request->getPost('key');
+        $expectedKey = getenv('CRON_SECRET_KEY') ?: 'codex_secret_cron_123';
+
+        return !empty($cronKey) && hash_equals($expectedKey, (string) $cronKey);
+    }
+
     public function triggerFetchFixtures()
     {
-        if (session()->get('role_id') != 1) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        if (!$this->authorizeCronJob()) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
         
         try {
             command('sportsbook:fetch_fixtures');
@@ -3835,7 +3847,7 @@ class Dashboard extends BaseController
 
     public function triggerFetchOdds()
     {
-        if (session()->get('role_id') != 1) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        if (!$this->authorizeCronJob()) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
         
         try {
             command('sportsbook:fetch_odds');
@@ -3847,7 +3859,7 @@ class Dashboard extends BaseController
 
     public function triggerSettleBets()
     {
-        if (session()->get('role_id') != 1) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
+        if (!$this->authorizeCronJob()) return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado']);
         
         try {
             command('sportsbook:settle');

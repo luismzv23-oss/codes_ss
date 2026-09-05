@@ -19,6 +19,8 @@ $routes->get('apuestas-deportivas/(:segment)/(:segment)/(:segment)/(:segment)', 
 $routes->get('realtime/poll', 'RealTime::poll');
 $routes->get('sportsbook/event/(:num)', 'Sportsbook::event/$1');
 $routes->post('sportsbook/placeBet', 'Sportsbook::placeBet');
+$routes->get('sportsbook/cashout-calculate/(:num)', 'Sportsbook::cashoutCalculate/$1');
+$routes->post('sportsbook/cashout-partial', 'Sportsbook::cashoutPartial');
 $routes->get('sportsbook/history', 'Sportsbook::history');
 $routes->get('sportsbook/ticket/(:num)', 'Sportsbook::ticket/$1');
 $routes->get('sportsbook/ticket/(:num)/pdf', 'Sportsbook::ticketPdf/$1');
@@ -142,16 +144,19 @@ $routes->group('dashboard', ['filter' => 'auth:1'], function ($routes) {
     $routes->post('settings/update', 'Dashboard::updateSettings');
     $routes->post('settings/clear-cache', 'Dashboard::clearCache');
     
-    // API-Football Jobs
-    $routes->post('jobs/fetch-fixtures', 'Dashboard::triggerFetchFixtures');
-    $routes->post('jobs/fetch-odds', 'Dashboard::triggerFetchOdds');
-    $routes->post('jobs/settle', 'Dashboard::triggerSettleBets');
-    $routes->post('jobs/start-websocket', 'Dashboard::triggerStartWebSocket');
-    $routes->post('jobs/trigger-b2b-mock', 'Dashboard::triggerB2BMock');
-    $routes->post('jobs/trigger-sync-odds', 'Dashboard::triggerSyncOdds');
+    // API-Football Jobs / Cron Endpoints
+    $routes->match(['get', 'post'], 'jobs/fetch-fixtures', 'Dashboard::triggerFetchFixtures');
+    $routes->match(['get', 'post'], 'jobs/fetch-odds', 'Dashboard::triggerFetchOdds');
+    $routes->match(['get', 'post'], 'jobs/settle', 'Dashboard::triggerSettleBets');
+    $routes->match(['get', 'post'], 'jobs/start-websocket', 'Dashboard::triggerStartWebSocket');
+    $routes->match(['get', 'post'], 'jobs/trigger-b2b-mock', 'Dashboard::triggerB2BMock');
+    $routes->match(['get', 'post'], 'jobs/trigger-sync-odds', 'Dashboard::triggerSyncOdds');
 });
 
 $routes->get('run-migrations-public', function() {
+    if (ENVIRONMENT !== 'development') {
+        return \Config\Services::response()->setStatusCode(403)->setBody('Acceso Denegado: Las migraciones vía HTTP están deshabilitadas en entornos de producción.');
+    }
     $migrate = \Config\Services::migrations();
     try {
         if ($migrate->latest()) {

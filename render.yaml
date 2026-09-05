@@ -1,0 +1,44 @@
+# Blueprint de Despliegue Automático en Render (PaaS)
+services:
+  # Servicio Web CodeIgniter 4 (PHP)
+  - type: web
+    name: codex-ss-web
+    env: php
+    buildCommand: composer install --no-dev --optimize-autoloader
+    startCommand: vendor/bin/heroku-php-nginx -C docker/nginx/render.conf public/
+    envVars:
+      - key: CI_ENVIRONMENT
+        value: production
+      - key: database.default.hostname
+        fromDatabase:
+          name: codex-ss-db
+          property: host
+      - key: database.default.database
+        fromDatabase:
+          name: codex-ss-db
+          property: database
+      - key: database.default.username
+        fromDatabase:
+          name: codex-ss-db
+          property: user
+      - key: database.default.password
+        fromDatabase:
+          name: codex-ss-db
+          property: password
+
+  # Servidor WebSocket Node.js (Socket.io)
+  - type: web
+    name: codex-ss-websocket
+    env: node
+    buildCommand: cd websocket-server && npm install
+    startCommand: cd websocket-server && node server.js
+    envVars:
+      - key: PORT
+        value: 3000
+
+databases:
+  # Base de Datos MySQL Gestionada
+  - name: codex-ss-db
+    databaseName: codex_ss
+    user: codex_user
+    plan: free

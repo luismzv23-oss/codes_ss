@@ -177,6 +177,12 @@ class Auth extends BaseController
                 'last_login_ip'           => $this->request->getIPAddress(),
             ]);
             $user = $userModel->find($userId);
+
+            // Crear billetera vacía (saldo 0.00 ARS)
+            $walletModel = new \App\Models\WalletModel();
+            if (! $walletModel->where('user_id', $userId)->first()) {
+                $walletModel->insert(['user_id' => $userId, 'balance' => 0.00, 'currency' => 'ARS']);
+            }
         }
 
         $this->startUserSession($user);
@@ -336,7 +342,13 @@ class Auth extends BaseController
         $data['email_verification_sent_at'] = date('Y-m-d H:i:s');
 
         // Insert user
-        $userModel->insert($data);
+        $newUserId = $userModel->insert($data);
+
+        // Crear billetera vacía (saldo 0.00 ARS)
+        $walletModel = new \App\Models\WalletModel();
+        if (! $walletModel->where('user_id', $newUserId)->first()) {
+            $walletModel->insert(['user_id' => $newUserId, 'balance' => 0.00, 'currency' => 'ARS']);
+        }
 
         // Enqueue verification email via existing 'emails' queue
         $queue = \Config\Services::queue();

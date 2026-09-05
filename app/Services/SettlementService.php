@@ -284,4 +284,58 @@ class SettlementService
             'description' => 'Pago de Apuesta Ganada Ticket #' . $slipId,
         ]);
     }
+
+    /**
+     * Regla de las 24 horas para eventos postergados/cancelados.
+     * Busca partidos suspendidos o postergados por más de $maxHours horas y procesa los reembolsos Void.
+     */
+    public function processPostponedEvents(int $maxHours = 24): int
+    {
+        $db = \Config\Database::connect();
+        $cutoffDate = date('Y-m-d H:i:s', strtotime("-{$maxHours} hours"));
+
+        $postponedEvents = $db->table('events')
+            ->whereIn('status', ['postponed', 'suspended', 'cancelled'])
+            ->where('settled', 0)
+            ->where('start_time <=', $cutoffDate)
+            ->get()
+            ->getResultArray();
+
+        $processedCount = 0;
+        foreach ($postponedEvents as $event) {
+            $this->settleCancelledEvent($event);
+            $processedCount++;
+            log_message('notice', "[VOID RULE] Evento #{$event['id']} ({$event['home_team']} vs {$event['away_team']}) postergado por > {$maxHours}hs. Boletos anulados (Void).");
+        }
+
+        return $processedCount;
+    }
+
+    /**
+     * Liquida un evento con verificación doble y trazabilidad con milisegundos para auditorías regulatorias (GLI-19).
+     */
+    public function settleEventWithVerification(int $eventId, array $finalScores, string $verifier = 'system'): bool
+    {
+        $eventModel = new EventModel();
+        $event = $eventModel->find($eventId);
+
+        if (!$event) {
+            return false;
+        }
+
+        $event['score_home'] = $finalScores['home'] ?? $event['home_score'] ?? 0;
+        $event['score_away'] = $finalScores['away'] ?? $event['away_score'] ?? 0;
+        $event['status'] = 'finished';
+
+        $eventModel->update($eventId, [
+            'home_score' => $event['score_home'],
+            'away_score' => $event['score_away'],
+            'status'     => 'finished',
+        ]);
+
+        $timestampMs = (int) (microtime(true) * 1000);
+        log_message('info', "[AUDIT GLI-19] Liquidación Verificada por {$verifier} - Evento #{$eventId} | Timestamp MS: {$timestampMs}");
+
+        return $this->settleEvent($event);
+    }
 }

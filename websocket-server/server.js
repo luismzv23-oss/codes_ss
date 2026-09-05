@@ -51,6 +51,25 @@ app.post('/broadcast', (req, res) => {
     res.json({ success: true, message: 'Broadcast emitido' });
 });
 
+// Endpoint para transmisión instantánea de suspensión de emergencia por peligro (< 50ms)
+app.post('/broadcast-suspend', (req, res) => {
+    const { event_id, reason } = req.body;
+
+    if (!event_id) {
+        return res.status(400).json({ error: 'Falta event_id.' });
+    }
+
+    console.log(`[EMERGENCY SUSPEND BROADCAST] Evento: ${event_id} | Razón: ${reason}`);
+
+    io.emit('event_suspended', {
+        event_id: event_id,
+        reason: reason || 'Suspensión por riesgo en vivo',
+        timestamp_ms: Date.now()
+    });
+
+    res.json({ success: true, message: 'Broadcast de suspensión emitido' });
+});
+
 const PORT = 3000;
 server.listen(PORT, () => {
     console.log(`WebSocket Server (Socket.io) corriendo en el puerto ${PORT}`);

@@ -114,7 +114,11 @@ class SettleBets extends BaseCommand
             
             try {
                 $service->settleEvents();
+                $voidCount = $service->processPostponedEvents(24);
                 CLI::write('✓ Boletos liquidados y pagos emitidos correctamente.', 'green');
+                if ($voidCount > 0) {
+                    CLI::write("✓ Regla Void 24hs: {$voidCount} partidos postergados resueltos.", 'cyan');
+                }
             } catch (\Exception $e) {
                 CLI::error('Error en el Settlement Engine: ' . $e->getMessage());
                 CLI::error($e->getTraceAsString());
@@ -122,7 +126,12 @@ class SettleBets extends BaseCommand
         } else {
             // Aún así correr settlement por si hay eventos manuales finalizados
             CLI::write('Buscando eventos manuales por liquidar...', 'yellow');
-            (new SettlementService())->settleEvents();
+            $service = new SettlementService();
+            $service->settleEvents();
+            $voidCount = $service->processPostponedEvents(24);
+            if ($voidCount > 0) {
+                CLI::write("✓ Regla Void 24hs: {$voidCount} partidos postergados resueltos.", 'cyan');
+            }
         }
     }
 }

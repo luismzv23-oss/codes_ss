@@ -438,7 +438,7 @@ class Sportsbook extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'Debes iniciar sesión para apostar.']);
         }
 
-        $userId = session()->get('user_id');
+        $userId = (int) session()->get('user_id');
         $json = $this->request->getJSON(true);
 
         if (!$json || empty($json['selections']) || empty($json['stake'])) {
@@ -450,46 +450,16 @@ class Sportsbook extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'El importe debe ser mayor a 0.']);
         }
 
-        $compliance = (new \App\Services\ComplianceService())->validateStake((int) $userId, $stake);
+        $compliance = (new \App\Services\ComplianceService())->validateStake($userId, $stake);
         if (! $compliance['allowed']) {
             return $this->response->setJSON(['status' => 'error', 'message' => $compliance['message']]);
         }
 
-        $walletModel = new \App\Models\WalletModel();
-        $txModel = new \App\Models\TransactionModel();
-        $betSlipModel = new \App\Models\BetSlipModel();
-        $betSelectionModel = new \App\Models\BetSelectionModel();
-        $oddModel = new OddModel();
-
-        // Obtener o crear billetera
-        $wallet = $walletModel->where('user_id', $userId)->first();
-        if (!$wallet) {
-            // Regalo de bienvenida en ARS
-            $walletModel->insert(['user_id' => $userId, 'balance' => 50000.00, 'currency' => 'ARS']);
-            $wallet = $walletModel->where('user_id', $userId)->first();
-            $txModel->insert([
-                'wallet_id' => $wallet['id'],
-                'type' => 'deposit',
-                'amount' => 50000.00,
-                'balance_after' => 50000.00,
-                'description' => 'Bono de Bienvenida'
-            ]);
-        }
-
-        // Validar Saldo
-        if ((float) $wallet['balance'] < $stake) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'Saldo insuficiente. Tu saldo es '.$wallet['balance'].' K']);
-        }
-
-        // Iniciar Transacción de Base de Datos
         $db = \Config\Database::connect();
         
-        // Actualizar estados de eventos dinámicamente y liquidar apuestas si corresponde
-        $this->updateEventStatuses();
-
         $oddIds = array_map('intval', array_column($json['selections'], 'id'));
         if (empty($oddIds)) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'No hay cuotas validas en el boleto.']);
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No hay cuotas válidas en el boleto.']);
         }
 
         $currentOdds = $db->table('odds o')
@@ -520,7 +490,7 @@ class Sportsbook extends BaseController
             if (! $isAvailable) {
                 return $this->response->setJSON([
                     'status' => 'error',
-                    'message' => 'Una o mas cuotas seleccionadas estan suspendidas o cerradas.',
+                    'message' => 'Una o más cuotas seleccionadas están suspendidas o cerradas.',
                 ]);
             }
 
@@ -541,22 +511,40 @@ class Sportsbook extends BaseController
         if (! empty($changes) && empty($json['accept_odds_changes'])) {
             return $this->response->setJSON([
                 'status' => 'odds_changed',
-                'message' => 'Una o mas cuotas cambiaron antes de confirmar la apuesta.',
+                'message' => 'Una o más cuotas cambiaron antes de confirmar la apuesta.',
                 'changes' => $changes,
             ]);
         }
 
+        // Iniciar Transacción de Base de Datos para asegurar Atomicidad y Evitar Condición de Carrera
         $db->transStart();
 
-        // 1. Descontar Saldo
-        $newBalance = (float) $wallet['balance'] - $stake;
-        $walletModel->update($wallet['id'], ['balance' => $newBalance]);
+        // Obtener billetera con Bloqueo Pesimista (FOR UPDATE)
+        $wallet = $db->query("SELECT * FROM wallets WHERE user_id = ? FOR UPDATE", [$userId])->getRowArray();
 
-        // 2. Calcular cuota real usando BetBuilderService para aplicar descuentos por correlación o detectar incompatibilidades.
+        if (! $wallet) {
+            $db->transRollback();
+            return $this->response->setJSON(['status' => 'error', 'message' => 'No tienes una billetera activa asociada a tu cuenta.']);
+        }
+
+        if ((float) $wallet['balance'] < $stake) {
+            $db->transRollback();
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Saldo insuficiente. Tu saldo es ' . $wallet['balance']]);
+        }
+
+        // 1. Descontar Saldo de forma atómica
+        $newBalance = (float) $wallet['balance'] - $stake;
+        $db->query("UPDATE wallets SET balance = ? WHERE id = ? AND balance >= ?", [$newBalance, $wallet['id'], $stake]);
+        if ($db->affectedRows() === 0) {
+            $db->transRollback();
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Transacción rechazada por saldo insuficiente o petición concurrente.']);
+        }
+
+        // 2. Calcular cuota real usando BetBuilderService
         $betBuilderService = new \App\Services\BetBuilderService();
         $builderResult = $betBuilderService->calculateCombinedOdds($oddIds);
 
-        if (!$builderResult['valid']) {
+        if (! $builderResult['valid']) {
             $db->transRollback();
             return $this->response->setJSON(['status' => 'error', 'message' => $builderResult['message']]);
         }
@@ -570,7 +558,6 @@ class Sportsbook extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => $riskResult['message']]);
         }
 
-        // Determinar si es Bet Builder (si hay al menos un evento con más de 1 selección)
         $isBuilder = 0;
         $maxCorrelationDiscount = 0.00;
         foreach ($builderResult['details'] as $detail) {
@@ -583,6 +570,7 @@ class Sportsbook extends BaseController
         }
 
         // 3. Crear Bet Slip
+        $betSlipModel = new \App\Models\BetSlipModel();
         $betSlipId = $betSlipModel->insert([
             'user_id' => $userId,
             'stake' => $stake,
@@ -590,10 +578,12 @@ class Sportsbook extends BaseController
             'potential_payout' => $potentialPayout,
             'status' => 'pending',
             'is_builder' => $isBuilder,
-            'correlation_discount' => $maxCorrelationDiscount * 100 // Almacenado como porcentaje (ej: 18.00)
+            'correlation_discount' => $maxCorrelationDiscount * 100
         ]);
 
         // 4. Crear Selecciones del Boleto
+        $oddModel = new OddModel();
+        $betSelectionModel = new \App\Models\BetSelectionModel();
         foreach ($json['selections'] as $sel) {
             $dbOdd = $oddModel->find($sel['id']);
             $betSelectionModel->insert([
@@ -605,6 +595,7 @@ class Sportsbook extends BaseController
         }
 
         // 5. Registrar Transacción en Historial
+        $txModel = new \App\Models\TransactionModel();
         $txModel->insert([
             'wallet_id' => $wallet['id'],
             'type' => 'bet_placed',
@@ -1279,5 +1270,45 @@ class Sportsbook extends BaseController
             'totalPages'        => max(1, (int) ceil($totalTransactions / $perPage)),
             'totalTransactions' => $totalTransactions,
         ]);
+    }
+
+    /**
+     * Endpoint para consultar el cálculo disponible de Cashout de un boleto.
+     */
+    public function cashoutCalculate(int $ticketId)
+    {
+        if (!session()->get('isLoggedIn')) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Sesión requerida.']);
+        }
+
+        $cashOutService = new \App\Services\CashOutService();
+        $result = $cashOutService->calculateCashOutValue($ticketId);
+
+        return $this->response->setJSON($result);
+    }
+
+    /**
+     * Endpoint para procesar el cobro de Cashout Parcial o Total.
+     */
+    public function cashoutPartial()
+    {
+        if (!session()->get('isLoggedIn')) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Sesión requerida.']);
+        }
+
+        $userId = (int) session()->get('user_id');
+        $json = $this->request->getJSON(true);
+
+        $ticketId = (int) ($json['ticket_id'] ?? 0);
+        $percentage = (float) ($json['percentage'] ?? 100.0);
+
+        if ($ticketId <= 0) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Boleto inválido.']);
+        }
+
+        $cashOutService = new \App\Services\CashOutService();
+        $result = $cashOutService->processPartialCashOut($ticketId, $userId, $percentage);
+
+        return $this->response->setJSON($result);
     }
 }

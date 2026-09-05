@@ -234,10 +234,20 @@ class OddsSyncService
             $oldValue = (float) $existingOdd['odds_decimal'];
 
             if (abs($oldValue - $newValue) > 0.001) {
-                // ¡Cambió la cuota! Actualizar y disparar broadcast
+                // Verificar error palpable (> 15% desvío)
+                $isPalpableError = $this->detectPalpableError($newValue, $oldValue);
+                $oddStatus = $isPalpableError ? 'suspended' : 'active';
+                $activeFlag = $isPalpableError ? 0 : 1;
+
+                if ($isPalpableError) {
+                    log_message('warning', "[PALPABLE ERROR DETECTED] Odd ID {$existingOdd['id']} desvío excesivo: {$oldValue} -> {$newValue}. Mercado suspendido automáticamente.");
+                }
+
+                // Actualizar y disparar broadcast
                 $this->oddModel->update($existingOdd['id'], [
                     'odds_decimal' => $newValue,
-                    'status'       => 'active',
+                    'active'       => $activeFlag,
+                    'status'       => $oddStatus,
                 ]);
                 $this->oddsUpdated++;
 
@@ -257,21 +267,64 @@ class OddsSyncService
     }
 
     /**
-     * Dispara broadcast WebSocket cuando cambia una cuota.
+     * Detecta errores palpables (Line Mistakes) si la cuota difiere más de un 15% de la previa.
+     */
+    public function detectPalpableError(float $importedOdds, float $previousOdds): bool
+    {
+        if ($previousOdds <= 1.0) {
+            return false;
+        }
+
+        $deviation = abs($importedOdds - $previousOdds) / $previousOdds;
+        return $deviation > 0.15;
+    }
+
+    /**
+     * Dispara broadcast WebSocket (Servidor propio o Pusher SaaS) cuando cambia una cuota.
      */
     private function broadcastOddChange(int $eventId, int $oddId, float $oldValue, float $newValue): void
     {
         $direction = $newValue > $oldValue ? 'up' : 'down';
+        $pusherKey = getenv('PUSHER_KEY');
 
         try {
-            $payload = json_encode([
+            $payloadData = [
                 'event_id'  => $eventId,
                 'odd_id'    => $oddId,
                 'old_value' => number_format($oldValue, 2),
                 'new_value' => number_format($newValue, 2),
                 'status'    => $direction,
-            ]);
+            ];
 
+            // Opción Cloud Administrada: Pusher API
+            if (!empty($pusherKey)) {
+                $appId = getenv('PUSHER_APP_ID');
+                $secret = getenv('PUSHER_SECRET');
+                $cluster = getenv('PUSHER_CLUSTER') ?: 'mt1';
+
+                $body = json_encode(['name' => 'odd_update', 'channels' => ['odds'], 'data' => json_encode($payloadData)]);
+                $path = "/apps/{$appId}/events";
+                $authTimestamp = time();
+                $authVersion = '1.0';
+
+                $authSignature = hash_hmac('sha256', "POST\n{$path}\nauth_key={$pusherKey}&auth_timestamp={$authTimestamp}&auth_version={$authVersion}&body_md5=" . md5($body), $secret);
+                $url = "https://api-{$cluster}.pusher.com{$path}?auth_key={$pusherKey}&auth_timestamp={$authTimestamp}&auth_version={$authVersion}&auth_signature={$authSignature}";
+
+                $context = stream_context_create([
+                    'http' => [
+                        'method' => 'POST',
+                        'header' => "Content-Type: application/json\r\n",
+                        'content' => $body,
+                        'timeout' => 2,
+                        'ignore_errors' => true,
+                    ]
+                ]);
+                @file_get_contents($url, false, $context);
+                return;
+            }
+
+            // Opción WebSocket Node.js propio
+            $payload = json_encode($payloadData);
             $context = stream_context_create([
                 'http' => [
                     'method'  => 'POST',
@@ -283,8 +336,8 @@ class OddsSyncService
             ]);
 
             @file_get_contents('http://localhost:3000/broadcast', false, $context);
-        } catch (\Exception $e) {
-            // WebSocket no disponible, no bloquear la sincronización
+        } catch (\Throwable $e) {
+            // Error en broadcast, no interrumpir sincronización
         }
     }
 
